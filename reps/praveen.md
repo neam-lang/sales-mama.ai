@@ -7,7 +7,7 @@ role: manager        # rep | manager | inactive
 markets: [SG]        # SG | MY | IN
 languages: [en]
 territory:
-  industries: []
+  industries: [fnb, retail, logistics, professional_services, clinics, education]
   regions: []
   employees: [10, 200]
 max_active: 60
@@ -24,4 +24,4 @@ updated: 2026-11-01
 # Praveen Govindaraj
 ## Notes
 Manager (bootstrapped the kit). Owns knowledge/, approves allocations and library changes.
-Territory industries are set after the Phase 1 ontology interview.
+Territory industries set from the Phase 1 ontology interview (2026-11-01).
