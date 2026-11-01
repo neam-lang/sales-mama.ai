@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rep morning run</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F4FF}
+a{color:#6D28D9}a:hover{color:#4C1D95}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F6F4FF; font-family: 'Geist', system-ui, sans-serif; color: #16131F; font-size: 15px; line-height: 1.5">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #E6E1F5">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 34px; height: 34px; border-radius: 10px; background: #16131F; color: #C8F031; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px">SM</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 19px">Sales Mama</span>
+</div>
+<nav aria-label="Main" style="display: flex; gap: 4px; flex-wrap: wrap">
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; background: #16131F; color: #FFFFFF; font-weight: 600; font-size: 14px">Chat</a>
+<a href="RepBook.dc.html" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">My book</a>
+<a href="Account.dc.html" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Accounts</a>
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Events</a>
+</nav>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 1px dashed #8F89A6; color: #5B5670">Sample data</span>
+<span style="font-size: 13px; padding: 4px 12px; border-radius: 999px; background: #FFEDE0; color: #9A3412; font-weight: 600">SG · send window 09:00–11:30</span>
+<span style="width: 34px; height: 34px; border-radius: 999px; background: #6D28D9; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px" aria-label="Mei Tan">MT</span>
+</div>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; gap: 24px; padding: 24px; max-width: 1520px; margin: 0 auto; box-sizing: border-box">
+
+<main style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+
+<div style="align-self: flex-end; padding: 12px 18px; border-radius: 20px 20px 6px 20px; background: #16131F; color: #FFFFFF; font-family: 'Geist Mono', monospace; font-size: 15px">/mama-day</div>
+
+<div style="display: flex; gap: 12px; align-items: flex-start">
+<span aria-hidden="true" style="flex: 0 0 auto; width: 36px; height: 36px; border-radius: 999px; background: {{mama}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">M</span>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 6px 0 0 0; font-size: 16px">Morning, Mei. Here's the plan. I'm running it now and will drop drafts in your mailbox.</p>
+
+<section aria-label="Plan" style="background: #FFFFFF; border-radius: 24px; padding: 18px 20px; border: 1px solid #E6E1F5; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="font-weight: 700">Plan · 5 steps</span>
+<span style="font-size: 13px; color: #5B5670">2 done · 1 running · 2 queued</span>
+</div>
+<sc-for list="{{plan}}" as="p" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="{{p.dotStyle}}" aria-hidden="true">{{p.mark}}</span>
+<span style="flex: 1 1 auto">{{p.label}}</span>
+<span style="{{p.chipStyle}}">{{p.agent}}</span>
+</div>
+</sc-for>
+</section>
+
+<section aria-label="Agents working" style="background: #16131F; color: #FFFFFF; border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 999px; background: #C8F031; box-shadow: 0 0 0 6px rgba(200,240,49,0.18)"></span>
+<span style="font-weight: 700">Agents working</span>
+<span style="font-size: 13px; color: #B9B4CC">6 running in parallel</span>
+</div>
+<sc-for list="{{lanes}}" as="l" hint-placeholder-count="5">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<span style="{{l.tagStyle}}">{{l.agent}}</span>
+<span style="flex: 1 1 180px; min-width: 0; font-size: 14px">{{l.label}}</span>
+<span style="flex: 1 1 160px; height: 8px; border-radius: 999px; background: #2C2838; display: block; overflow: hidden"><span style="{{l.barStyle}}"></span></span>
+<span style="flex: 0 0 64px; text-align: right; font-size: 13px; color: #B9B4CC">{{l.state}}</span>
+</div>
+</sc-for>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px">
+<div style="background: #FFEDE0; border-radius: 22px; padding: 16px 18px">
+<span style="display: block; font-size: 13px; color: #7C2D12; font-weight: 600">Drafts ready</span>
+<span style="display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.1">8</span>
+<span style="display: block; font-size: 13px; color: #7C2D12">in your mailbox</span>
+</div>
+<div style="background: #16131F; color: #FFFFFF; border-radius: 22px; padding: 16px 18px">
+<span style="display: block; font-size: 13px; color: #C8F031; font-weight: 600">Hot overnight</span>
+<span style="display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.1; color: #C8F031">2</span>
+<span style="display: block; font-size: 13px; color: #B9B4CC">score jumps</span>
+</div>
+<div style="background: #FFE6F1; border-radius: 22px; padding: 16px 18px">
+<span style="display: block; font-size: 13px; color: #831843; font-weight: 600">At risk</span>
+<span style="display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.1; color: #B91C1C">3</span>
+<span style="display: block; font-size: 13px; color: #831843">silent 14+ days</span>
+</div>
+<div style="background: #EFE8FF; border-radius: 22px; padding: 16px 18px">
+<span style="display: block; font-size: 13px; color: #4C1D95; font-weight: 600">Meetings</span>
+<span style="display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.1">5<span style="font-size: 22px; color: #5B5670">/8</span></span>
+<span style="display: block; font-size: 13px; color: #4C1D95">this month</span>
+</div>
+</div>
+
+<section aria-label="Needs you" style="background: #FFFFFF; border-radius: 24px; padding: 18px 20px; border: 1px solid #E6E1F5; display: flex; flex-direction: column; gap: 12px">
+<span style="font-weight: 700">Needs you</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; justify-content: space-between">
+<span style="flex: 1 1 320px"><strong style="font-weight: 600">Harbourlight Foods</strong> wants to meet Thu 6 Nov, 3pm. Reply drafted.</span>
+<a href="Account.dc.html" style="text-decoration: none; font-size: 14px; font-weight: 600; padding: 11px 16px; border-radius: 999px; background: {{mama}}; color: #FFFFFF">Review reply</a>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; justify-content: space-between">
+<span style="flex: 1 1 320px"><strong style="font-weight: 600">Tanjong Print Co</strong>: "We're locked in until March." Answered with approved R2.</span>
+<button type="button" style="font: inherit; font-size: 14px; font-weight: 600; padding: 11px 16px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">See answer</button>
+</div>
+</section>
+
+<article aria-label="Draft card" style="background: #FFFFFF; border-radius: 24px; border: 1px solid #E6E1F5; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 20px; background: #FFEDE0">
+<span style="display: flex; align-items: center; gap: 10px"><span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #C2410C; color: #FFFFFF">WRITER</span><span style="font-weight: 700">First email · Bayfront Dental</span></span>
+<span style="font-size: 13px; color: #7C2D12">1 of 8</span>
+</div>
+<div style="padding: 16px 20px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; color: #5B5670">To: Dr Wei Ling Ong, Practice Manager</span>
+<span style="font-weight: 700; font-size: 16px">Your new Punggol clinic: one system for every chair</span>
+<p style="margin: 0; color: #2E2A3B">Congratulations on the Punggol opening. Clinics adding a site often end up with two booking systems and two networks…</p>
+<div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #E5EDFF; color: #1E3A8A">signal · new_branch_opened</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #EFE8FF; color: #4C1D95">pattern · first-branch-02</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #E2F6E8; color: #14532D">checks · suppression ✓ entity ✓</span>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0 20px 18px 20px">
+<button type="button" style="font: inherit; font-size: 14px; font-weight: 600; padding: 11px 18px; min-height: 44px; border-radius: 999px; border: none; background: {{mama}}; color: #FFFFFF; cursor: pointer">Open in mailbox</button>
+<button type="button" style="font: inherit; font-size: 14px; padding: 11px 16px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">Make it shorter</button>
+<button type="button" style="font: inherit; font-size: 14px; padding: 11px 16px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">Different opener</button>
+</div>
+</article>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<a href="RepBook.dc.html" style="text-decoration: none; font-size: 14px; padding: 11px 16px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">Show my book</a>
+<a href="Account.dc.html" style="text-decoration: none; font-size: 14px; padding: 11px 16px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">Brief me on Harbourlight</a>
+<a href="#" style="text-decoration: none; font-size: 14px; padding: 11px 16px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">What changed overnight?</a>
+</div>
+</div>
+</div>
+
+<form style="display: flex; flex-direction: column; gap: 10px; background: #FFFFFF; border: 2px solid #16131F; border-radius: 24px; padding: 12px 12px 12px 18px">
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #F6F4FF; color: #4C1D95">/mama-book</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #F6F4FF; color: #4C1D95">/mama-brief</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #F6F4FF; color: #4C1D95">/mama-draft</span>
+<span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #F6F4FF; color: #4C1D95">/mama-handover</span>
+</div>
+<div style="display: flex; gap: 10px; align-items: center">
+<label for="composer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message Sales Mama</label>
+<input id="composer" type="text" placeholder="Ask anything, or type / for a skill" style="flex: 1 1 auto; min-width: 0; border: none; outline: none; font: inherit; font-size: 16px; background: transparent; color: #16131F; min-height: 44px">
+<button type="button" aria-label="Send message" style="min-width: 48px; min-height: 48px; border-radius: 999px; border: none; background: #C8F031; color: #16131F; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#16131F" stroke-width="2.2"><path d="M4 10h11M10 5l5 5-5 5"></path></svg>
+</button>
+</div>
+</form>
+</main>
+
+<aside aria-label="My day at a glance" style="flex: 1 1 300px; max-width: 380px; display: flex; flex-direction: column; gap: 14px">
+<div style="background: #FFFFFF; border-radius: 24px; padding: 18px 20px; border: 1px solid #E6E1F5; display: flex; align-items: center; gap: 16px">
+<svg role="img" aria-label="5 of 8 meetings booked" width="96" height="96" viewBox="0 0 96 96">
+<circle cx="48" cy="48" r="36" fill="none" stroke="#EFE8FF" stroke-width="12"></circle>
+<circle cx="48" cy="48" r="36" fill="none" stroke="{{mama}}" stroke-width="12" stroke-linecap="round" stroke-dasharray="141.4 226.2" transform="rotate(-90 48 48)"></circle>
+<text x="48" y="54" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="22" fill="#16131F">5/8</text>
+</svg>
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-weight: 700">Meetings this month</span>
+<span style="font-size: 14px; color: #5B5670">On pace for 7. Two more this week closes the gap.</span>
+</div>
+</div>
+
+<div style="background: #FFFFFF; border-radius: 24px; padding: 18px 20px; border: 1px solid #E6E1F5; display: flex; flex-direction: column; gap: 10px">
+<span style="font-weight: 700">Book · 42 of 60</span>
+<div style="display: flex; height: 14px; border-radius: 999px; overflow: hidden">
+<span style="flex: 9 1 0; background: {{mama}}"></span>
+<span style="flex: 18 1 0; background: #1D4ED8"></span>
+<span style="flex: 15 1 0; background: #CFC9E0"></span>
+<span style="flex: 18 1 0; background: #F1EEFA"></span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #5B5670">
+<span><strong style="color: #16131F">A</strong> 9</span><span><strong style="color: #16131F">B</strong> 18</span><span><strong style="color: #16131F">C</strong> 15</span><span>18 slots free</span>
+</div>
+</div>
+
+<div style="background: #16131F; color: #FFFFFF; border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-weight: 700; color: #C8F031">Hot overnight</span>
+<div style="display: flex; justify-content: space-between; gap: 8px"><span>Bayfront Dental</span><span style="font-weight: 700; color: #C8F031">+0.24</span></div>
+<span style="font-size: 13px; color: #B9B4CC; margin-top: -8px">New clinic opening · news</span>
+<div style="display: flex; justify-content: space-between; gap: 8px"><span>Lumen Logistics</span><span style="font-weight: 700; color: #C8F031">+0.21</span></div>
+<span style="font-size: 13px; color: #B9B4CC; margin-top: -8px">Government contract award</span>
+</div>
+
+<div style="background: #E2F6E8; border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-weight: 700; color: #14532D">Send window opens in 22 min</span>
+<span style="font-size: 14px; color: #14532D">09:00–11:30 SGT · Mon–Thu · no holidays this week</span>
+</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mama":{"editor":"color","default":"#6D28D9","options":["#6D28D9","#1D4ED8","#BE185D","#0F766E"]},"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+renderVals() {
+const mama = this.props.mama ?? '#6D28D9';
+const agentColor = { Mama: mama, Researcher: '#0F766E', VAM: '#BE185D', Writer: '#C2410C', Scout: '#1D4ED8' };
+const dot = (s) => s === 'done'
+? 'width: 26px; height: 26px; border-radius: 999px; background: ' + mama + '; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: 0 0 auto'
+: s === 'running'
+? 'width: 22px; height: 22px; border-radius: 999px; border: 3px solid #C8F031; background: #16131F; color: #C8F031; display: flex; align-items: center; justify-content: center; font-size: 10px; flex: 0 0 auto'
+: 'width: 22px; height: 22px; border-radius: 999px; border: 2px solid #CFC9E0; background: #FFFFFF; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #8F89A6';
+const chip = (a) => 'font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; color: #FFFFFF; background: ' + agentColor[a];
+const plan = [
+{ label: 'Triage 4 new replies', status: 'done', agent: 'Mama' },
+{ label: 'Turn 3 VAM pre-drafts into mailbox drafts', status: 'done', agent: 'VAM' },
+{ label: 'Research 5 newly allocated leads', status: 'running', agent: 'Researcher' },
+{ label: 'Recommend products from fresh signals', status: 'queued', agent: 'Mama' },
+{ label: 'Write first emails in your voice', status: 'queued', agent: 'Writer' }
+].map(p => ({ ...p, mark: p.status === 'done' ? '✓' : '', dotStyle: dot(p.status), chipStyle: chip(p.agent) }));
+const lanes = [
+{ agent: 'Researcher', label: 'Bayfront Dental · 6 sources', pct: 100, state: 'done' },
+{ agent: 'Researcher', label: 'Lumen Logistics · 4 sources', pct: 70, state: 'reading' },
+{ agent: 'Researcher', label: 'Orchid Tailors · 2 sources', pct: 40, state: 'reading' },
+{ agent: 'VAM', label: 'Mei’s book · 42 accounts', pct: 100, state: 'done' },
+{ agent: 'Writer', label: '3 follow-ups in your voice', pct: 100, state: 'done' }
+].map(l => ({ ...l,
+tagStyle: 'flex: 0 0 auto; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; color: #FFFFFF; background: ' + agentColor[l.agent],
+barStyle: 'display: block; height: 8px; border-radius: 999px; width: ' + l.pct + '%; background: ' + (l.pct === 100 ? '#C8F031' : agentColor[l.agent]) }));
+return { mama, plan, lanes };
+}
+}
+</script>
+</body>
+</html>

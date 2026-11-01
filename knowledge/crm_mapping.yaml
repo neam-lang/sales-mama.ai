@@ -1,0 +1,23 @@
+# CRM export column → account field. Adjust to your CRM's real export in Phase 1.
+export:
+  "Account Name": name
+  "Country": market            # map to SG | MY | IN
+  "Registration No": reg_id    # UEN / SSM no. / CIN or LLPIN
+  "GSTIN": alt_ids.gstin       # India, optional
+  "City": city
+  "Website": domain
+  "Industry": industry
+  "Employees": employees
+  "Products": products_owned   # split on ";" → product ids
+  "Contract End": contract_end
+  "Parent Account": group      # continuity in allocation
+  "NPTB Score": propensity     # optional prior, 0–1 after normalising
+industry_values: {}            # CRM value → ontology term
+product_values: {}             # CRM value → product id
+country_values: {Singapore: SG, Malaysia: MY, India: IN}
+import:                        # columns for log/crm-updates/<date>.csv
+  - "Account Name"
+  - "Stage"
+  - "Next Step"
+  - "Owner Email"
+  - "Notes"

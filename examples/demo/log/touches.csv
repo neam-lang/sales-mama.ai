@@ -1,0 +1,11 @@
+ts,rep,account,contact,channel,step,pattern,products,status,reply_class,ref
+2026-10-20 09:30,mei,harbourlight-foods,rachel-goh-harbourlight-foods,email,first,,,sent,,
+2026-10-28 09:45,mei,harbourlight-foods,rachel-goh-harbourlight-foods,email,fu1,,,sent,,
+2026-10-30 10:05,mei,nimbus-clinics,,email,first,,,sent,,
+2026-11-01 14:12,mei,harbourlight-foods,rachel-goh-harbourlight-foods,email,reply,,,replied,objection,
+2026-11-02 11:00,mei,harbourlight-foods,rachel-goh-harbourlight-foods,meeting,meeting,,,meeting_booked,meeting_request,
+2026-10-15 10:00,arun,seri-kasih-catering,farid-rahman-seri-kasih-catering,email,first,,,sent,,
+2026-10-29 16:20,arun,seri-kasih-catering,farid-rahman-seri-kasih-catering,email,reply,,,replied,meeting_request,
+2026-10-31 15:00,arun,seri-kasih-catering,farid-rahman-seri-kasih-catering,meeting,meeting,,,meeting_held,,
+2026-11-02 10:30,arun,lumen-logistics,,email,first,,,sent,,
+2026-11-03 10:15,arun,lumen-logistics,,email,fu1,,,drafted,,

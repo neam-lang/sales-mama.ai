@@ -1,0 +1,31 @@
+# Markets — manager-owned. See PLAN.md §5.
+# Fill holidays each December for the next year; update fx monthly (used only to compare deal value).
+base_currency: SGD
+fx: {MYR: null, INR: null}
+markets:
+  SG:
+    tz: Asia/Singapore
+    currency: SGD
+    languages: [en, zh]
+    id_types: [uen]
+    channels: [email, linkedin]
+    send_windows: {days: [mon, tue, wed, thu], hours: "09:00-11:30"}
+    holidays: []
+  MY:
+    tz: Asia/Kuala_Lumpur
+    currency: MYR
+    languages: [en, ms, zh]
+    id_types: [ssm]
+    channels: [email, whatsapp, linkedin]
+    send_windows: {days: [mon, tue, wed, thu], hours: "09:30-11:30"}
+    holidays: []
+  IN:
+    tz: Asia/Kolkata
+    currency: INR
+    languages: [en, hi]
+    id_types: [cin, llpin, gstin, udyam]
+    channels: [email, whatsapp, linkedin, phone]
+    send_windows: {days: [mon, tue, wed, thu, fri], hours: "10:00-12:30"}
+    fiscal_year_start: "04-01"
+    holidays: []
+live: [SG]   # switch on MY and IN one at a time (GUIDE.md §8)

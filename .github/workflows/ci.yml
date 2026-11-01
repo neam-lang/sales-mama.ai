@@ -1,0 +1,20 @@
+name: sales-mama-checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pyyaml
+      - name: Harness self-test
+        run: python scripts/selftest.py
+      - name: Wiki lint
+        run: python scripts/lint.py
+      - name: Skills mirror in sync
+        run: python scripts/sync_skills.py --check

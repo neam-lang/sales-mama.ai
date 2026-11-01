@@ -1,0 +1,7 @@
+wiki/log.md          merge=union
+wiki/suppression.csv merge=union
+log/touches.csv      merge=union
+log/signals.csv      merge=union
+log/review.csv       merge=union
+*.sh                 text eol=lf
+*.ps1                text eol=crlf

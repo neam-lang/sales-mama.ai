@@ -1,0 +1,4 @@
+# Signal sources — filled in Phase 2. Every source: market, type, access, trust, tos_checked.
+# Examples per market are in PLAN.md §6. Store headline + URL + own-words summary only (AGENTS.md rule 9).
+defaults: {max_items_per_run: 30, lookback_days: 2}
+sources: []

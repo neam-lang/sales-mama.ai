@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sales-mama.local/cards.schema.json",
+  "title": "mama-card",
+  "description": "Cards emitted by Sales Mama skills when MAMA_CARDS=on. See docs/UI.md.",
+  "type": "object",
+  "required": ["type", "title"],
+  "properties": {
+    "type": {
+      "enum": ["plan", "agents", "day_summary", "draft", "reply", "book", "account", "brief",
+               "allocation", "review_queue", "run_status", "team_book", "error"]
+    },
+    "title": {"type": "string", "maxLength": 120},
+    "subtitle": {"type": "string", "maxLength": 200},
+    "agent": {"enum": ["mama", "scout", "researcher", "vam", "writer", "allocator"]},
+    "refs": {"type": "array", "items": {"type": "string"}},
+    "actions": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["label", "prompt"],
+        "properties": {
+          "label": {"type": "string", "maxLength": 40},
+          "prompt": {"type": "string"},
+          "style": {"enum": ["primary", "secondary"]}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"type": {"const": "plan"}}},
+     "then": {"required": ["steps"], "properties": {"steps": {"type": "array", "items": {
+       "type": "object", "required": ["label", "status"],
+       "properties": {"label": {"type": "string"}, "status": {"enum": ["pending", "running", "done", "failed"]},
+                      "agent": {"type": "string"}}}}}}},
+    {"if": {"properties": {"type": {"const": "agents"}}},
+     "then": {"required": ["lanes"], "properties": {"lanes": {"type": "array", "items": {
+       "type": "object", "required": ["agent", "label", "status"],
+       "properties": {"agent": {"type": "string"}, "label": {"type": "string"}, "done": {"type": "integer"},
+                      "total": {"type": "integer"}, "status": {"enum": ["queued", "running", "done", "failed"]}}}}}}},
+    {"if": {"properties": {"type": {"const": "day_summary"}}},
+     "then": {"required": ["drafts"], "properties": {
+       "drafts": {"type": "integer"}, "send_window": {"type": "string"},
+       "hot": {"type": "array", "items": {"type": "object", "properties": {"account": {"type": "string"}, "delta": {"type": "number"}, "signal": {"type": "string"}}}},
+       "at_risk": {"type": "integer"},
+       "needs_you": {"type": "array", "items": {"type": "object", "properties": {"account": {"type": "string"}, "text": {"type": "string"}}}}}}},
+    {"if": {"properties": {"type": {"const": "draft"}}},
+     "then": {"required": ["account", "channel", "body", "checks"], "properties": {
+       "account": {"type": "string"}, "to": {"type": "string"}, "channel": {"enum": ["email", "linkedin", "whatsapp"]},
+       "subject": {"type": "string"}, "body": {"type": "string"}, "signal": {"type": "string"}, "pattern": {"type": "string"},
+       "checks": {"type": "array", "items": {"type": "string"}}, "send_window": {"type": "string"}}}},
+    {"if": {"properties": {"type": {"const": "reply"}}},
+     "then": {"required": ["account", "class"], "properties": {
+       "account": {"type": "string"}, "from": {"type": "string"},
+       "class": {"enum": ["interested", "meeting_request", "objection", "not_now", "referral", "wrong_person", "unsubscribe", "out_of_office", "bounce"]},
+       "summary": {"type": "string"}, "response_ref": {"type": "string"}}}},
+    {"if": {"properties": {"type": {"const": "book"}}},
+     "then": {"required": ["rep", "active", "capacity"], "properties": {
+       "rep": {"type": "string"}, "active": {"type": "integer"}, "capacity": {"type": "integer"},
+       "tiers": {"type": "object", "properties": {"A": {"type": "integer"}, "B": {"type": "integer"}, "C": {"type": "integer"}}},
+       "meetings": {"type": "object", "properties": {"done": {"type": "integer"}, "target": {"type": "integer"}}},
+       "replies_7d": {"type": "object", "properties": {"replies": {"type": "integer"}, "sent": {"type": "integer"}}},
+       "today": {"type": "array"}, "hot": {"type": "array"}, "at_risk": {"type": "array"}}}},
+    {"if": {"properties": {"type": {"const": "account"}}},
+     "then": {"required": ["id", "name", "market"], "properties": {
+       "id": {"type": "string"}, "name": {"type": "string"}, "market": {"enum": ["SG", "MY", "IN"]},
+       "tier": {"enum": ["A", "B", "C"]}, "score": {"type": "number", "minimum": 0, "maximum": 1},
+       "score_parts": {"type": "object"}, "stage": {"type": "string"}, "owner": {"type": "string"},
+       "signals": {"type": "array", "items": {"type": "object", "required": ["term", "ref"],
+         "properties": {"term": {"type": "string"}, "evidence": {"type": "string"}, "date": {"type": "string"}, "ref": {"type": "string"}}}},
+       "recommendation": {"type": "object", "properties": {"chain": {"type": "array", "items": {"type": "string"}},
+         "product": {"type": "string"}, "proof": {"type": "string"}, "talk_track": {"type": "string"}}},
+       "next": {"type": "object", "properties": {"action": {"type": "string"}, "due": {"type": "string"}}}}}},
+    {"if": {"properties": {"type": {"const": "brief"}}},
+     "then": {"required": ["subject", "sections"], "properties": {"subject": {"type": "string"},
+       "sections": {"type": "array", "items": {"type": "object", "properties": {"heading": {"type": "string"},
+         "bullets": {"type": "array", "items": {"type": "string"}}}}}}}},
+    {"if": {"properties": {"type": {"const": "allocation"}}},
+     "then": {"required": ["rows"], "properties": {"total": {"type": "integer"}, "spread": {"type": "number"}, "limit": {"type": "number"},
+       "rows": {"type": "array", "items": {"type": "object", "required": ["rep", "market", "why"],
+         "properties": {"rep": {"type": "string"}, "market": {"type": "string"}, "leads_a": {"type": "integer"}, "leads_b": {"type": "integer"},
+                        "ev": {"type": "number"}, "currency": {"type": "string"}, "why": {"type": "string"}}}}}}},
+    {"if": {"properties": {"type": {"const": "review_queue"}}},
+     "then": {"required": ["items"], "properties": {"items": {"type": "array", "items": {"type": "object",
+       "properties": {"n": {"type": "integer"}, "text": {"type": "string"}, "source": {"type": "string"},
+                      "candidate": {"type": "string"}, "confidence": {"type": "number"}}}}}}},
+    {"if": {"properties": {"type": {"const": "run_status"}}},
+     "then": {"required": ["ok"], "properties": {"ok": {"type": "boolean"}, "started": {"type": "string"}, "finished": {"type": "string"},
+       "markets": {"type": "array", "items": {"type": "string"}}, "items": {"type": "integer"}, "linked": {"type": "integer"},
+       "review": {"type": "integer"}, "new_leads": {"type": "integer"}, "errors": {"type": "integer"}}}},
+    {"if": {"properties": {"type": {"const": "team_book"}}},
+     "then": {"required": ["rows"], "properties": {"rows": {"type": "array"}, "pool": {"type": "object"}}}},
+    {"if": {"properties": {"type": {"const": "error"}}},
+     "then": {"required": ["message"], "properties": {"message": {"type": "string"}, "fix": {"type": "string"}}}}
+  ]
+}

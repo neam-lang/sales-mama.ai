@@ -1,0 +1,9 @@
+# Lead allocation — used by scripts/allocate.py (Phase 6). See PLAN.md §10.
+mode: manager_approves          # or auto_for_tier_c
+markets: hard                   # reps only get leads in markets they cover
+territory: hard
+continuity: true                # same group / domain as an owned account → same rep
+capacity_from: reps             # reps/<id>.md max_active and daily_quota
+fairness: {max_ev_spread: 0.20}
+prior_meeting_rate: {alpha: 2, beta: 18}
+self_claim: tier_c_only

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Manager cockpit</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F4FF}
+a{color:#6D28D9}a:hover{color:#4C1D95}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F6F4FF; font-family: 'Geist', system-ui, sans-serif; color: #16131F; font-size: 15px; line-height: 1.5">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #E6E1F5">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 34px; height: 34px; border-radius: 10px; background: #16131F; color: #C8F031; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px">SM</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 19px">Sales Mama</span>
+</div>
+<nav aria-label="Main" style="display: flex; gap: 4px; flex-wrap: wrap">
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; background: #16131F; color: #FFFFFF; font-weight: 600; font-size: 14px">Cockpit</a>
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Team book</a>
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Signals</a>
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Weekly</a>
+</nav>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 1px dashed #8F89A6; color: #5B5670">Sample data</span>
+<span style="font-size: 13px; padding: 4px 12px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">Manager · SG · MY · IN</span>
+<span style="width: 34px; height: 34px; border-radius: 999px; background: #16131F; color: #C8F031; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px" aria-label="Manager">PG</span>
+</div>
+</header>
+
+<main style="max-width: 1160px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+
+<div style="align-self: flex-end; padding: 12px 18px; border-radius: 20px 20px 6px 20px; background: #16131F; color: #FFFFFF; font-family: 'Geist Mono', monospace; font-size: 15px">/mama-manager</div>
+
+<div style="display: flex; gap: 12px; align-items: flex-start">
+<span aria-hidden="true" style="flex: 0 0 auto; width: 36px; height: 36px; border-radius: 999px; background: {{mama}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">M</span>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 6px 0 0 0; font-size: 16px">Good morning. Last night's run was clean. 21 leads are ready to allocate, and 3 matches need your eye.</p>
+
+<section aria-label="Nightly run" style="background: #16131F; color: #FFFFFF; border-radius: 28px; padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px">
+<span style="display: flex; align-items: center; gap: 10px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 999px; background: #C8F031; box-shadow: 0 0 0 6px rgba(200,240,49,0.18)"></span><span style="font-weight: 700">Nightly run · 02:00–02:41 · all clear</span></span>
+<span style="display: flex; gap: 6px"><span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #C8F031; color: #16131F">SG</span><span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #C8F031; color: #16131F">MY</span><span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #C8F031; color: #16131F">IN</span></span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="5">
+<div style="background: #221E2E; border-radius: 18px; padding: 12px 14px">
+<span style="display: block; font-size: 12px; color: #B9B4CC">{{s.label}}</span>
+<span style="display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: 30px; font-weight: 800; color: #C8F031; line-height: 1.15">{{s.value}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px">
+<span style="padding: 4px 12px; border-radius: 999px; background: #1D4ED8; font-weight: 600">Scout ×3 · done</span>
+<span style="padding: 4px 12px; border-radius: 999px; background: #BE185D; font-weight: 600">VAM ×6 · done</span>
+<span style="padding: 4px 12px; border-radius: 999px; background: #15803D; font-weight: 600">Allocator · proposal ready</span>
+</div>
+</section>
+
+<section aria-label="Allocation proposal" style="background: #FFFFFF; border-radius: 28px; border: 1px solid #E6E1F5; overflow: hidden">
+<div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 22px; background: #E2F6E8">
+<span style="display: flex; align-items: center; gap: 10px"><span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #15803D; color: #FFFFFF">ALLOCATOR</span><span style="font-weight: 700; font-size: 17px">21 leads → 5 reps</span></span>
+<span style="font-size: 13px; color: #14532D; font-weight: 600">EV spread 14% · limit 20% · all hard rules met</span>
+</div>
+<div style="padding: 10px 22px 18px 22px; display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{alloc}}" as="a" hint-placeholder-count="5">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F1EEFA">
+<span style="{{a.avatarStyle}}" aria-hidden="true">{{a.initials}}</span>
+<span style="flex: 0 0 140px; display: flex; flex-direction: column"><strong style="font-weight: 700">{{a.rep}}</strong><span style="font-size: 12px; color: #5B5670">{{a.market}} · {{a.leads}}</span></span>
+<span style="flex: 1 1 200px; display: flex; align-items: center; gap: 10px"><span style="flex: 1 1 auto; height: 12px; border-radius: 999px; background: #E2F6E8; display: block; overflow: hidden"><span style="{{a.barStyle}}"></span></span><span style="flex: 0 0 auto; font-weight: 700">{{a.ev}}</span></span>
+<span style="flex: 2 1 260px; font-size: 13px; color: #5B5670">{{a.why}}</span>
+</div>
+</sc-for>
+<span style="font-size: 12px; color: #5B5670; margin-top: 6px">Expected value in SGD (MYR and INR converted with this month's rates).</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px">
+<button type="button" style="font: inherit; font-size: 14px; font-weight: 700; padding: 11px 20px; min-height: 44px; border-radius: 999px; border: none; background: #15803D; color: #FFFFFF; cursor: pointer">Approve all</button>
+<button type="button" style="font: inherit; font-size: 14px; padding: 11px 16px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">Give the logistics leads to Arun</button>
+<button type="button" style="font: inherit; font-size: 14px; padding: 11px 16px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">Show all 21</button>
+</div>
+</div>
+</section>
+
+<section aria-label="Review queue" style="background: #FFFFFF; border-radius: 28px; border: 1px solid #E6E1F5; padding: 18px 22px; display: flex; flex-direction: column; gap: 10px">
+<span style="display: flex; align-items: center; gap: 10px"><span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #1D4ED8; color: #FFFFFF">SCOUT</span><span style="font-weight: 700">Is this the same company?</span></span>
+<sc-for list="{{review}}" as="r" hint-placeholder-count="3">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 18px; background: #F6F4FF">
+<span style="flex: 1 1 320px; font-size: 14px">"{{r.text}}" <span style="color: #5B5670">({{r.market}} · {{r.source}})</span> → <strong style="font-weight: 600">{{r.candidate}}</strong></span>
+<span style="flex: 0 0 120px; display: flex; align-items: center; gap: 8px; font-size: 13px"><span style="flex: 1 1 auto; height: 8px; border-radius: 999px; background: #E5EDFF; display: block; overflow: hidden"><span style="{{r.barStyle}}"></span></span>{{r.conf}}</span>
+<span style="display: flex; gap: 6px">
+<button type="button" style="font: inherit; font-size: 13px; font-weight: 600; padding: 8px 14px; min-height: 44px; border-radius: 999px; border: none; background: #1D4ED8; color: #FFFFFF; cursor: pointer">Link</button>
+<button type="button" style="font: inherit; font-size: 13px; padding: 8px 14px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">New lead</button>
+<button type="button" style="font: inherit; font-size: 13px; padding: 8px 14px; min-height: 44px; border-radius: 999px; border: 1px solid #D9D3EA; background: #FFFFFF; color: #16131F; cursor: pointer">Reject</button>
+</span>
+</div>
+</sc-for>
+</section>
+
+<section aria-label="Team book" style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-weight: 700">Team book</span>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px">
+<sc-for list="{{team}}" as="t" hint-placeholder-count="5">
+<div style="background: #FFFFFF; border: 1px solid #E6E1F5; border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+<span style="display: flex; align-items: center; gap: 8px"><span style="{{t.avatarStyle}}" aria-hidden="true">{{t.initials}}</span><strong style="font-weight: 700">{{t.rep}}</strong><span style="font-size: 12px; color: #5B5670">{{t.market}}</span></span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 800; line-height: 1">{{t.meetings}}<span style="font-size: 14px; color: #5B5670; font-family: 'Geist', sans-serif; font-weight: 500"> meetings</span></span>
+<span style="display: block; height: 8px; border-radius: 999px; background: #F1EEFA; overflow: hidden"><span style="{{t.barStyle}}"></span></span>
+<span style="font-size: 13px; color: #5B5670">{{t.load}} active · <span style="{{t.riskStyle}}">{{t.risk}} at risk</span></span>
+</div>
+</sc-for>
+<div style="background: #16131F; color: #FFFFFF; border-radius: 22px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-weight: 700; color: #C8F031">Pool</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 800; line-height: 1">63<span style="font-size: 14px; color: #B9B4CC; font-family: 'Geist', sans-serif; font-weight: 500"> unallocated</span></span>
+<span style="font-size: 13px; color: #B9B4CC">A 4 · B 17 · C 42</span>
+<span style="font-size: 13px; color: #C8F031">House VAM: 5 rising</span>
+</div>
+</div>
+</section>
+</div>
+</div>
+
+<form style="display: flex; gap: 10px; align-items: center; background: #FFFFFF; border: 2px solid #16131F; border-radius: 24px; padding: 10px 10px 10px 18px">
+<label for="composer-m" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message Sales Mama</label>
+<input id="composer-m" type="text" placeholder="Approve, edit in a sentence, or ask about the team" style="flex: 1 1 auto; min-width: 0; border: none; outline: none; font: inherit; font-size: 16px; background: transparent; color: #16131F; min-height: 44px">
+<button type="button" aria-label="Send message" style="min-width: 48px; min-height: 48px; border-radius: 999px; border: none; background: #C8F031; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#16131F" stroke-width="2.2"><path d="M4 10h11M10 5l5 5-5 5"></path></svg>
+</button>
+</form>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mama":{"editor":"color","default":"#6D28D9","options":["#6D28D9","#1D4ED8","#BE185D","#0F766E"]},"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+renderVals() {
+const mama = this.props.mama ?? '#6D28D9';
+const repColor = { Mei: mama, Daniel: '#1D4ED8', Siti: '#BE185D', Arun: '#C2410C', Priya: '#0F766E' };
+const av = (rep) => 'flex: 0 0 auto; width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #FFFFFF; background: ' + repColor[rep];
+const allocRaw = [
+{ rep: 'Mei', market: 'SG', leads: '2 A · 3 B', ev: 18400, why: 'F&B meeting rate 14% vs team 9%; 6 slots free' },
+{ rep: 'Daniel', market: 'SG', leads: '1 A · 2 B', ev: 16900, why: 'Same group as Lumen Logistics (continuity)' },
+{ rep: 'Siti', market: 'MY', leads: '1 A · 3 B', ev: 17200, why: 'Only MY rep; Bahasa Malaysia patterns approved' },
+{ rep: 'Arun', market: 'IN', leads: '1 A · 4 B', ev: 19800, why: 'Logistics meeting rate 12%; 9 slots free' },
+{ rep: 'Priya', market: 'IN', leads: '0 A · 4 B', ev: 17500, why: 'Clinics territory; balances value across IN' }
+];
+const alloc = allocRaw.map(a => ({ ...a,
+initials: a.rep.slice(0, 2).toUpperCase(),
+avatarStyle: av(a.rep),
+ev: a.ev.toLocaleString('en-SG'),
+barStyle: 'display: block; height: 12px; border-radius: 999px; width: ' + Math.round(a.ev / 20000 * 100) + '%; background: #15803D' }));
+const review = [
+{ text: 'Lumen Logistic Svcs', market: 'SG', source: 'gov procurement', candidate: 'Lumen Logistics Pte Ltd', c: 0.84 },
+{ text: 'Seri Kasih Catering', market: 'MY', source: 'news', candidate: 'Seri Kasih Catering Sdn Bhd', c: 0.78 },
+{ text: 'Nimbus Clinics', market: 'IN', source: 'funding news', candidate: 'Nimbus Healthcare Pvt Ltd', c: 0.72 }
+].map(r => ({ ...r, conf: r.c.toFixed(2), barStyle: 'display: block; height: 8px; border-radius: 999px; width: ' + Math.round(r.c * 100) + '%; background: #1D4ED8' }));
+const team = [
+{ rep: 'Mei', market: 'SG', done: 5, target: 8, load: '42/60', risk: 3 },
+{ rep: 'Daniel', market: 'SG', done: 4, target: 8, load: '51/60', risk: 5 },
+{ rep: 'Siti', market: 'MY', done: 6, target: 8, load: '37/55', risk: 1 },
+{ rep: 'Arun', market: 'IN', done: 3, target: 10, load: '48/70', risk: 4 },
+{ rep: 'Priya', market: 'IN', done: 2, target: 10, load: '40/70', risk: 2 }
+].map(t => ({ ...t,
+initials: t.rep.slice(0, 2).toUpperCase(),
+avatarStyle: av(t.rep).replace('width: 34px; height: 34px', 'width: 28px; height: 28px'),
+meetings: t.done + '/' + t.target,
+barStyle: 'display: block; height: 8px; border-radius: 999px; width: ' + Math.round(t.done / t.target * 100) + '%; background: ' + repColor[t.rep],
+riskStyle: t.risk >= 4 ? 'color: #B91C1C; font-weight: 700' : 'color: #5B5670' }));
+const stats = [
+{ label: 'Items scanned', value: '214' }, { label: 'Linked', value: '31' },
+{ label: 'For review', value: '6' }, { label: 'New leads', value: '12' }, { label: 'Errors', value: '0' }
+];
+return { mama, alloc, review, team, stats };
+}
+}
+</script>
+</body>
+</html>

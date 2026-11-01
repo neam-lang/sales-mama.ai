@@ -1,0 +1,12 @@
+# Codex project config. It loads only after the user trusts this project.
+#
+# Phase 4 — email, drafts only (check exact keys in your Codex config reference):
+# [mcp_servers.email]
+# url = "<connector URL>"
+# enabled_tools = ["create_draft", "search_threads", "get_thread"]   # never a send tool
+#
+# Phase 2/5 — subagents are experimental; enable in ~/.codex/config.toml:
+# [features]
+# multi_agent = true
+# [agents]
+# max_threads = 5

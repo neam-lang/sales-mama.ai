@@ -1,0 +1,8 @@
+# Lead score (0–1) — used by scripts/score.py (Phase 3). See PLAN.md §8.
+weights: {fit: 0.35, intent: 0.40, propensity: 0.15, engagement: 0.10}
+# fit is scored against the account's own market section in icp.md
+intent:
+  decay: exponential          # half-life = decay_days / 2 from ontology.yaml
+engagement: {replied: 0.6, meeting: 1.0, no_reply_after_3: -0.3}
+tiers: {A: 0.70, B: 0.45}      # below B → C
+hot_alert: {score_jump: 0.20}

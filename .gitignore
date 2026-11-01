@@ -1,0 +1,12 @@
+wiki/index.md
+wiki/books/*
+!wiki/books/.gitkeep
+runner/logs/
+.claude/settings.local.json
+.env
+.env.*
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+console/dist/

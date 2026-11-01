@@ -1,0 +1,17 @@
+# FICTIONAL demo ontology (subset of the PLAN.md §6 example). selftest.py installs it in a
+# temporary copy of the repo; it never replaces the real knowledge/ontology.yaml.
+industries: [retail, fnb, logistics, professional_services, clinics, education]
+signals:
+  new_branch_opened:   {implies: [branch_expansion],   weight: 1.0, decay_days: 120}
+  contract_win:        {implies: [scale_up],           weight: 0.9, decay_days: 90}
+  funding_round:       {implies: [scale_up],           weight: 0.8, decay_days: 90}
+  contract_ending:     {implies: [renewal_window],     weight: 1.0, decay_days: 120}
+  exhibiting_at_event: {implies: [],                   weight: 0.5, decay_days: 30, hook: true}
+pains:
+  branch_expansion: {personas: [owner_md, ops_head]}
+  scale_up:         {personas: [owner_md, finance_head]}
+  renewal_window:   {personas: [owner_md, finance_head]}
+personas:
+  owner_md:     {title_patterns: ["owner", "founder", "managing director"]}
+  ops_head:     {title_patterns: ["operations"]}
+  finance_head: {title_patterns: ["finance", "cfo"]}

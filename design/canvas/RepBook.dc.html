@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ask my book</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F4FF}
+a{color:#6D28D9}a:hover{color:#4C1D95}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F6F4FF; font-family: 'Geist', system-ui, sans-serif; color: #16131F; font-size: 15px; line-height: 1.5">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 24px; background: #FFFFFF; border-bottom: 1px solid #E6E1F5">
+<div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 34px; height: 34px; border-radius: 10px; background: #16131F; color: #C8F031; display: flex; align-items: center; justify-content: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px">SM</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 19px">Sales Mama</span>
+</div>
+<nav aria-label="Main" style="display: flex; gap: 4px; flex-wrap: wrap">
+<a href="Main.dc.html" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Chat</a>
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; background: #16131F; color: #FFFFFF; font-weight: 600; font-size: 14px">My book</a>
+<a href="Account.dc.html" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Accounts</a>
+<a href="#" style="text-decoration: none; padding: 8px 14px; border-radius: 999px; color: #16131F; font-size: 14px">Events</a>
+</nav>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 12px; padding: 3px 10px; border-radius: 999px; border: 1px dashed #8F89A6; color: #5B5670">Sample data</span>
+<span style="width: 34px; height: 34px; border-radius: 999px; background: #6D28D9; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px" aria-label="Mei Tan">MT</span>
+</div>
+</header>
+
+<main style="max-width: 1160px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px">
+
+<div style="align-self: flex-end; max-width: 80%; padding: 12px 18px; border-radius: 20px 20px 6px 20px; background: #16131F; color: #FFFFFF; font-size: 15px">How's my book looking this week?</div>
+
+<div style="display: flex; gap: 12px; align-items: flex-start">
+<span aria-hidden="true" style="flex: 0 0 auto; width: 36px; height: 36px; border-radius: 999px; background: {{mama}}; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700">M</span>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 6px 0 0 0; font-size: 16px">You're on pace for 7 of 8 meetings. Five accounts need you today, and three are going quiet.</p>
+
+<section aria-label="Book card" style="background: #FFFFFF; border-radius: 28px; border: 1px solid #E6E1F5; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+<h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 800">Mei's book · SG</h2>
+<span style="font-size: 13px; color: #5B5670">Updated 02:41 by the nightly run · <span style="font-family: 'Geist Mono', monospace">wiki/books/mei.md</span></span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px">
+<div style="background: #16131F; color: #FFFFFF; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 13px; color: #B9B4CC; font-weight: 600">Active accounts</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1">42<span style="font-size: 20px; color: #B9B4CC"> / 60</span></span>
+<span style="display: block; height: 8px; border-radius: 999px; background: #2C2838; overflow: hidden"><span style="display: block; height: 8px; width: 70%; background: #C8F031"></span></span>
+</div>
+<div style="background: #EFE8FF; border-radius: 22px; padding: 16px 18px; display: flex; align-items: center; gap: 12px">
+<svg role="img" aria-label="5 of 8 meetings" width="80" height="80" viewBox="0 0 96 96">
+<circle cx="48" cy="48" r="36" fill="none" stroke="#FFFFFF" stroke-width="12"></circle>
+<circle cx="48" cy="48" r="36" fill="none" stroke="{{mama}}" stroke-width="12" stroke-linecap="round" stroke-dasharray="141.4 226.2" transform="rotate(-90 48 48)"></circle>
+<text x="48" y="55" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-weight="800" font-size="24" fill="#16131F">5/8</text>
+</svg>
+<span style="font-size: 14px; color: #4C1D95"><strong style="display: block; font-size: 15px">Meetings</strong>this month</span>
+</div>
+<div style="background: #E5EDFF; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 13px; color: #1E3A8A; font-weight: 600">Reply rate · 7 days</span>
+<span style="font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1; color: #1D4ED8">19%</span>
+<span style="font-size: 13px; color: #1E3A8A">6 replies from 31 sent</span>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E6E1F5; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 13px; color: #5B5670; font-weight: 600">Tier mix</span>
+<div style="display: flex; height: 14px; border-radius: 999px; overflow: hidden">
+<span style="flex: 9 1 0; background: {{mama}}"></span><span style="flex: 18 1 0; background: #1D4ED8"></span><span style="flex: 15 1 0; background: #CFC9E0"></span>
+</div>
+<span style="font-size: 14px"><strong>A</strong> 9 · <strong>B</strong> 18 · <strong>C</strong> 15</span>
+</div>
+</div>
+
+<div style="background: #F6F4FF; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap">
+<span style="font-weight: 700">Today · next best actions</span>
+<span style="font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #BE185D; color: #FFFFFF">VAM</span>
+</div>
+<sc-for list="{{today}}" as="r" hint-placeholder-count="5">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; background: #FFFFFF; border-radius: 16px; padding: 10px 14px">
+<span style="{{r.tierStyle}}">{{r.tier}}</span>
+<a href="Account.dc.html" style="flex: 1 1 170px; font-weight: 600; text-decoration: none; color: #16131F">{{r.account}}</a>
+<span style="flex: 2 1 220px">{{r.nba}}</span>
+<span style="flex: 2 1 220px; font-size: 13px; color: #831843; background: #FFE6F1; border-radius: 999px; padding: 4px 12px">{{r.why}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px">
+<div style="background: #16131F; color: #FFFFFF; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px">
+<span style="font-weight: 700; color: #C8F031">Hot overnight</span>
+<div style="display: flex; justify-content: space-between"><span>Bayfront Dental</span><span style="color: #C8F031; font-weight: 700">+0.24 → A</span></div>
+<div style="display: flex; justify-content: space-between"><span>Lumen Logistics</span><span style="color: #C8F031; font-weight: 700">+0.21 → A</span></div>
+</div>
+<div style="background: #FFE6F1; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700; color: #831843">Going quiet</span>
+<span>Seaview Bakery <span style="color: #831843; font-size: 13px">· 16 days after a reply</span></span>
+<span>Orchid Tailors <span style="color: #831843; font-size: 13px">· claim lapses in 6 days</span></span>
+<span>Kallang Motors <span style="color: #B91C1C; font-size: 13px; font-weight: 600">· outlet closures reported</span></span>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E6E1F5; border-radius: 22px; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-weight: 700">Pipeline</span>
+<sc-for list="{{funnel}}" as="f" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 13px">
+<span style="flex: 0 0 92px; color: #5B5670">{{f.stage}}</span>
+<span style="flex: 1 1 auto; height: 10px; border-radius: 999px; background: #F1EEFA; display: block; overflow: hidden"><span style="{{f.barStyle}}"></span></span>
+<span style="flex: 0 0 24px; text-align: right; font-weight: 700">{{f.n}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<a href="#" style="text-decoration: none; font-size: 14px; padding: 11px 16px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">Draft nudges for the 3 going quiet</a>
+<a href="Account.dc.html" style="text-decoration: none; font-size: 14px; padding: 11px 16px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">Brief me on Harbourlight</a>
+<a href="#" style="text-decoration: none; font-size: 14px; padding: 11px 16px; border-radius: 999px; background: #EFE8FF; color: #4C1D95; font-weight: 600">Which tier-A accounts haven't heard from me?</a>
+</div>
+</div>
+</div>
+
+<form style="display: flex; gap: 10px; align-items: center; background: #FFFFFF; border: 2px solid #16131F; border-radius: 24px; padding: 10px 10px 10px 18px">
+<label for="composer-b" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message Sales Mama</label>
+<input id="composer-b" type="text" placeholder="Ask about your book…" style="flex: 1 1 auto; min-width: 0; border: none; outline: none; font: inherit; font-size: 16px; background: transparent; color: #16131F; min-height: 44px">
+<button type="button" aria-label="Send message" style="min-width: 48px; min-height: 48px; border-radius: 999px; border: none; background: #C8F031; cursor: pointer; display: flex; align-items: center; justify-content: center">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#16131F" stroke-width="2.2"><path d="M4 10h11M10 5l5 5-5 5"></path></svg>
+</button>
+</form>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mama":{"editor":"color","default":"#6D28D9","options":["#6D28D9","#1D4ED8","#BE185D","#0F766E"]},"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+renderVals() {
+const mama = this.props.mama ?? '#6D28D9';
+const tier = {
+A: 'flex: 0 0 auto; width: 30px; height: 30px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #FFFFFF; background: ' + mama,
+B: 'flex: 0 0 auto; width: 30px; height: 30px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #FFFFFF; background: #1D4ED8',
+C: 'flex: 0 0 auto; width: 30px; height: 30px; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #16131F; background: #CFC9E0'
+};
+const today = [
+{ account: 'Harbourlight Foods', tier: 'A', nba: 'Confirm Thu 6 Nov, 3pm', why: 'Asked to meet in reply' },
+{ account: 'Bayfront Dental', tier: 'A', nba: 'Send first email (ready)', why: 'Score jump: new clinic' },
+{ account: 'Lumen Logistics', tier: 'A', nba: 'Follow-up on contract win', why: 'Hook: government award' },
+{ account: 'Tanjong Print Co', tier: 'B', nba: 'Send objection answer R2', why: 'Contract ends March' },
+{ account: 'Seaview Bakery', tier: 'B', nba: 'Nudge with case study', why: '16 days silent' }
+].map(r => ({ ...r, tierStyle: tier[r.tier] }));
+const colors = [mama, mama, '#1D4ED8', '#1D4ED8', '#BE185D', '#15803D'];
+const funnel = [
+{ stage: 'New', n: 8 }, { stage: 'Researched', n: 11 }, { stage: 'Contacted', n: 15 },
+{ stage: 'Replied', n: 5 }, { stage: 'Meeting', n: 3 }, { stage: 'Handed over', n: 2 }
+].map((f, i) => ({ ...f, barStyle: 'display: block; height: 10px; border-radius: 999px; width: ' + Math.round(f.n / 15 * 100) + '%; background: ' + colors[i] }));
+return { mama, today, funnel };
+}
+}
+</script>
+</body>
+</html>

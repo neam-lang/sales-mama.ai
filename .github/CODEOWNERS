@@ -1,0 +1,11 @@
+# Replace @MANAGER with the manager's GitHub handle.
+# Changes to the "truth" and the harness need the manager's review.
+/AGENTS.md   @MANAGER
+/CLAUDE.md   @MANAGER
+/knowledge/  @MANAGER
+/scripts/    @MANAGER
+/runner/     @MANAGER
+/.agents/    @MANAGER
+/.claude/    @MANAGER
+/.codex/     @MANAGER
+/console/    @MANAGER
