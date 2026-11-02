@@ -1,57 +1,70 @@
 <!doctype html>
 <!-- Sales Mama meetup poster. Render: node docs/assets/src/render.mjs (see docs/assets/README.md). -->
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=block" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
   :root { --ground:#F6F4FF; --ink:#16131F; --muted:#5B5670; --lime:#C8F031; --mama:#6D28D9; --mama-t:#EFE8FF;
     --scout:#1D4ED8; --scout-t:#E5EDFF; --res:#0F766E; --res-t:#DDF5F1; --vam:#BE185D; --vam-t:#FFE6F1;
-    --wri:#C2410C; --wri-t:#FFEDE0; --alo:#15803D; --alo-t:#E2F6E8; }
+    --wri:#C2410C; --wri-t:#FFEDE0; --alo:#15803D; --alo-t:#E2F6E8; --risk:#B91C1C; }
   * { box-sizing: border-box; margin: 0; }
-  body { width: 1200px; height: 1700px; background: var(--ground); color: var(--ink); font-family: Geist, system-ui, sans-serif; padding: 64px 72px; display: flex; flex-direction: column; gap: 28px; overflow: hidden; }
+  body { width: 1200px; height: 1700px; background: var(--ground); color: var(--ink); font-family: Geist, system-ui, sans-serif; padding: 56px 68px; display: flex; flex-direction: column; gap: 24px; overflow: hidden; }
+  svg { display: block; }
   .top { display: flex; align-items: center; justify-content: space-between; }
-  .brand { display: flex; align-items: center; gap: 16px; font: 700 34px 'Bricolage Grotesque'; }
-  .logo { width: 60px; height: 60px; border-radius: 16px; background: var(--ink); color: var(--lime); display: grid; place-items: center; font: 800 26px 'Bricolage Grotesque'; }
-  .event { font: 600 20px Geist; padding: 12px 22px; border-radius: 999px; background: var(--ink); color: #fff; }
+  .brand { display: flex; align-items: center; gap: 16px; font: 700 32px 'Bricolage Grotesque'; }
+  .logo { width: 58px; height: 58px; border-radius: 16px; background: var(--ink); color: var(--lime); display: grid; place-items: center; font: 800 25px 'Bricolage Grotesque'; }
+  .event { font: 600 19px Geist; padding: 11px 20px; border-radius: 999px; background: var(--ink); color: #fff; }
   .event b { color: var(--lime); font-weight: 600; }
-  h1 { font: 800 86px/0.98 'Bricolage Grotesque'; letter-spacing: -2.5px; }
+  h1 { font: 800 84px/0.96 'Bricolage Grotesque'; letter-spacing: -3px; }
   h1 .hl { background: var(--lime); padding: 0 14px; border-radius: 18px; }
-  .sub { font: 400 25px/1.42 Geist; color: var(--muted); max-width: 980px; }
+  .sub { font: 400 23px/1.4 Geist; color: var(--muted); }
   .sub b { color: var(--ink); font-weight: 600; }
-  .vs { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; }
-  .vs > div { padding: 30px 34px 32px; }
-  .pain { background: #fff; }
-  .fix { background: var(--ink); color: #fff; }
-  .vs h3 { font: 700 15px Geist; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 18px; }
-  .pain h3 { color: #B91C1C; } .fix h3 { color: var(--lime); }
-  .vs ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-  .vs li { font: 500 21px/1.3 Geist; display: flex; gap: 14px; align-items: baseline; }
-  .vs li::before { content: ''; flex: 0 0 10px; height: 10px; border-radius: 50%; transform: translateY(-2px); }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; border-radius: 26px; overflow: hidden; }
+  .vs > div { padding: 22px 28px; }
+  .pain { background: #fff; } .fix { background: var(--ink); color: #fff; }
+  .vs h3 { font: 700 14px Geist; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 14px; }
+  .pain h3 { color: var(--risk); } .fix h3 { color: var(--lime); }
+  .vs ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .vs li { font: 500 19px/1.3 Geist; display: flex; gap: 12px; align-items: baseline; }
+  .vs li::before { content: ''; flex: 0 0 9px; height: 9px; border-radius: 50%; transform: translateY(-2px); }
   .pain li::before { background: #F3B4B4; } .fix li::before { background: var(--lime); }
-  .flow { display: flex; align-items: stretch; gap: 10px; }
-  .step { flex: 1; border-radius: 22px; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
-  .step .who { font: 700 13px Geist; letter-spacing: 1.2px; text-transform: uppercase; }
-  .step .what { font: 700 21px/1.15 'Bricolage Grotesque'; }
-  .arrow { align-self: center; color: #A49DBA; font: 700 22px Geist; }
+  .flow { display: flex; align-items: stretch; gap: 8px; }
+  .step { flex: 1; border-radius: 20px; padding: 14px 14px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .step svg { width: 26px; height: 26px; }
+  .step .who { font: 700 12px Geist; letter-spacing: 1.1px; text-transform: uppercase; opacity: .9; }
+  .step .what { font: 700 19px/1.12 'Bricolage Grotesque'; }
+  .arrow { align-self: center; color: #A49DBA; font: 700 20px Geist; }
   .s1 { background: var(--scout-t); color: var(--scout); } .s2 { background: var(--res-t); color: var(--res); }
   .s3 { background: var(--vam-t); color: var(--vam); } .s4 { background: var(--alo-t); color: var(--alo); }
   .s5 { background: var(--wri-t); color: var(--wri); } .s6 { background: var(--ink); color: var(--lime); }
   .s6 .what { color: #fff; }
-  .shot { flex: 1; min-height: 0; border-radius: 26px; overflow: hidden; border: 1px solid #E4DFF5; box-shadow: 0 30px 60px -30px rgba(22,19,31,.35); background: #fff; position: relative; }
-  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
-  .shot .tag { position: absolute; right: 22px; bottom: 20px; font: 600 16px Geist; background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 999px; }
+  .feature { display: grid; grid-template-columns: 1.08fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+  .term { background: var(--ink); border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; color: #E9E6F2; }
+  .term .t { display: flex; align-items: center; justify-content: space-between; }
+  .term .t b { font: 800 26px 'Bricolage Grotesque'; color: #fff; }
+  .term .t span { font: 600 13px Geist; color: var(--lime); border: 1px solid #3A3450; padding: 5px 11px; border-radius: 999px; }
+  .term pre { font: 400 13.5px/1.55 'Geist Mono', monospace; white-space: pre-wrap; }
+  .ok { color: #86EFAC; font-weight: 600; } .no { color: #FCA5A5; font-weight: 600; } .m { color: #8A84A3; } .q { color: #C4B5FD; }
+  .ask { border: 1px solid #3A3450; border-radius: 14px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; font: 500 14px Geist; }
+  .ask svg { width: 18px; height: 18px; color: var(--lime); }
+  .ask .btn { margin-left: auto; background: var(--lime); color: var(--ink); font: 700 13px Geist; padding: 6px 13px; border-radius: 999px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .chip { font: 500 13px Geist; padding: 5px 11px; border-radius: 999px; background: #2A1F2B; color: #FCA5A5; }
+  .shot { border-radius: 24px; overflow: hidden; border: 1px solid #E4DFF5; background: #fff; position: relative; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; display: block; }
+  .shot .tag { position: absolute; left: 14px; bottom: 14px; font: 600 14px Geist; background: var(--ink); color: #fff; padding: 8px 14px; border-radius: 999px; }
   .shot .tag b { color: var(--lime); font-weight: 600; }
-  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-  .stat { background: #fff; border-radius: 22px; padding: 18px 20px; }
-  .stat .n { font: 800 46px/1 'Bricolage Grotesque'; color: var(--mama); }
-  .stat .l { font: 500 16px Geist; color: var(--muted); margin-top: 6px; }
-  .foot { display: flex; align-items: center; gap: 28px; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .stat { background: #fff; border-radius: 20px; padding: 16px 18px; }
+  .stat .n { font: 800 42px/1 'Bricolage Grotesque'; color: var(--mama); }
+  .stat .l { font: 500 15px Geist; color: var(--muted); margin-top: 6px; }
+  .foot { display: flex; align-items: center; gap: 26px; }
   .foot .line { flex: 1; }
-  .foot .big { font: 700 30px/1.15 'Bricolage Grotesque'; }
-  .foot .url { font: 500 20px 'Geist Mono'; color: var(--mama); margin-top: 8px; }
-  .foot .by { font: 500 18px Geist; color: var(--muted); margin-top: 6px; }
-  #qr { width: 132px; height: 132px; background: #fff; border-radius: 18px; padding: 10px; }
-  #qr img, #qr svg { width: 100%; height: 100%; display: block; }
+  .foot .big { font: 700 28px/1.15 'Bricolage Grotesque'; }
+  .foot .url { font: 500 19px 'Geist Mono'; color: var(--mama); margin-top: 8px; }
+  .foot .by { font: 500 17px Geist; color: var(--muted); margin-top: 5px; }
+  #qr { width: 124px; height: 124px; background: #fff; border-radius: 18px; padding: 10px; }
+  #qr svg { width: 100%; height: 100%; }
 </style></head>
 <body>
   <div class="top">
@@ -62,48 +75,73 @@
   <h1>Your sales team's<br>morning, <span class="hl">done</span><br>before coffee.</h1>
 
   <p class="sub">An agentic sales assistant for small B2B teams in <b>Singapore, Malaysia and India</b>.
-    It watches the market overnight, researches and scores every lead, and writes the first email.
-    <b>People press send.</b></p>
+    It finds the signal, researches the lead and writes the email or WhatsApp. <b>Nothing goes out until you approve.</b></p>
 
   <div class="vs">
     <div class="pain">
       <h3>The sales problem</h3>
-      <ul>
-        <li>Leads go cold in the CRM</li>
-        <li>Research eats the selling hours</li>
-        <li>Follow-ups slip through the cracks</li>
-        <li>Leads handed out by gut feel</li>
-        <li>Generic emails nobody answers</li>
-      </ul>
+      <ul><li>Leads go cold in the CRM</li><li>Research eats the selling hours</li><li>Follow-ups slip</li><li>Leads handed out by gut feel</li><li>Generic messages nobody answers</li></ul>
     </div>
     <div class="fix">
       <h3>What Sales Mama does</h3>
-      <ul>
-        <li>Scans news, tenders and registries nightly</li>
-        <li>Researches with cited sources only</li>
-        <li>A virtual account manager per book</li>
-        <li>Explainable scores, fair allocation</li>
-        <li>Drafts from a real signal, in your voice</li>
-      </ul>
+      <ul><li>Scans news, tenders, registries nightly</li><li>Researches with cited sources only</li><li>A virtual account manager per book</li><li>Explainable scores, fair allocation</li><li>Email + WhatsApp, sent after you approve</li></ul>
     </div>
   </div>
 
   <div class="flow">
-    <div class="step s1"><span class="who">Scout</span><span class="what">Spot the signal</span></div><span class="arrow">→</span>
-    <div class="step s2"><span class="who">Researcher</span><span class="what">Cite the facts</span></div><span class="arrow">→</span>
-    <div class="step s3"><span class="who">VAM</span><span class="what">Watch the book</span></div><span class="arrow">→</span>
-    <div class="step s4"><span class="who">Allocator</span><span class="what">Route the lead</span></div><span class="arrow">→</span>
-    <div class="step s5"><span class="who">Writer</span><span class="what">Draft the email</span></div><span class="arrow">→</span>
-    <div class="step s6"><span class="who">You</span><span class="what">Press send</span></div>
+    <div class="step s1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" />
+  <path d="M4 6h.01" />
+  <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35" />
+  <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67" />
+  <path d="M12 18h.01" />
+  <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="m13.41 10.59 5.66-5.66" /></svg><span class="who">Scout</span><span class="what">Spot the signal</span></div><span class="arrow">→</span>
+    <div class="step s2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" />
+  <path d="m21 21-4.3-4.3" /></svg><span class="who">Researcher</span><span class="what">Cite the facts</span></div><span class="arrow">→</span>
+    <div class="step s3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8" />
+  <rect width="16" height="12" x="4" y="8" rx="2" />
+  <path d="M2 14h2" />
+  <path d="M20 14h2" />
+  <path d="M15 13v2" />
+  <path d="M9 13v2" /></svg><span class="who">VAM</span><span class="what">Watch the book</span></div><span class="arrow">→</span>
+    <div class="step s4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
+  <path d="m18 2 4 4-4 4" />
+  <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" />
+  <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" />
+  <path d="m18 14 4 4-4 4" /></svg><span class="who">Allocator</span><span class="what">Route the lead</span></div><span class="arrow">→</span>
+    <div class="step s5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" />
+  <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" /></svg><span class="who">Writer</span><span class="what">Draft the message</span></div><span class="arrow">→</span>
+    <div class="step s6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+  <path d="m21.854 2.147-10.94 10.939" /></svg><span class="who">You</span><span class="what">Approve &amp; send</span></div>
   </div>
 
-  <div class="shot"><img src="../screens/manager-wide.jpg" alt=""><span class="tag">Manager cockpit · <b>/mama-manager</b></span></div>
+  <div class="feature">
+    <div class="term">
+      <div class="t"><b>Send review</b><span>/mama-send</span></div>
+<pre><span class="m">Preview · sending on · quota left 15</span>
+[1] <span class="ok">READY</span> · whatsapp · harbourlight-foods
+    <span class="q">| Hi Rachel, congratulations on the new
+    | Tampines kitchen. … Reply STOP to opt out.</span>
+[2] <span class="ok">READY</span> · email · harbourlight-foods
+    <span class="q">Subject: Your Tampines kitchen</span></pre>
+      <div class="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.1 12 6" />
+  <path d="m5.1 8-2.9-.8" />
+  <path d="m6 12-1.9 2" />
+  <path d="M7.2 2.2 8 5.1" />
+  <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z" /></svg><span>Allow <b style="color:var(--lime);font-weight:500">send.py --send … 1,2</b>?</span><span class="btn">Approve</span></div>
+<pre>[1] <span class="ok">sent</span> · wa:wamid…
+[2] <span class="no">refused</span> · first touch already sent</pre>
+      <div class="chips"><span class="chip">outside window</span><span class="chip">holiday</span><span class="chip">suppressed</span><span class="chip">no WhatsApp opt-in</span><span class="chip">changed after preview</span><span class="chip">over quota</span><span class="chip">nightly runner</span></div>
+    </div>
+    <div class="shot"><img src="../screens/mobile-manager.jpg" alt=""><span class="tag">Manager approves leads · <b>/mama-manager</b></span></div>
+  </div>
 
   <div class="stats">
-    <div class="stat"><div class="n">17</div><div class="l">skills</div></div>
-    <div class="stat"><div class="n">3</div><div class="l">subagent types</div></div>
+    <div class="stat"><div class="n">18</div><div class="l">skills</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">channels</div></div>
     <div class="stat"><div class="n">17</div><div class="l">hard rules</div></div>
-    <div class="stat"><div class="n">135</div><div class="l">self-tests passing</div></div>
+    <div class="stat"><div class="n">156</div><div class="l">self-tests passing</div></div>
     <div class="stat"><div class="n">0</div><div class="l">servers, databases</div></div>
   </div>
 

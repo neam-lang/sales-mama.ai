@@ -1,10 +1,18 @@
 # Codex project config. It loads only after the user trusts this project.
 #
-# Phase 4 — email, drafts only (check exact keys in your Codex config reference):
-# [mcp_servers.email]
-# url = "<connector URL>"
-# enabled_tools = ["create_draft", "search_threads", "get_thread"]   # never a send tool
-#
+# Email, drafts only (Phase 4). Allow-list: create/read/update drafts and read mail.
+# Never add a send tool. send_message, reply and forward all send mail immediately,
+# so they are also listed in disabled_tools as a second fence.
+# Set `url` to your Gmail MCP endpoint and flip `enabled` to true per user.
+[mcp_servers.gmail]
+url = "https://REPLACE-WITH-YOUR-GMAIL-MCP-URL/mcp"
+enabled = false
+enabled_tools = [
+  "create_draft", "update_draft", "get_draft", "list_drafts",
+  "search_threads", "get_thread", "get_message", "list_labels",
+]
+disabled_tools = ["send_message", "reply", "forward"]
+
 # Phase 2/5 — subagents are experimental; enable in ~/.codex/config.toml:
 # [features]
 # multi_agent = true

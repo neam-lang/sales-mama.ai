@@ -10,7 +10,7 @@ description: Log a meeting outcome and produce handover notes and a CRM update r
 
 ## Before you start
 - Who: the account's `owner`, or the manager.
-- Scripts: `find.py` (Phase 0). Optional: `score.py` (Phase 3) to re-score. The skill itself arrives in Phase 7.
+- Scripts: `find.py` (Phase 0); `crm_update.py` (Phase 7). Optional: `score.py` (Phase 3) to re-score.
 - If a required script is missing, say which phase adds it and stop.
 - Re-read `wiki/accounts/<id>.md` and its frontmatter now (rule 17). If `owner` is not me (and I'm not the manager), stop (rules 6, 16).
 - Read `knowledge/crm_mapping.yaml` (`import:` columns).
@@ -27,8 +27,10 @@ description: Log a meeting outcome and produce handover notes and a CRM update r
    - `nurture` (not now; set `next_action` and `next_action_due`),
    - `closed_lost` (no fit; record the reason in the handover block).
    Set `next_action`, `next_action_due`, `last_touch:` and `updated:`.
-4. Append to `log/touches.csv`: `ts`, `rep`, `account`, `contact` (main attendee), `channel` = meeting, `step` = meeting, `pattern` empty, `products` (discussed, `;`-joined), `status` = meeting_held, `reply_class` empty, `ref` = the notes path.
-5. Append a row to `log/crm-updates/<YYYY-MM-DD>.csv`, with exactly the `crm_mapping.yaml` `import:` columns as the header (write the header if the file is new). Default columns: `Account Name` (page `name`), `Stage` (new stage), `Next Step` (next action and date), `Owner Email` (`reps/<owner>.md` email), `Notes` (one-line summary, no personal data). Quote fields with commas.
+4. Write the touch and the CRM row in one call, after step 3 has saved the page:
+   `python3 scripts/crm_update.py --id <id> --notes "<one-line summary, no personal data>" --contact <main attendee id> --products <a;b> --ref raw/notes/<file>.md`
+   It re-reads the page and refuses another rep's account or unknown products. It appends `meeting / meeting_held` to `log/touches.csv`, and a row to `log/crm-updates/<YYYY-MM-DD>.csv` with exactly the `crm_mapping.yaml` `import:` columns (Account Name ← `name`, Stage, Next Step ← `next_action` by `next_action_due`, Owner Email, Notes). It quotes fields correctly. Show the `csv_line` it prints.
+5. If it says `Refused`, fix the cause (ownership, product id, notes path) or stop and tell the rep. Never write either CSV by hand.
 6. Objections raised in the meeting: add them to `## Open objections` and link or create a `status: draft` objection page (never approve it).
 7. Optional: `python3 scripts/score.py --id <id>`.
 

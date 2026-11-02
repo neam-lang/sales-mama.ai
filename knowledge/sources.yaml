@@ -1,4 +1,105 @@
-# Signal sources — filled in Phase 2. Every source: market, type, access, trust, tos_checked.
-# Examples per market are in PLAN.md §6. Store headline + URL + own-words summary only (AGENTS.md rule 9).
+# Signal sources — approved by the manager 2026-11-01 (Phase 2). Every source: market, type, access, trust,
+# tos_checked. mama-scan skips a source without tos_checked. Store headline + URL + own-words summary only
+# (AGENTS.md rule 9). Access: search (scout web search) | rss | dataset | page (fetch_dataset.py) | internal.
+# Optional per source: lookback_days, lookahead_days (events), max_items_per_run, signal (default signal).
 defaults: {max_items_per_run: 30, lookback_days: 2}
-sources: []
+sources:
+  - id: sg-acra-new-cos
+    market: SG
+    type: registry
+    access: dataset
+    terms: "Singapore Open Data Licence (data.gov.sg)"
+    adapter: datagov
+    collection: 2                       # ACRA Information on Corporate Entities (27 datasets, A–Z + others)
+    sort: uen_issue_date desc
+    date_field: registration_incorporation_date
+    date_format: "%Y-%m-%d"
+    filters: {entity_type_description: Local Company, entity_status_description: Live Company}
+    exclude: {company_type_description: [Public Company Limited by Guarantee]}   # charities, associations
+    ssic_from_icp: true                 # keep only primary SSIC prefixes in icp.md (SG) ssic_prefixes
+    fields: {company_text: entity_name, reg_id: uen, date: registration_incorporation_date,
+             ssic: primary_ssic_code, entity_type: company_type_description}
+    signal: new_company
+    lookback_days: 45                   # ACRA data refreshes about monthly (last: 2026-10-14)
+    trust: 1.0
+    tos_checked: 2026-11-01
+  - id: sg-gebiz-awards
+    market: SG
+    type: gov_procurement
+    access: dataset
+    terms: "Singapore Open Data Licence (data.gov.sg)"
+    adapter: datagov
+    datasets: [d_acde1106003906a75c3fa052592f2fcb]   # Government Procurement via GeBIZ (MOF)
+    full_scan: true                     # award_date is text (d/m/Y), so rows can't be sorted by date
+    date_field: award_date
+    date_format: "%d/%m/%Y"
+    filters: {tender_detail_status: Awarded to Suppliers}
+    fields: {company_text: supplier_name, date: award_date, tender: tender_description, agency: agency,
+             amount: awarded_amt}
+    signal: contract_win
+    lookback_days: 7                    # NOTE: dataset coverage ends 2026-03-31 until MOF refreshes it
+    trust: 1.0
+    tos_checked: 2026-11-01
+  - id: sg-news-sme
+    market: SG
+    type: news
+    access: search
+    terms: "Headlines + link + own-words summary only; skip paywalled articles"
+    query: >-
+      Singapore SME OR "Singapore company" ("new outlet" OR "opens" OR "new store" OR "retail shop" OR
+      "flagship store" OR "new branch" OR "relocates" OR "new office" OR "raises" OR "funding")
+      (restaurant OR cafe OR F&B OR retail OR shop OR logistics OR clinic OR tuition OR "law firm" OR accounting)
+    prefer: [businesstimes.com.sg, straitstimes.com, vulcanpost.com, e27.co, theedgesingapore.com,
+             mothership.sg, todayonline.com, sbr.com.sg]
+    signals: [new_branch_opened, office_move, funding_round, hiring_ops_it, layoffs_or_closure]
+    lookback_days: 7
+    trust: 0.8
+    tos_checked: 2026-11-01
+  - id: sg-grants-news
+    market: SG
+    type: news
+    access: search
+    terms: "Government announcements; headline + link + own-words summary"
+    query: >-
+      Singapore "Productivity Solutions Grant" OR "Enterprise Development Grant" OR PSG OR EDG
+      announcement SME 2026 site:gobusiness.gov.sg OR site:enterprisesg.gov.sg OR site:mti.gov.sg
+    signals: [incentive_window]         # market-wide hook unless a named company is the recipient
+    lookback_days: 7
+    trust: 0.9
+    tos_checked: 2026-11-01
+  - id: sg-events-calendar
+    market: SG
+    type: events
+    access: page
+    terms: "Public event calendars; event name, dates, venue and link only"
+    urls:
+      - https://www.singaporeexpo.com.sg/events-at-expo/
+      - https://www.visitsingapore.com/mice/en/event-listing/
+      - https://www.enterprisesg.gov.sg/-/media/esg/files/financial-assistance/grants/for-partners/local-enterprise-and-association-development-programme/list-of-upcoming-trade-fairs-and-business-missions.pdf
+    keep: trade shows and B2B conferences whose audience is an ICP industry (fnb, retail, logistics,
+      professional_services, clinics, education); skip concerts, consumer fairs, sales and medical congresses
+    lookahead_days: 120
+    trust: 0.9
+    tos_checked: 2026-11-01
+  - id: sg-events-exhibitors
+    market: SG
+    type: events
+    access: page
+    terms: "Exhibitor / sponsor company names only; no speakers or individuals (rule 8); skip lists behind a
+      login, form or paid database (rule 9)"
+    signal: exhibiting_at_event
+    events:                             # manager adds an approved, freely readable exhibitor list URL per event
+      - {name: IntraLogisteX Singapore, year: 2026, dates: [2026-12-02, 2026-12-03],
+         venue: "Singapore EXPO, Hall 3A", url: "https://www.singaporeexpo.com.sg/events-at-expo/intralogistex-singapore/",
+         exhibitors_url: null}          # no public list found 2026-11-01; add one when the organiser publishes it
+    trust: 0.9
+    tos_checked: 2026-11-01
+  - id: sg-crm-contract-ends
+    market: SG
+    type: internal
+    access: internal
+    terms: "Our own CRM export (raw/crm/)"
+    signal: contract_ending
+    window_days: 120
+    trust: 1.0
+    tos_checked: 2026-11-01

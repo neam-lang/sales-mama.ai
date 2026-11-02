@@ -17,17 +17,18 @@ description: 'Propose an allocation of unowned leads across reps using scores, c
 
 ## Steps
 1. Proposal: if today's `log/allocation/<YYYY-MM-DD>.md` exists with no `status`, use it; otherwise run `python3 scripts/allocate.py`. It applies market, territory, capacity, suppression and `do_not_contact` constraints and continuity, assigns by EV greedily, runs fairness swaps, and writes `log/allocation/<date>.md` and `.csv`.
-2. Present it by market:
+2. Present it by market (the `.md` has `## Per rep`, `## Rows`, `## Constraints holding`, `## Not assigned`, `## Rebalancing`):
    - Per rep: leads (A / B count), total EV in the base currency, and the script's reason ("Mei: F&B meeting rate 14% vs team 9%; 6 slots free; same group as Kopi Co").
-   - The numbered rows the manager will refer to, the EV spread vs `max_ev_spread`, and anything left unassigned with why.
+   - The numbered rows the manager will refer to, the EV spread vs `max_ev_spread`, the constraints table (all must say ok; `allocate.py` refuses to write a proposal that breaks one), and anything left unassigned with why.
    - Rebalancing: lapsed claims (21 days without a touch) and overloaded reps, each with a proposed `claim.py --release` or `--reassign`.
 3. Take the manager's decision in plain words:
    - "approve all" → `python3 scripts/allocate.py --approve all`.
-   - "approve except 3 and 7" → `--approve` with the remaining row ids.
-   - An edit ("give the logistics ones to Arun", "nothing for Mei this week") → re-run `allocate.py` with that as a constraint, using the options `python3 scripts/allocate.py --help` lists. If it has none for this, check market, territory and capacity yourself, apply the manager's explicit picks with `python3 scripts/claim.py --assign <rep> <id>...`, then re-run `allocate.py` for the rest. Show the new proposal and wait for approval again.
+   - "approve except 3 and 7" → `python3 scripts/allocate.py --approve all --except 3,7` (or `--approve 1,2,4-6`).
+   - "reject it" → `python3 scripts/allocate.py --reject`.
+   - An edit → re-run `allocate.py` with it as a constraint: "give the logistics ones to Arun" → `--give arun:industry=logistics`; "kopi-co to Mei" → `--give mei:kopi-co`; "nothing for Mei this week" → `--exclude-rep mei`; "leave out acme" → `--skip acme`; "only A and B" → `--tiers A,B`. Hard constraints still apply to `--give`; a pick that breaks one is listed under Not assigned with the reason. Show the new proposal and wait for approval again.
    - Rebalancing → `python3 scripts/claim.py --release <id>` or `--reassign <from> <to>`, only once the manager says yes.
 4. `--approve` calls `claim.py --assign`, which sets `owner`, `allocated_on`, `allocated_by` and pushes. Read its output; report anything rejected (e.g. claimed meanwhile) and re-verify.
-5. If `allocate.py` didn't, set the proposal's frontmatter `status:` to `applied` (or `rejected`), listing partial decisions under `## Decisions`.
+5. `--approve` / `--reject` set the proposal's `status:` (`applied`, `partial` or `rejected`), add `## Decisions`, and write the `assign` log line; don't edit the proposal by hand.
 6. Sync: `python3 scripts/sync.py`.
 
 ## Never

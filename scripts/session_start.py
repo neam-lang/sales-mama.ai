@@ -107,6 +107,11 @@ def _rep_queue(user: dict, root: Path, mc) -> list[str]:
         lines.append(f"  Quota left today: {max(quota_n - used, 0)} / {quota_n}")
     else:
         lines.append(f"  Drafts today: {used} (no daily_quota set)")
+    try:  # sending channels (ADR-0007); never let this break the banner
+        import connect
+        lines.append("  " + connect.status_line(root))
+    except Exception:  # noqa: BLE001
+        pass
     return lines
 
 

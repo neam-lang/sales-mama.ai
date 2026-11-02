@@ -52,7 +52,7 @@ Manager types /mama-manager ─▶ approves allocation, clears the review queue,
 |---|---|
 | Manager | GitHub account with admin on the private repo; Claude desktop app (Code) or Codex app; git; Python 3.10+ |
 | Each rep | GitHub access to the repo; a Claude plan that includes Claude Code, or a ChatGPT plan that includes Codex; their own work mailbox |
-| IT | Approve one email connector (Gmail or Microsoft 365) with **drafts-only** scope (Graph: `Mail.ReadWrite`, not `Mail.Send`) |
+| IT | One Google OAuth client for Sales Mama (Workspace, type *Internal*, scopes `gmail.compose` + `gmail.readonly`) and, for WhatsApp, a verified Meta Business account with the company number and approved templates (SETUP.md · Connect channels) |
 | Runner | One machine that stays on overnight (it can be the manager's laptop) |
 
 `mama-setup` installs Python, PyYAML and git for reps if they're missing.
@@ -102,7 +102,7 @@ Then on GitHub:
 The agent:
 1. Clones the repo and installs anything missing.
 2. Asks for name, markets, territory, quota, targets, tone and signature.
-3. Checks the mailbox connection is drafts-only.
+3. Connects their Gmail (`connect.py gmail`, one click) and, if used, WhatsApp.
 4. Shows a dry run.
 
 **Every day:**
@@ -118,7 +118,7 @@ The agent:
 | Log a meeting | `/mama-handover acme` + paste notes | same |
 | Anything else | Ask in plain English | same |
 
-Drafts land in your own mailbox, and you press send. Sales Mama never sends anything.
+Drafts are prepared for you; `/mama-send` shows the batch, you pick what goes, approve it, and Sales Mama sends and logs it. Nothing goes out without your approval (ADR-0007).
 
 ---
 
@@ -251,7 +251,7 @@ More detail: SETUP.md Part D.
 
 ## 10. Safety, compliance and security
 
-- **Rules:** AGENTS.md hard rules 1–17. They cover drafts only, sources required, untrusted content, scoping and markets.
+- **Rules:** AGENTS.md hard rules 1–17. They cover approve-then-send, sources required, untrusted content, scoping and markets.
 - **Compliance by market:** PLAN.md §15 and `knowledge/guardrails.md`. Confirm with your DPO or legal adviser in each country.
 - **Security:** `docs/SECURITY.md`, mapped to the OWASP Top 10 for LLM Applications.
 - **Decisions:** `docs/adr/`. ADR-0005 (data residency) must be decided before real data is loaded.

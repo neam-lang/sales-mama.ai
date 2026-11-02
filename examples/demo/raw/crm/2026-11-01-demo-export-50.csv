@@ -1,0 +1,53 @@
+Account Name,Country,Registration No,GSTIN,City,Website,Industry,Employees,Products,Contract End,Parent Account,NPTB Score
+Bluefin Bistro Pte Ltd,Singapore,201215175K,,Singapore,www.bluefinbistro.example,Food & Beverage,23,Cloud Phone,2027-10-04,,10
+Copperleaf Retail Pte Ltd,Singapore,201185361E,,Singapore,www.copperleafretail.example,Retail,78,Managed WiFi,31/03/2027,Copperleaf Group,21
+Dovetail Movers Pte Ltd,Singapore,201458512N,,Singapore,www.dovetailmovers.example,Logistics,133,IT Care,2026-11-29,,22
+Evergreen Dental Pte Ltd,Singapore,201046342A,,Singapore,www.evergreendental.example,Healthcare,133,Cloud Phone; IT Care,,,54
+Fernhill Tutors Pte Ltd,Singapore,201365008A,,Singapore,www.fernhilltutors.example,Professional Services,55,,2027-09-29,,18
+Goldcrest Accounting Pte Ltd,Singapore,202032389D,,Singapore,www.goldcrestaccounting.example,Mining,86,Cloud Phone,29/03/2027,,8
+Hilltop Bakehouse Pte Ltd,Singapore,201531322K,,Singapore,www.hilltopbakehouse.example,Food & Beverage,84,Legacy PBX; IT Care,2027-04-06,,36
+Ivory Lane Boutique Pte Ltd,Singapore,202453538N,,Singapore,www.ivorylaneboutique.example,Retail,20,IT Care,,,81
+Jadeport Freight Pte Ltd,Singapore,201158601M,,Singapore,www.jadeportfreight.example,Logistics,48,Cloud Phone; IT Care,2027-04-03,Copperleaf Group,88
+Kestrel Physio Pte Ltd,Singapore,202524169M,,Singapore,www.kestrelphysio.example,Healthcare,191,,05/06/2027,,18
+Lotus Learning Hub Pte Ltd,Singapore,12345A,,Singapore,www.lotuslearninghub.example,Professional Services,149,Cloud Phone,2027-11-24,,67
+Maple & Co Advisory Pte Ltd,Singapore,202576744W,,Singapore,www.maplecoadvisory.example,Education,192,Managed WiFi,,,95
+Northwind Kopitiam Pte Ltd,Singapore,201090479C,,Singapore,www.northwindkopitiam.example,Food & Beverage,183,IT Care,2026-12-29,,73
+Orchid Optical Pte Ltd,Singapore,201477471M,,Singapore,www.orchidoptical.example,Retail,61,Cloud Phone; IT Care,18/06/2027,,64
+Pebble Bay Couriers Pte Ltd,Singapore,201528177N,,Singapore,www.pebblebaycouriers.example,Logistics,17,,2027-01-07,,88
+Quayside Clinic Pte Ltd,Singapore,201951600N,,Singapore,www.quaysideclinic.example,Healthcare,190,Cloud Phone,,,58
+Rivet Studio Interiors Pte Ltd,Singapore,202007711C,,Singapore,www.rivetstudiointeriors.example,Professional Services,54,Managed WiFi,2027-02-20,,43
+Saffron Spoon Pte Ltd,Singapore,202001892R,,Singapore,www.saffronspoon.example,Education,84,IT Care,08/04/2027,,49
+Tidewater Supplies Pte Ltd,Singapore,202556837D,,Singapore,www.tidewatersupplies.example,Food & Beverage,16,Cloud Phone; IT Care,2027-04-29,,92
+Umbra Legal Pte Ltd,Singapore,202125768N,,Singapore,www.umbralegal.example,Retail,147,,,,60
+Vantage Kids Academy Pte Ltd,Singapore,201458039W,,Singapore,www.vantagekidsacademy.example,Logistics,37,Cloud Phone,2027-06-30,,71
+Willow Pharmacy Pte Ltd,Singapore,201120525N,,Singapore,www.willowpharmacy.example,Healthcare,216,Managed WiFi,23/09/2027,,15
+Xenon Print Hub Pte Ltd,Singapore,202591591N,,Singapore,www.xenonprinthub.example,Professional Services,50,IT Care,2027-09-06,,13
+Yellowtail Seafood Pte Ltd,Singapore,201935663H,,Singapore,www.yellowtailseafood.example,Education,39,Cloud Phone; IT Care,,,65
+Zest Juice Bar Pte Ltd,Singapore,201577307D,,Singapore,www.zestjuicebar.example,Food & Beverage,164,,2026-10-15,,56
+Amberline Logistics Pte Ltd,Singapore,202021642A,,Singapore,www.amberlinelogistics.example,Retail,157,Cloud Phone,03/07/2027,,76
+Beacon Hardware Pte Ltd,Singapore,202479355M,,Singapore,www.beaconhardware.example,Logistics,186,Managed WiFi,2027-02-24,,59
+Cinder Coffee Roasters Pte Ltd,Singapore,202460296M,,Singapore,www.cindercoffeeroasters.example,Healthcare,139,IT Care,,,24
+Driftwood Wellness Pte Ltd,Singapore,201408875W,,Singapore,www.driftwoodwellness.example,Professional Services,17,Cloud Phone; IT Care,2026-10-28,,53
+Bukit Indah Mart Sdn Bhd,Malaysia,201601965609,,Kuala Lumpur,bukitindahmart.example,Retail,17,IT Care,02/05/2027,,9
+Cahaya Clinic Sdn Bhd,Malaysia,201001552435,,Petaling Jaya,cahayaclinic.example,Logistics,184,Cloud Phone; IT Care,2027-11-29,,64
+Delima Transport Sdn Bhd,Malaysia,201201154279,,Penang,delimatransport.example,Healthcare,174,,,,65
+Embun Cafe Sdn Bhd,Malaysia,202101659475,,Johor Bahru,embuncafe.example,Professional Services,174,Cloud Phone,2027-07-14,,88
+Firdaus Tuition Sdn Bhd,Malaysia,201801128756,,Ipoh,firdaustuition.example,Education,146,Managed WiFi,10/12/2026,,53
+Gemilang Audit Sdn Bhd,Malaysia,201701079401,,Kuala Lumpur,gemilangaudit.example,Food & Beverage,66,IT Care,2027-03-22,,81
+Harapan Hardware Sdn Bhd,Malaysia,202501668051,,Petaling Jaya,harapanhardware.example,Retail,10,Cloud Phone; IT Care,,,28
+Intan Florist Sdn Bhd,Malaysia,201601038486,,Penang,intanflorist.example,Logistics,45,,2027-10-28,,11
+Jati Courier Sdn Bhd,Malaysia,202501902588,,Johor Bahru,jaticourier.example,Healthcare,106,Cloud Phone,17/04/2027,,27
+Kenanga Dental Sdn Bhd,Malaysia,201101496573,,Ipoh,kenangadental.example,Professional Services,79,Managed WiFi,2027-05-03,,57
+Arka Diagnostics Private Limited,India,U13014KA2016PTC844617,29ABCHG1591F1Z3,Bengaluru,arkadiagnostics.example,Logistics,53,Cloud Phone; IT Care,2027-10-17,,51
+Bodhi Learning Private Limited,India,U85073TN2021PTC680984,,Chennai,bodhilearning.example,Healthcare,238,,,,72
+Chakra Freight Private Limited,India,U88462MH2013PTC911677,27ABKKC1933F1Z3,Mumbai,chakrafreight.example,Professional Services,139,Cloud Phone,2027-11-26,,13
+Deccan Delights Private Limited,India,U94286MH2016PTC156574,,Pune,deccandelights.example,Education,133,Managed WiFi,08/06/2027,,87
+Ekam Retail Private Limited,India,U67385KA2024PTC405001,29ABGGJ7318F1Z8,Bengaluru,ekamretail.example,Food & Beverage,116,IT Care,2027-11-12,,69
+Falak Consulting Private Limited,India,U65044TN2014PTC842426,,Chennai,falakconsulting.example,Retail,224,Cloud Phone; IT Care,,,89
+Ganga Pharma Stores Private Limited,India,U12173MH2015PTC980586,27ABHHK7668F1Z6,Mumbai,gangapharmastores.example,Logistics,90,,2026-11-15,,26
+Hamsa Couriers Private Limited,India,U17689MH2020PTC765570,,Pune,hamsacouriers.example,Healthcare,238,Cloud Phone,23/09/2027,,85
+Nimbus Clinics Pte. Ltd.,SG,53312345A,,Singapore,nimbusclinics.example,Healthcare,42,Cloud Phone,31/12/2026,,64
+Harbourlight Foods,Singapore,,,Singapore,https://harbourlightfoods.example/,Food & Beverage,90,,2027-02-15,,71
+Seri Kasih Catering Sdn. Bhd.,Malaysia,,,Shah Alam,,Food & Beverage,60,Managed WiFi,,,40
+Bluefin Bistro Pte. Limited,Singapore,201215175K,,Singapore,www.bluefinbistro.example,Food & Beverage,999,Cloud Phone,2027-10-04,,10
+Siam Spice Co Ltd,Thailand,,,Bangkok,siamspice.example,Food & Beverage,30,,,,

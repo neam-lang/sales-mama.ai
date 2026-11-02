@@ -1,0 +1,9 @@
+{
+  "name": "sales-mama",
+  "private": true,
+  "description": "Root scripts only. The optional console lives in console/ (Phase 9).",
+  "scripts": {
+    "console": "node console/bin/start.mjs",
+    "console:test": "npm --prefix console test"
+  }
+}

@@ -19,10 +19,9 @@ description: 'Work the rep''s allocated queue and, if allowed, self-claim tier C
 1. Allocated queue: `python3 scripts/find.py --owner me --stage new --json`. Sort by tier (A, B, C), then score (high first). For each: `[[accounts/<id>]]`, name, market, tier, score, `allocated_on`, top `nba` if set.
 2. Capacity: active accounts = `python3 scripts/find.py --owner me --json` minus closed stages (handed_over, nurture, closed_lost, do_not_contact). Free slots = `max_active` minus active.
 3. If free slots > 0 and `allocation.yaml` has `self_claim: tier_c_only`:
-   - `python3 scripts/find.py --owner none --tier C --json`, then keep only accounts whose `market` is in my `markets` and that fit my territory (industries, regions, employee range). Drop anything with `stage: do_not_contact` or a suppressed domain in `wiki/suppression.csv`.
-   - Show the top 5 by score, with the reason each fits.
+   - `python3 scripts/claim.py --suggest 5`: my top 5 unowned tier C accounts by score that pass the same hard checks as a claim (live market I cover, territory, suppression, `do_not_contact`, capacity), each with why it fits. Show them as given.
    - Claim only on request: `python3 scripts/claim.py <id> [<id>...]`. Never claim tier A or B; those go through the manager's allocation.
-4. Read `claim.py` output. If an account was lost to another claim or is no longer tier C, report it plainly ("acme-trading was claimed by arun at 08:52").
+4. Read `claim.py` output (exit 2 = something refused). It pulls, re-checks and pushes, retrying if a teammate pushed first, so a lost race shows as `Refused: <id> — already owned by <rep>`; report it plainly ("acme-trading was claimed by arun"). `claim.py` also writes the `claim` log line.
 5. Hand-off: offer to research and draft the new accounts (mama-research → mama-recommend → mama-draft), within quota.
 
 ## Never
@@ -33,7 +32,7 @@ description: 'Work the rep''s allocated queue and, if allowed, self-claim tier C
 
 ## Finish
 - Summary, 1–3 lines: "6 new allocated accounts (A 1, B 2, C 3). 4 free slots; claimed 2 tier C: lumen-clinic, sunrise-logistics. Next: research the tier A one?"
-- Log (only if something was claimed; `claim.py` may log it too, so don't duplicate): `- [YYYY-MM-DD HH:MM] claim | <rep> | accounts/lumen-clinic | self-claimed tier C`
+- Log: `claim.py` already wrote it; don't add a second line. Format, for reference: `- [YYYY-MM-DD HH:MM] claim | <rep> | accounts/lumen-clinic | self-claimed tier C`
 - Only when the session contains `MAMA_CARDS=on`: one `account` card per newly allocated tier A account, or an `error` card if claiming failed.
 ```mama-card
 {"type":"account","title":"Sunrise Logistics","agent":"mama","id":"sunrise-logistics","name":"Sunrise Logistics","market":"SG","tier":"A","score":0.74,"stage":"new","owner":"mei","refs":["wiki/accounts/sunrise-logistics.md"],"actions":[{"label":"Research it","prompt":"/mama-research sunrise-logistics","style":"primary"}]}

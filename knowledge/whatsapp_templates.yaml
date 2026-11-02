@@ -1,0 +1,29 @@
+# WhatsApp templates — manager-owned (ADR-0007). Each entry must already be APPROVED in
+# WhatsApp Manager (Meta). First contact, and any message outside 24 h after the contact's last
+# WhatsApp reply, must use one of these. `text` is the approved body with {{1}}, {{2}}… placeholders;
+# mama-draft fills them only with facts from the account page or knowledge/ (rule 5).
+# Every template needs an opt-out line. `signals`: a template that states a fact (a move, a new branch)
+# may only go to an account whose page has one of these signals; leave it empty for neutral text.
+# `python3 scripts/connect.py whatsapp` shows which are approved.
+templates:
+  first-office-move-wa:
+    name: first_office_move        # the template name in WhatsApp Manager
+    lang: en
+    markets: [SG, MY, IN]
+    steps: [first]
+    signals: [office_move]
+    text: "Hi {{1}}, I saw {{2}} is moving to a new office. We set up business lines and WiFi so the move needs no IT project. Would a 15-minute call next week help? Reply STOP to opt out."
+  first-new-branch-wa:
+    name: first_new_branch
+    lang: en
+    markets: [SG, MY, IN]
+    steps: [first]
+    signals: [new_branch_opened]
+    text: "Hi {{1}}, congratulations on the new {{2}}. We get lines, WiFi and devices ready on day one, so a new site needs no IT project. Worth a 15-minute call? Reply STOP to opt out."
+  fu1-check-in-wa:
+    name: fu1_check_in
+    lang: en
+    markets: [SG, MY, IN]
+    steps: [fu1]
+    signals: []
+    text: "Hi {{1}}, following up on my note about {{2}}. Is this worth a short call, or should I check back later? Reply STOP to opt out."

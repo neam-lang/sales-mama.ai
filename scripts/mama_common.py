@@ -15,6 +15,7 @@ What is here:
 - run_git(args)          returns (code, stdout, stderr) and never raises
 - load_yaml / read_csv / append_csv
 - iter_pages(type=None)  every wiki/**.md page that has frontmatter
+- load_icp()             the fenced yaml fit/exclude blocks in knowledge/icp.md
 - today()                date.today(), or env MAMA_TODAY=YYYY-MM-DD (tests)
 
 Python 3.10+, PyYAML is the only third-party dependency. Works on macOS,
@@ -53,6 +54,16 @@ CLOSED_STAGES = frozenset({"handed_over", "nurture", "closed_lost", "do_not_cont
 TIERS = ("A", "B", "C")
 GENERATED = ("wiki/index.md", "wiki/books/")  # gitignored, rebuilt each session
 YAML_MISSING = "PyYAML is missing: run `python3 -m pip install --user pyyaml`"
+# Registry-ID formats per reg_type (lint, ingest, resolve).
+REG_PATTERNS = {
+    "uen": (re.compile(r"^[A-Z0-9]{8,9}[A-Z]$"), "9-10 letters/digits ending in a letter"),
+    "ssm": (re.compile(r"^\d{12}$"), "12 digits"),
+    "cin": (re.compile(r"^[A-Z0-9]{21}$"), "21 letters/digits"),
+    "llpin": (re.compile(r"^[A-Z]{3}-\d{4}$"), "AAA-0000"),
+    "gstin": (re.compile(r"^[A-Z0-9]{15}$"), "15 letters/digits"),
+    "udyam": (re.compile(r"^UDYAM-[A-Z]{2}-\d{2}-\d{7}$"), "UDYAM-XX-00-0000000"),
+}
+DEFAULT_ID_TYPES = {"SG": ["uen"], "MY": ["ssm"], "IN": ["cin", "llpin", "gstin", "udyam"]}
 
 
 def require_yaml() -> None:
@@ -117,6 +128,10 @@ def today() -> dt.date:
 
 
 def now_stamp() -> str:
+    """'YYYY-MM-DD HH:MM' now; env MAMA_NOW pins it (used by selftest for send windows)."""
+    pinned = os.environ.get("MAMA_NOW", "").strip()
+    if pinned:
+        return pinned[:16]
     return dt.datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
@@ -660,6 +675,49 @@ TOUCH_FIELDS = ("ts", "rep", "account", "contact", "channel", "step", "pattern",
 
 def load_touches(root: Path | None = None) -> list[dict[str, str]]:
     return read_csv((root or repo_root()) / "log" / "touches.csv")
+
+
+# ----------------------------------------------------------------------------
+# Knowledge
+# ----------------------------------------------------------------------------
+_FENCE_RE = re.compile(r"```ya?ml\s*\n(.*?)```", re.S)
+
+
+def load_icp(root: Path | None = None) -> dict:
+    """The machine-read parts of knowledge/icp.md.
+
+    Returns {"fit": {"SG": {...}, ...}, "exclude": {...}} from the fenced yaml
+    blocks under '## Fit — ... (SG)' and '## Hard exclusions'. Missing -> {}.
+    """
+    root = root or repo_root()
+    path = root / "knowledge" / "icp.md"
+    out: dict = {"fit": {}, "exclude": {}}
+    if not path.is_file() or yaml is None:
+        return out
+    current = None
+    chunks: dict[str, list[str]] = {}
+    for line in read_text(path).splitlines(keepends=True):
+        m = re.match(r"^##\s+(.*?)\s*$", line)
+        if m:
+            head = m.group(1)
+            mk = re.search(r"\((SG|MY|IN)\)", head)
+            current = mk.group(1) if mk else ("exclude" if head.lower().startswith("hard exclusion") else None)
+            continue
+        if current:
+            chunks.setdefault(current, []).append(line)
+    for key, lines in chunks.items():
+        fence = _FENCE_RE.search("".join(lines))
+        if not fence:
+            continue
+        try:
+            data = yaml.safe_load(fence.group(1)) or {}
+        except Exception:  # noqa: BLE001
+            continue
+        if key == "exclude":
+            out["exclude"] = data.get("exclude") or {}
+        elif isinstance(data.get("fit"), dict):
+            out["fit"][key] = data["fit"]
+    return out
 
 
 def _main(argv: list[str] | None = None) -> int:

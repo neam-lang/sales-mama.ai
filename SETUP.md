@@ -490,36 +490,60 @@ updated:
 | `guard.py` | 0 | PreToolUse guard, reading the hook JSON on stdin. **Exit 2** + reason when: a non-manager writes `knowledge/ AGENTS.md CLAUDE.md scripts/ runner/ .agents/ .claude/ .codex/`; anyone edits an existing `raw/` file; a rep edits an account owned by someone else; a rep edits another rep's file or sets `role: manager`. Allowed: everything while `reps/` is empty (bootstrap); a new user creating their own `reps/<id>.md` with `role: rep`. Otherwise exit 0 |
 | `lint.py` | 0 | Schema vs templates; ontology terms; product ids; known owners; broken links; orphan contacts; idle claims > 21 days; overdue actions; unsourced Signals bullets; raw files past retention; suppression hits with open drafts; skills mirror; registry-ID formats per market (UEN, SSM 12-digit, CIN 21-char, GSTIN 15-char); `market` set on every account. Later phases add: VAM out-of-bounds edits (diff vs last commit), allocation constraint violations, `signals.csv` rows without snapshots. `--json` for weekly. Exit 1 on errors |
 | `sync_skills.py` | 0 | Copy `.agents/skills/` → `.claude/skills/` (no symlinks); `--check` exits 1 on drift |
+| `ingest.py` | 1 | `ingest.py crm raw/crm/<file> [--dry-run] [--force] [--json]` (manager only): map with `crm_mapping.yaml`, dedupe within the market (registry ID → domain → name + city), update CRM-owned fields only (never owner/stage/next_action), create `stage: new` pages citing the export, log `unmapped` and `ingest`; lists contract ends ≤ 120 days as `contract_ending` candidates for `resolve.py`, never writes `log/signals.csv` |
 | `eval.py` | 1 | Runs the PLAN.md §16 checks over `evals/`, the wiki and logs; prints pass/fail |
 | `fetch_dataset.py` | 2 | Download a dataset or RSS/page source listed in `sources.yaml` (urllib) into `raw/signals/<date>/<source>/` as CSV/JSON extracts filtered to the lookback window |
 | `resolve.py` | 2 | Entity resolution within a market: registry ID (UEN / SSM / CIN, LLPIN / GSTIN, Udyam) → domain → normalised name + city (difflib similarity) → confidence. Writes `log/signals.csv` rows and `log/review.csv` entries; `--decide <row> <account\|new\|reject>` for manager decisions |
 | `score.py` | 3 | Per PLAN.md §8 from `scoring.yaml`, ontology, touches and the account market's ICP section; writes `score`, `tier`, `score_parts`, `score_updated`; prints hot accounts (jump ≥ threshold) as JSON |
 | `recommend.py` | 3 | Signal → pain → product walk with fits / requires / skip_if_owned / decay; JSON candidates with chain and exclusions |
 | `build_books.py` | 5 | `wiki/books/<rep>.md` and `wiki/books/team.md` per PLAN.md §11 |
-| `claim.py` | 6 | `claim.py <id>...` (rep self-claim, tier C only if allowed), `--assign <rep> <id>...` (manager), `--release <id>`, `--reassign <from> <to>`. Pull → verify → set owner fields → commit → push → re-verify on rejection |
-| `allocate.py` | 6 | Per PLAN.md §10: market and territory constraints, values in base currency via `markets.yaml` FX → EV greedy → fairness swaps → reasons; writes `log/allocation/<date>.md` and `.csv`; `--approve all\|<ids>` calls `claim.py --assign` |
+| `claim.py` | 6 | `claim.py <id>...` (rep self-claim, tier C only if allowed), `--assign <rep> <id>...` (manager), `--release <id>`, `--reassign <from> <to>`, `--suggest [N]`. Pull → verify → set owner fields → commit → push → re-verify on rejection |
+| `allocate.py` | 6 | Per PLAN.md §10: market and territory constraints, values in base currency via `markets.yaml` FX → EV greedy → fairness swaps → reasons; writes `log/allocation/<date>.md` and `.csv`; `--approve all\|<ids>` (`--except`, `--reject`) assigns through `claim.py`; edits via `--give`, `--exclude-rep`, `--skip`, `--tiers` |
 
 ### Runner files (`runner/`, Phase 7)
 
 `runner/nightly.sh` (macOS / Linux)
 ```bash
 #!/usr/bin/env bash
+# Sales Mama nightly run (macOS / Linux). Scheduled by `mama-setup --runner`.
+# Runs under the manager's own Claude Code sign-in on the runner machine.
+# Usage: runner/nightly.sh ["/mama-nightly dry-run"]   (default prompt: /mama-nightly)
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
+# cron and launchd start with a bare PATH; add the usual install locations.
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+# The runner never sends (ADR-0007): send.py refuses under MAMA_RUNNER, and the CLI may not call it.
+export MAMA_RUNNER=1
 mkdir -p runner/logs
 TS=$(date +%Y%m%d-%H%M)
-claude -p "/mama-nightly" \
+PROMPT="${1:-/mama-nightly}"
+SUFFIX=""; [[ "$PROMPT" == *dry-run* ]] && SUFFIX="-dry-run"
+if ! mkdir runner/logs/.lock 2>/dev/null; then
+  echo "$TS skipped: another run holds runner/logs/.lock" >> runner/logs/runs.log
+  exit 1
+fi
+trap 'rmdir runner/logs/.lock' EXIT
+
+claude -p "$PROMPT" \
   --permission-mode acceptEdits \
   --permission-prompts none \
-  --allowedTools "Bash(python3 scripts/*),Bash(git pull *),Bash(git add *),Bash(git commit *),Bash(git push),Bash(git status *),WebSearch,WebFetch,Read,Edit,Write,Agent" \
-  --output-format json > "runner/logs/$TS.json" 2>&1
-# Codex alternative (enable network/web search for the sandbox in your Codex config first):
+  --allowedTools "Bash(python3 scripts/*),Bash(git pull *),Bash(git add *),Bash(git commit *),Bash(git push),Bash(git status *),WebSearch,WebFetch,Read,Edit,Write,Agent,Skill" \
+  --disallowedTools "Bash(python3 scripts/send.py *),Bash(python3 scripts/connect.py *)" \
+  --output-format json > "runner/logs/$TS$SUFFIX.json" 2>&1
+CODE=$?
+echo "$TS prompt=\"$PROMPT\" exit=$CODE log=runner/logs/$TS$SUFFIX.json" >> runner/logs/runs.log
+exit $CODE
+
+# Codex alternative (enable network / web search for the sandbox in your Codex config first):
 # codex exec --sandbox workspace-write "Run the mama-nightly skill" > "runner/logs/$TS.log" 2>&1
 ```
-`runner/nightly.ps1`: the same for Windows (`python3` → whatever resolves).
+`runner/nightly.ps1`: the same for Windows (`python3` → whatever resolves), taking the prompt as `-Prompt`.
+
+Both take an optional prompt (`runner/nightly.sh "/mama-nightly dry-run"`), refuse to start while another run holds `runner/logs/.lock`, and append `<ts> prompt=… exit=<code>` to `runner/logs/runs.log`. Both set `MAMA_RUNNER=1` and disallow `send.py` and `connect.py`: the runner never sends (ADR-0007).
 
 **Schedule** (agent sets it up in Part B2):
-- macOS / Linux: `crontab` → `0 2 * * * /path/to/sales-mama/runner/nightly.sh`
+- macOS: a launchd agent `~/Library/LaunchAgents/ai.salesmama.nightly.plist` (`StartCalendarInterval` Hour 2 Minute 0) runs a missed job when the Mac wakes; or `crontab` as on Linux (skipped if asleep).
+- Linux: `crontab` → `0 2 * * * /path/to/sales-mama/runner/nightly.sh`
 - Windows: `schtasks /create /sc daily /st 02:00 /tn SalesMamaNightly /tr "powershell -File C:\path\to\sales-mama\runner\nightly.ps1"`
 - Codex users on Mac may use Codex app **Automations** instead (daily, prompt "Run the mama-nightly skill", target: local project).
 
@@ -548,6 +572,28 @@ The agent runs `mama-setup --runner`:
 2. Writes `runner/nightly.sh` or `.ps1` for this OS.
 3. Runs it once in **dry-run** mode (`/mama-nightly dry-run` scans and scores without writing account pages) and shows the log.
 4. **Asks** before scheduling at 02:00 local time, then schedules it and confirms the next run time.
+
+---
+
+### Connect channels (ADR-0007)
+
+Sending is approve-then-send: `/mama-send` previews a batch, the rep picks and approves, `send.py` sends. It stays off until the manager sets `enabled: true` in `knowledge/sending.yaml`.
+
+**Gmail, once per team (manager, Google Workspace admin):**
+1. console.cloud.google.com → new project "Sales Mama" → APIs & Services → enable **Gmail API**.
+2. OAuth consent screen → User type **Internal** → app name "Sales Mama" → scopes `gmail.compose` and `gmail.readonly`.
+3. Credentials → Create credentials → OAuth client ID → **Desktop app** → download the JSON.
+4. Share that file with each rep through your password manager (not the repo, not chat).
+
+**Gmail, each rep (one command):** `python3 scripts/connect.py gmail --client-file <path to the .json>`. The browser opens; pick your work mailbox (the one in `reps/<id>.md`) and click Allow. The token goes to `~/.config/sales-mama/gmail.json` (mode 600).
+
+**WhatsApp, once per team (manager):** a verified Meta Business account → WhatsApp Manager → add the company number → create message templates matching `knowledge/whatsapp_templates.yaml` (each with an opt-out line) and wait for approval → create a System User with a permanent token for the WhatsApp Business Account.
+
+**WhatsApp, each sender:** type `! python3 scripts/connect.py whatsapp` in Claude Code (the `!` runs it in your terminal, so the token never reaches the chat). It checks the number and lists which mapped templates are approved.
+
+**Check:** `python3 scripts/connect.py status` → `Sending: off · Gmail ok · WhatsApp ok`. Turn sending on (manager, after DPO sign-off): `enabled: true` in `knowledge/sending.yaml`, via PR.
+
+Contacts may get WhatsApp only with `whatsapp:` (+E.164), `whatsapp_opt_in: true`, `whatsapp_opt_in_date` and `whatsapp_opt_in_source` (a `raw/` file recording the opt-in).
 
 ---
 
@@ -606,6 +652,13 @@ Rules of thumb: drafts land in your mailbox and you press send. Nobody edits `kn
 | Scan too slow or costly | Lower `max_items_per_run`, narrow queries, use a cheaper scout model |
 | VAM wrote outside its bounds | Lint flags it; the agent reverts that hunk and adds a regression case to `evals/` |
 | Email connector not authorised | Re-run the connector sign-in for the user's own mailbox |
+| `connect.py status`: Gmail not connected | `python3 scripts/connect.py gmail` (first time: `--client-file <path>` from the manager) |
+| "Gmail sign-in expired" | Run `python3 scripts/connect.py gmail` again; if Google gives no refresh token, remove Sales Mama at myaccount.google.com/permissions first |
+| `send.py`: "sending is switched off" | Expected until the manager sets `enabled: true` in `knowledge/sending.yaml` |
+| `send.py`: window_now blocks | Expected outside the market's send window or on a holiday; send in the next window |
+| `send.py`: "changed since the preview" | The draft was edited after preview: run `/mama-send` again and re-approve |
+| `send.py`: mailbox mismatch | Connect the mailbox in `reps/<id>.md`, or ask the manager to update the profile email |
+| WhatsApp: consent or template fails | Record the opt-in (`whatsapp_opt_in_date`, `whatsapp_opt_in_source`), or use an approved template outside the 24 h reply window |
 | Draft blocked for send window or channel | Expected: the market's rules apply; the agent tells the rep the next allowed window or channel |
 | Wrong market or currency on an account | Manager fixes `market` (or the CRM mapping), then the agent re-scores and re-recommends |
 

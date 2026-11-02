@@ -6,7 +6,7 @@ description: 'The unattended nightly job for the runner: scan, score, VAMs, allo
 
 ## When to use
 - The runner's scheduled job (`runner/nightly.sh` or `.ps1` at 02:00), or the manager says "run tonight's job now" / `/mama-nightly`.
-- `/mama-nightly dry-run` (used by `mama-setup --runner`): scan, snapshot, resolve and score in memory, but write no account or event pages.
+- `/mama-nightly dry-run` (used by `mama-setup --runner`): scan, snapshot, resolve and score in memory, but write no account or event pages. It writes only `raw/signals/` snapshots, `log/signals.csv` rows, the brief `log/briefs/<date>-manager-dry-run.md` and the log line.
 
 ## Before you start
 - Who: the runner, under the manager's identity (`git config user.email` → `role: manager`). If the identity isn't the manager, record a hard error and stop.

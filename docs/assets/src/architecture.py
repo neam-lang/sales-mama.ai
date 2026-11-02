@@ -48,14 +48,14 @@ NODES = [
     (2, 3, "search", "Research", "cited facts", "res"),
     (2, 2, "lightbulb", "Recommend", "product fit", "res"),
     (2, 1, "pen-line", "Draft", "in your tone", "wri"),
-    (2, 0, "mail-check", "Mailbox", "draft, not sent", "wri"),
-    (3, 0, "send", "Press send", "by a person", "you"),
+    (2, 0, "mail-check", "Review", "ready to send", "wri"),
+    (3, 0, "send", "Approve", "then it sends", "you"),
     (3, 1, "inbox", "Replies", "triage replies", "mama"),
     (3, 2, "handshake", "Handover", "notes · CRM", "alo"),
     (3, 3, "trending-up", "Weekly", "calibrate · PR", "mama"),
 ]
 LANE_LABELS = [("moon", "02:00 · Overnight, on the runner"), ("user-check", "08:30 · Manager"),
-               ("sun", "08:45 · Each rep"), ("send", "09:00–11:30 · Send window")]
+               ("sun", "08:45 · Each rep"), ("send", "09:00–11:30 · Send window · /mama-send")]
 CYCLE = 15  # seconds for the spotlight to walk the whole loop
 
 
@@ -84,7 +84,7 @@ def build(name, t):
     a('<title id="t">How Sales Mama works</title>')
     a('<desc id="d">Overnight, scouts find signals, resolve.py links them to accounts, score.py tiers them, VAMs set '
       'next steps and allocate.py proposes a split. At 08:30 the manager approves. At 08:45 each rep runs /mama-day: '
-      'research, recommend, draft, saved in their own mailbox. In the send window a person presses send; replies, '
+      'research, recommend, draft. In the send window the rep reviews and approves the batch and Sales Mama sends it; replies, '
       'handover and the weekly review feed back into tomorrow\'s scores.</desc>')
     a(f'''<style>
   .flow {{ stroke-dasharray: 3 7; animation: flow 2.8s linear infinite; }}
@@ -197,7 +197,7 @@ def build(name, t):
     a(f'<rect x="{px}" y="{gy0}" width="{pw}" height="{LANES[3] + 160 - gy0}" rx="24" fill="{t["lane"]}" stroke="{t["lane_line"]}"/>')
     a(icon("shield-check", px + 22, gy0 + 22, 20, t["tints"]["alo"][1]))
     a(f'<text x="{px + 52}" y="{gy0 + 38}" font-size="15" font-weight="800" fill="{t["ink"]}">Guardrails</text>')
-    rules = ["Drafts only, never sends", "Every fact cites a source", "Manager approves each lead",
+    rules = ["Sends only what reps approve", "Every fact cites a source", "Manager approves each lead",
              "Suppression checked first", "Scores computed by scripts", "Web text is data, not orders"]
     for i, r in enumerate(rules):
         ry = gy0 + 70 + i * 30

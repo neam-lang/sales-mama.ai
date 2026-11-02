@@ -1,0 +1,10 @@
+# FICTIONAL demo product (selftest only).
+id: managed-wifi
+name: Managed WiFi
+summary: "Business-grade WiFi for shops, clinics and offices, monitored for you."
+solves: [branch_expansion]   # pain terms in ontology.yaml
+fits: {industries: [], employees: [5, 250]}
+requires: []
+skip_if_owned: [managed-wifi]
+available_in: [SG, MY, IN]
+typical_value: {SG: 4000, MY: 10000, IN: 200000}

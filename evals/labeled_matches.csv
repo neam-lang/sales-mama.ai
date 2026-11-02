@@ -1,1 +1,52 @@
-id,market,source,company_text,expected_account
+id,market,source,company_text,expected_account,reg_id,domain,city,note
+1,SG,sg-acra-new-cos,WORLDMASTERCLASS SG PTE. LTD.,new,202645117H,,,"ACRA new co, SSIC 85509 (education)"
+2,SG,sg-acra-new-cos,XUNHUAN PTE. LTD.,new,202645147G,,,"ACRA new co, SSIC 56140 (fnb)"
+3,SG,sg-acra-new-cos,VK TWC MOVERS PTE. LTD.,new,202645264N,,,"ACRA new co, SSIC 49232 (logistics)"
+4,SG,sg-acra-new-cos,SUNQIN GLOBAL PTE. LTD.,reject,202645052K,,,"ACRA new co, SSIC 70201 (professional_services)"
+5,SG,sg-acra-new-cos,SINOREK RESOURCES PTE. LTD.,reject,202645093M,,,"ACRA new co, SSIC 70209 (professional_services)"
+6,SG,sg-acra-new-cos,SOLENNE ADVISORY PTE. LTD.,reject,202645112N,,,"ACRA new co, SSIC 70201 (professional_services)"
+7,SG,sg-acra-new-cos,SARANYA ENGINEERING & LOGISTICS SERVICES PTE. LTD.,new,202645128M,,,"ACRA new co, SSIC 53200 (logistics)"
+8,SG,sg-acra-new-cos,STOKEBROOKE HOLDINGS PTE. LTD.,reject,202645188H,,,"ACRA new co, SSIC 70201 (professional_services)"
+9,SG,sg-acra-new-cos,SANCO LOGISTICS PTE. LTD.,new,202645225N,,,"ACRA new co, SSIC 52101 (logistics)"
+10,SG,sg-acra-new-cos,SARA MASTERS LAW PRACTICE PRIVATE LIMITED,new,202645267G,,,"ACRA new co, SSIC 69101 (professional_services)"
+11,SG,sg-acra-new-cos,HIDDEN GLOBAL PTE. LTD.,reject,202645163H,,,"ACRA new co, SSIC 70201 (professional_services)"
+12,SG,sg-acra-new-cos,HARBORIA PTE. LTD.,reject,202645186G,,,"ACRA new co, SSIC 70201 (professional_services)"
+13,SG,sg-acra-new-cos,9TAILS MEDIA PTE. LTD.,reject,202645080G,,,"ACRA new co, SSIC 70209 (professional_services)"
+14,SG,sg-acra-new-cos,NEXUS COMPUTER GLOBAL PTE. LTD.,new,202645083Z,,,"ACRA new co, SSIC 47412 (retail)"
+15,SG,sg-acra-new-cos,CAFE GYOEN MATCHA BAR PTE. LTD.,new,202645143D,,,"ACRA new co, SSIC 56112 (fnb)"
+16,SG,sg-acra-new-cos,CHEZNOEMIE PTE. LTD.,new,202645212H,,,"ACRA new co, SSIC 47711 (retail)"
+17,SG,sg-acra-new-cos,CASHFLOW LEGACY PTE. LTD.,reject,202645263D,,,"ACRA new co, SSIC 70201 (professional_services)"
+18,SG,sg-acra-new-cos,BEST A PTE. LTD.,reject,202645135M,,,"ACRA new co, SSIC 70201 (professional_services)"
+19,SG,sg-acra-new-cos,BRIGHT FIELD PTE. LTD.,new,202645141C,,,"ACRA new co, SSIC 52101 (logistics)"
+20,SG,sg-acra-new-cos,JUHE NURA SHIPMANAGEMENT PTE. LTD.,reject,202645066G,,,"ACRA new co, SSIC 50021 (logistics)"
+21,SG,sg-acra-new-cos,JC MEGA F&B PTE. LTD.,new,202645139R,,,"ACRA new co, SSIC 56122 (fnb)"
+22,SG,sg-acra-new-cos,JK VERTEX PTE. LTD.,reject,202645166C,,,"ACRA new co, SSIC 70205 (professional_services)"
+23,SG,sg-acra-new-cos,JVM26 LOGISTICS PTE. LTD.,new,202645260K,,,"ACRA new co, SSIC 49232 (logistics)"
+24,SG,sg-acra-new-cos,LUMINA VISION MEDIA PTE. LTD.,new,202645172K,,,"ACRA new co, SSIC 73100 (professional_services)"
+25,SG,sg-acra-new-cos,PLG PACIFIC LOGISTICS GROUP PTE. LTD.,new,202645099W,,,"ACRA new co, SSIC 52232 (logistics)"
+26,SG,sg-acra-new-cos,PALM VALLEY PTE. LTD.,reject,202645200N,,,"ACRA new co, SSIC 70201 (professional_services)"
+27,SG,sg-acra-new-cos,PETROS PTE. LTD.,reject,202645206Z,,,"ACRA new co, SSIC 70201 (professional_services)"
+28,SG,sg-acra-new-cos,PDG GLOBAL PTE. LTD.,new,202645214K,,,"ACRA new co, SSIC 47742 (retail)"
+29,SG,sg-acra-new-cos,ABODE HOLDINGS PTE. LTD.,new,202645048D,,,"ACRA new co, SSIC 47711 (retail)"
+30,SG,sg-acra-new-cos,ASIA PACIFIC INTERNATIONAL COMMERCIAL MEDIATION CENTRE PTE. LTD.,reject,202645071E,,,"ACRA new co, SSIC 70201 (professional_services)"
+31,SG,sg-crm-contract-ends,Dovetail Movers Pte Ltd,dovetail-movers,201458512N,dovetailmovers.example,Singapore,CRM contract end
+32,SG,sg-crm-contract-ends,Northwind Kopitiam Pte Ltd,northwind-kopitiam,201090479C,northwindkopitiam.example,Singapore,CRM contract end
+33,SG,sg-crm-contract-ends,Pebble Bay Couriers Pte Ltd,pebble-bay-couriers,201528177N,pebblebaycouriers.example,Singapore,CRM contract end
+34,SG,sg-crm-contract-ends,Rivet Studio Interiors Pte Ltd,rivet-studio-interiors,202007711C,rivetstudiointeriors.example,Singapore,CRM contract end
+35,SG,sg-crm-contract-ends,Beacon Hardware Pte Ltd,beacon-hardware,202479355M,beaconhardware.example,Singapore,CRM contract end
+36,SG,sg-crm-contract-ends,Nimbus Clinics Pte. Ltd.,nimbus-clinics,53312345A,nimbusclinics.example,Singapore,CRM contract end
+37,SG,sg-crm-contract-ends,Harbourlight Foods,harbourlight-foods,,harbourlightfoods.example,Singapore,CRM contract end
+38,SG,synthetic,SAFFRON SPOON PTE. LTD.,saffron-spoon,202001892R,,,"UEN only, caps"
+39,SG,synthetic,Zest Juice Bar,zest-juice-bar,,https://www.zestjuicebar.example/menu,,domain only
+40,SG,synthetic,Evergreen Dental (S) Pte Ltd,evergreen-dental,,,,(S) suffix
+41,SG,synthetic,Ivory Lane Boutique,ivory-lane-boutique,,,Singapore,name + city
+42,SG,synthetic,Hill Top Bakehouse,hilltop-bakehouse,,,,spacing variant
+43,SG,synthetic,Copperleaf Group,reject,,,,"parent group, not the account"
+44,SG,synthetic,Evergreen Dental Surgery Pte Ltd,reject,201799999A,,,decoy: different UEN
+45,MY,synthetic,Bluefin Bistro Sdn Bhd,new,,,Kuala Lumpur,decoy: MY namesake of SG account
+46,SG,synthetic,Nimbus Clinic,nimbus-clinics,,,,singular/plural variant
+47,SG,synthetic,Northwind Kopi,reject,,,,decoy: similar name
+48,SG,synthetic,Jadeport Freight,jadeport-freight,,jadeportfreight.example,,domain + name
+49,SG,synthetic,Umbra Legal LLP,reject,,,,decoy: LLP vs Pte Ltd (different legal entity)
+50,SG,synthetic,The Tidewater Supplies Company,tidewater-supplies,,,,"""The"" + ""Company"" noise"
+51,SG,synthetic,Maple and Co Advisory,maple-and-co-advisory,,,,"& vs and"

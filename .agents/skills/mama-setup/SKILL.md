@@ -23,7 +23,11 @@ description: 'Set up or health-check Sales Mama for the current user (or the nig
 4. ASK, one at a time: full name; markets (SG, MY, IN); languages (only codes listed for those markets in `knowledge/markets.yaml`); territory: industries (terms from `knowledge/ontology.yaml` only, rule 7), regions, company size range; daily quota; max active accounts; monthly meeting target; tone; email signature.
 5. Write `reps/<id>.md` from `templates/rep.md`: `id` = lowercase first name (add a last-name initial if taken), `email` = git email, `updated:` today. Role: `role: rep`. Only exception: if `reps/` has no profiles yet, this is the manager bootstrapping the kit; confirm that, then write `role: manager`. Never set `manager` otherwise; the manager promotes people.
 6. Codex: ask them to trust the project. Claude Code: tell them to approve the `@AGENTS.md` import prompt if it appears.
-7. Email check: confirm the connector is signed in to their own mailbox (e.g. list drafts). List the server's tools; no send or forward tool may be callable (Claude Code: denied in `.claude/settings.json`; Codex: absent from `enabled_tools`). If one is callable, stop and tell them to alert the manager. Before Phase 4 there is no connector: say so and go on.
+7. Connect channels (ADR-0007). Run `python3 scripts/connect.py status` and fix what it reports:
+   - Gmail: if they have the team's OAuth client file from the manager, run `python3 scripts/connect.py gmail --client-file <path>` (later runs: `python3 scripts/connect.py gmail`). The browser opens; they pick their work mailbox and click Allow. The mailbox must be their profile email. No client file yet: say "ask the manager for the Sales Mama Google client file" and go on.
+   - WhatsApp (only if their market allows it and the manager has set up the company number): ask them to type `! python3 scripts/connect.py whatsapp` themselves, so the token never passes through the chat. Never ask them to paste a token into the conversation.
+   - MCP check: list the email MCP server's tools; no send, reply or forward tool may be callable (Claude Code: denied in `.claude/settings.json`; Codex: `disabled_tools`). If one is callable, stop and tell them to alert the manager. Sending goes only through `send.py`.
+   - Say whether sending is on (`knowledge/sending.yaml`); only the manager turns it on.
 8. Dry run, on screen only: their book (`python3 scripts/find.py --owner me`; empty is fine) and one sample first email for a fictional company. Never create a mailbox draft here.
 9. Append the log line (Finish), run `python3 scripts/sync.py`, then print the Part C cheat sheet for their role.
 
@@ -31,26 +35,27 @@ description: 'Set up or health-check Sales Mama for the current user (or the nig
 1. Confirm git email → `reps/<id>.md` with `role: manager`. Otherwise stop.
 2. Check the CLI is installed and signed in: `claude --version` (2.1.259+, needed for `--permission-prompts`) or `codex --version`.
 3. Make sure `runner/nightly.sh` (macOS/Linux, then `chmod +x`) or `runner/nightly.ps1` (Windows) matches SETUP.md "Runner files"; write it if missing. On Windows, if `python3` doesn't resolve, use the command that does, in the `--allowedTools` pattern too. If you changed it: `git add runner/`, `git commit -m "chore: nightly runner"`, `git push` (`sync.py` does not commit `runner/`).
-4. Dry run: run the script's `claude -p` command once by hand with the prompt `"/mama-nightly dry-run"` and output to `runner/logs/<YYYYMMDD-HHMM>-dry-run.json` (Codex: `codex exec --sandbox workspace-write "Run the mama-nightly skill in dry-run mode"`). It can take many minutes: run it in the background and wait. Show the log tail and the `run_status` it reports.
+4. Dry run: `runner/nightly.sh "/mama-nightly dry-run"` (Windows: `runner\nightly.ps1 -Prompt "/mama-nightly dry-run"`), the same command line the schedule uses, writing `runner/logs/<YYYYMMDD-HHMM>-dry-run.json` (Codex: `codex exec --sandbox workspace-write "Run the mama-nightly skill in dry-run mode"`). It can take many minutes: run it in the background and wait. Show the log tail and the `run_status` it reports.
 5. ASK: "Schedule the nightly run daily at 02:00 local time?" Only on an explicit yes:
-   - macOS / Linux: add `0 2 * * * <repo>/runner/nightly.sh` to `crontab`.
+   - macOS: ask launchd (recommended: runs a missed job on wake) or cron. launchd: write `~/Library/LaunchAgents/ai.salesmama.nightly.plist` (ProgramArguments `/bin/bash <repo>/runner/nightly.sh`, StartCalendarInterval Hour 2 Minute 0) and `launchctl bootstrap gui/$(id -u) <plist>`; cron: add `0 2 * * * <repo>/runner/nightly.sh` to `crontab`.
+   - Linux: add `0 2 * * * <repo>/runner/nightly.sh` to `crontab`.
    - Windows: `schtasks /create /sc daily /st 02:00 /tn SalesMamaNightly /tr "powershell -File <repo>\runner\nightly.ps1"`.
    - Codex on Mac: a Codex app Automation instead (daily, prompt "Run the mama-nightly skill", target: local project).
-6. Confirm the next run time (`crontab -l`, or `schtasks /query /tn SalesMamaNightly`), and remind them the machine must be awake and online at 02:00.
+6. Confirm the next run time (`launchctl print gui/$(id -u)/ai.salesmama.nightly`, `crontab -l`, or `schtasks /query /tn SalesMamaNightly`), and remind them the machine must be awake and online at 02:00.
 
 ## Health check (re-run)
-Report each as ok or fix: prerequisites · `reps/<id>.md` matches `templates/rep.md`, with valid markets and ontology terms · connector signed in · no send tool callable · `python3 scripts/lint.py` · `python3 scripts/sync_skills.py --check` (on drift run `sync_skills.py`, then start a new session) · manager only: runner schedule present. Fix what this user may fix; hand the rest to the manager.
+Report each as ok or fix: prerequisites · `reps/<id>.md` matches `templates/rep.md`, with valid markets and ontology terms · `python3 scripts/connect.py status` (sending switch, Gmail, WhatsApp) · no MCP send tool callable · `python3 scripts/lint.py` · `python3 scripts/sync_skills.py --check` (on drift run `sync_skills.py`, then start a new session) · manager only: runner schedule present. Fix what this user may fix; hand the rest to the manager.
 
 ## Never
-- Send anything, or create a real mailbox draft during setup (rule 1).
+- Send anything, or create a real mailbox draft during setup (rule 1). Ask anyone to paste a token, password or OAuth secret into the chat.
 - Set `role: manager` outside bootstrap, or edit another person's `reps/` file (rule 6; the guard blocks it).
 - Schedule the runner without an explicit yes, or for a non-manager.
 - Carry on past a callable send tool.
 
 ## Finish
-- Summary: "Set up Mei (SG). Email: drafts-only ok. Next: /mama-day." Runner: "Runner scheduled 02:00 local; next run Tue 3 Nov 02:00."
-- Log: `- [YYYY-MM-DD HH:MM] setup | <user> | reps/<id> | profile created; email drafts-only ok` (runner: target `runner`, summary `dry run ok; scheduled 02:00`).
+- Summary: "Set up Mei (SG). Gmail connected (mei@…), WhatsApp not needed. Sending is off until the manager turns it on. Next: /mama-day." Runner: "Runner scheduled 02:00 local; next run Tue 3 Nov 02:00."
+- Log: `- [YYYY-MM-DD HH:MM] setup | <user> | reps/<id> | profile created; gmail connected` (runner: target `runner`, summary `dry run ok; scheduled 02:00`).
 - Only when the session contains `MAMA_CARDS=on`: a `plan` card of the steps, plus an `error` card for any blocker.
 ```mama-card
-{"type":"plan","title":"Setting up Mei","agent":"mama","steps":[{"label":"Prerequisites","status":"done","agent":"mama"},{"label":"Profile","status":"done","agent":"mama"},{"label":"Email drafts-only check","status":"running","agent":"mama"}],"refs":["reps/mei.md"]}
+{"type":"plan","title":"Setting up Mei","agent":"mama","steps":[{"label":"Prerequisites","status":"done","agent":"mama"},{"label":"Profile","status":"done","agent":"mama"},{"label":"Connect Gmail","status":"running","agent":"mama"}],"refs":["reps/mei.md"]}
 ```

@@ -1,16 +1,19 @@
 # Markets — manager-owned. See PLAN.md §5.
 # Fill holidays each December for the next year; update fx monthly (used only to compare deal value).
 base_currency: SGD
-fx: {MYR: null, INR: null}
+fx: {MYR: null, INR: null}   # SGD per 1 unit, e.g. MYR: 0.30, INR: 0.016; allocate.py holds a live market's leads while its rate is empty
 markets:
   SG:
     tz: Asia/Singapore
     currency: SGD
     languages: [en, zh]
     id_types: [uen]
-    channels: [email, linkedin]
+    channels: [email, whatsapp, linkedin]   # whatsapp: opted-in contacts only, Cloud API, after rep approval (ADR-0007)
     send_windows: {days: [mon, tue, wed, thu], hours: "09:00-11:30"}
-    holidays: []
+    # MOM-gazetted; Sunday holidays move to Monday. VERIFY 2027 dates against mom.gov.sg.
+    holidays: [2026-11-09, 2026-12-25,
+               2027-01-01, 2027-02-08, 2027-03-10, 2027-03-26, 2027-05-17,
+               2027-05-20, 2027-08-09, 2027-10-28, 2027-12-25]
   MY:
     tz: Asia/Kuala_Lumpur
     currency: MYR

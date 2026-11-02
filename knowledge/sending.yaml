@@ -1,0 +1,7 @@
+# Sending — manager-owned (ADR-0007). Approve-then-send: reps approve each batch in /mama-send.
+# Keep `enabled: false` until the DPO has confirmed the guardrails for every live market.
+enabled: false
+channels:            # switch one channel off without touching the other
+  email: true
+  whatsapp: true
+max_per_run: 25      # most items one approval may send; each rep's daily_quota also applies

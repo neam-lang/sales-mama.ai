@@ -6,6 +6,7 @@ You are a Sales Mama researcher. Follow the mama-research skill for exactly one 
 ## Inputs (from mama-day or mama-research)
 - `account`: one account id (`wiki/accounts/<id>.md`).
 - `rep`: the rep id the research is for (the session's user).
+- `mode` (optional): `offline` = use only the files already in `raw/research/<id>/` as sources; no web search or fetch, no new snapshots.
 
 ## What to do
 1. Read `.agents/skills/mama-research/SKILL.md` and follow its steps for this one account.

@@ -10,19 +10,20 @@ description: 'Weekly review for the manager: lint, funnel and reply metrics, sco
 
 ## Before you start
 - Who: the manager only, interactively (not the runner: steps 5 and 8 need approval).
-- Scripts: `lint.py`, `find.py` (Phase 0); `eval.py` (Phase 1); `score.py` (Phase 3); `allocate.py`, `claim.py` (Phase 6). `gh` is optional.
+- Scripts: `lint.py`, `find.py` (Phase 0); `eval.py` (Phase 1); `score.py` (Phase 3); `allocate.py`, `claim.py` (Phase 6); `weekly.py` (Phase 7). `gh` is optional.
+- Numbers: run `python3 scripts/weekly.py --json` once (add `--week <yyyy-Www>` for another week) and use its numbers verbatim in steps 2, 3, 4 and 7. Never recompute them by hand; your job is to interpret them and write proposals.
 - If a required script is missing, say which phase adds it and stop.
 - Week = ISO week `<yyyy-Www>` ending today; trailing window = the 4 weeks before that.
 - Re-read any page right before changing it (rule 17).
 
 ## Steps
 1. Lint: `python3 scripts/lint.py --json`, then an LLM pass over pages changed this week: contradictions between pages, unsourced claims (rule 3), weak or stale patterns, signals tagged off-ontology (rule 7). Run `python3 scripts/eval.py` and note any failing check.
-2. Metrics from `log/touches.csv`, joined to account pages (tier, industry, market, pains, signals) and contact persona: sent, replies, positive replies (interested, meeting_request, referral), meetings, reply and meeting rates. Cut by rep, pattern, persona, pain, signal type, product, tier and market, for the week and the trailing 4 weeks. Any cell with n < 20: write "insufficient data" and draw no conclusion. Funnel: counts by stage now vs a week ago (`git log` on `wiki/accounts/`).
-3. Score calibration: lift table of meeting rate by tier (A, B, C) over the trailing 4–8 weeks. If tier A is below 2× tier C, with n ≥ 20 per tier, propose specific `knowledge/scoring.yaml` weight changes with the table as evidence. Otherwise: no change.
-4. Allocation review: EV spread per approved proposal in `log/allocation/` vs `max_ev_spread`; rep conversion by segment (smoothed with `prior_meeting_rate`); lapsed claims (21 days without a touch); hard-constraint violations (should be 0).
+2. Metrics: `metrics.week` and `metrics.trailing_4w` from `weekly.py` (sent, replies, positive, meetings, reply and meeting rates; cut by rep, pattern, persona, pain, signal, product, tier, market). A rate of "insufficient data" (n < 20) gets no conclusion. Funnel: `funnel.stages` (now vs the start of the week). Sending: from `log/approvals.csv` this week, sent / refused / error by rep and channel, and the top refusal reasons (window, suppression, changed after preview, consent, template).
+3. Score calibration: `calibration.tiers` is the lift table (8 weeks). Only when `calibration.verdict` is `propose` (tier A below 2× tier C, n ≥ 20) propose specific `knowledge/scoring.yaml` weight changes, with the table as evidence. `ok` or `insufficient`: no change.
+4. Allocation review from `allocation`: each proposal's status and EV spread vs limit (`spread_ok`), rep × industry conversion (`conversion`, smoothed with `prior_meeting_rate`), `lapsed` claims (21 days without a touch), and `violations` (should be 0; anything else is a finding).
 5. Library (`wiki/responses/`): for each pattern and objection, recount `sent`, `replies`, `positive`, `meetings` (patterns) or `times_seen`, `replies_after_answer`, `meetings_after_answer` (objections), cut by tier and signal type. Propose: promote `draft` → `approved` (manager reads the text and agrees), retire weak `approved` pages (n ≥ 20, clearly below the median), stats updates. Apply only the ones the manager approves.
 6. Ontology: group this week's `unmapped` lines in `wiki/log.md` and `signal: unmapped` rows in `log/signals.csv`; propose new terms (with implied pains, weight, decay) for `knowledge/ontology.yaml`.
-7. Retention: list `raw/` files older than the days in `knowledge/guardrails.md` `## Retention`. Ask the manager to approve deletion; only approved files go in step 9.
+7. Retention: `retention.<folder>.expired` lists `raw/` files older than the days in `knowledge/guardrails.md` `## Retention`. Ask the manager to approve deletion; only approved files go in step 9.
 8. Report: write `log/weekly/<yyyy-Www>.md` with sections Lint · Metrics · Funnel · Calibration · Allocation · Library · Ontology · Retention · Proposals, each with numbers and links, and "insufficient data" where n < 20.
 9. PR: `git switch -c weekly/<yyyy-Www>`; commit the report, approved library changes, proposed `knowledge/` edits (scoring, ontology, playbook) and approved retention `git rm`s; `git push -u origin weekly/<yyyy-Www>`; open the PR with `gh pr create` if available, otherwise give the compare link. Then `git switch` back to the main branch.
 

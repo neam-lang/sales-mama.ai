@@ -20,13 +20,13 @@ description: 'The manager''s morning cockpit: last night''s status, hot accounts
    1. **Runner status**: the brief's `run_status` (ok or failed, started/finished, items, linked, review, new leads, errors). If the last two briefs both failed (or are missing), show the tail of the newest `runner/logs/` file and a fix from SETUP.md Part E.
    2. **Hot accounts**: score jumps and new tier A, with owner, the signal and its source.
    3. **At risk by rep**: counts and the top flags (`no_touch_14d`, `unanswered_reply`, `claim_lapsing`, ...).
-   4. **Allocation proposal**: today's `log/allocation/<date>.md` per market: rep, A/B counts, EV in the base currency, reason; EV spread vs limit.
+   4. **Allocation proposal**: today's `log/allocation/<date>.md` per market: rep, A/B counts, EV in the base currency, reason; EV spread vs limit; the `## Constraints holding` table; `## Rebalancing` items.
    5. **Review queue**: numbered undecided rows from `log/review.csv`: company text, source, best candidate, confidence.
    6. **Team book**: from `wiki/books/team.md`: per rep active/capacity, A/B/C, sent and replies (7 days), meetings vs target, at risk; pool by tier; rising pool accounts from the house VAM.
 3. Take decisions conversationally, and confirm each before acting:
    - Allocation ("approve all", "approve except 3 and 7", "give the logistics ones to Arun") → hand off to **mama-allocate**.
    - Review ("1 is Acme Trading, 2 is new, 3 reject") → `python3 scripts/resolve.py --decide <row> <account-id|new|reject>` per item. For a link, add the cited `## Signals` bullet to that account and run `python3 scripts/score.py --id <id>`; for `new`, create the `stage: new` lead page from `templates/account.md`; for a reject that was already attached, remove the bullet and re-score.
-   - Reassignments ("move kopi-co to Arun", "Mei is out next week") → `python3 scripts/claim.py --reassign <from> <to>` or `--assign <rep> <id>`.
+   - Reassignments ("move kopi-co to Arun", "Mei is out next week") → `python3 scripts/claim.py --reassign <from> <to> [<id>...]`; lapsed claims → `python3 scripts/claim.py --release <id>`. Both re-check market, territory and capacity and refuse what doesn't fit.
    - Knowledge changes (weights, ICP, products) → propose them for plan mode on a branch; don't edit `knowledge/` from the cockpit.
 4. After decisions: `python3 scripts/build_books.py`, then `python3 scripts/sync.py`.
 

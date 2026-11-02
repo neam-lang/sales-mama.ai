@@ -7,6 +7,9 @@ description: 'Research one owned account and update its wiki page with cited sig
 ## When to use
 - A rep says "research <company>" or `/mama-research <id>`; mama-day runs it (through `researcher` subagents) for each new account.
 - One account per run. For many accounts, run it once per account.
+- **Offline mode** (`offline`, used for evals and fictional demo data): the sources are the files already in
+  `raw/research/<id>/`. Treat each as a fetched source and cite it directly; do no web search or fetch and write
+  no new snapshots. Every other step and rule is the same.
 
 ## Before you start
 - Who: the account's `owner`, or the manager. The `researcher` subagent runs it for exactly one account id it is given.
@@ -18,7 +21,7 @@ description: 'Research one owned account and update its wiki page with cited sig
 ## Steps
 1. Find the account: `python3 scripts/find.py --text "<name>" --owner me --json` if the user gave a name, not an id.
 2. Read what's already known: the `## Signals` bullets and their `raw/` snapshots, `log/signals.csv` rows where `account` = id. Don't re-fetch what's already cited and fresh.
-3. Search, about 8 fetches max in total:
+3. Search (skip in offline mode: read every file in `raw/research/<id>/` instead), about 8 fetches max in total:
    - the company website (about, news, locations, careers);
    - last-12-months news from that market's sources in `sources.yaml` (SG: Business Times, CNA, The Edge Singapore; MY: The Edge Malaysia, The Star, NST, Bernama; IN: Economic Times, Business Standard, Mint, Inc42 / Entrackr);
    - job posts (ops and IT hiring);
@@ -29,6 +32,8 @@ description: 'Research one owned account and update its wiki page with cited sig
 5. Map findings:
    - Each finding → an ontology signal (dated) and its implied pains. Anything that doesn't map: append `- [YYYY-MM-DD HH:MM] unmapped | <user> | accounts/<id> | <short description>` to `wiki/log.md` (rule 7).
    - People → contacts: name, title, persona (match `title_patterns`), business email or phone only if published for business use, plus the source. Nothing personal (rule 8).
+   - Write each person's name exactly as the source spells it, and only people the source names in a role at this account (not customers, partners or journalists).
+   - Signal dates: the date of the event or page (the `date:` in the snapshot), not today.
 6. Update the account page (owner or manager only):
    - `## Snapshot`: what they do, size, locations, each line citing a snapshot; "unknown" where there is no source (rule 3).
    - `## Signals`: one bullet each, `- <signal_term> — <evidence> (<YYYY-MM-DD>) — [source](raw/research/<id>/<file>.md)`. Update `signals:` frontmatter.

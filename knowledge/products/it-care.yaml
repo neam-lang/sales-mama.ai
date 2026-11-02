@@ -1,0 +1,9 @@
+id: it-care
+name: IT Care
+summary: "Monthly IT support: helpdesk, device setup and backups."
+solves: [scale_up, it_stretch, setup_needs, renewal_window]   # pain terms in ontology.yaml
+fits: {industries: [], employees: [10, 200]}
+requires: []
+skip_if_owned: [it-care]
+available_in: [SG, MY, IN]
+typical_value: {SG: 5000, MY: 12000, IN: 250000}

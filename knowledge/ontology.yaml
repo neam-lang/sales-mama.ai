@@ -1,20 +1,27 @@
-# Ontology — closed vocabulary. Filled in Phase 1. Accounts may only be tagged with these terms.
-# Shape (see PLAN.md §6):
-# industries: [retail, fnb, logistics, professional_services, clinics, education]
-# signals:
-#   new_branch_opened:   {implies: [branch_expansion],   weight: 1.0, decay_days: 120}
-#   contract_win:        {implies: [scale_up],           weight: 0.9, decay_days: 90}
-#   new_company:         {implies: [setup_needs],        weight: 0.7, decay_days: 60}
-#   funding_round:       {implies: [scale_up],           weight: 0.8, decay_days: 90}
-#   exhibiting_at_event: {implies: [], weight: 0.5, decay_days: 30, hook: true}
-#   incentive_window:    {implies: [], weight: 0.4, decay_days: 60, hook: true}
-#   contract_ending:     {implies: [renewal_window],     weight: 1.0, decay_days: 120}
-#   layoffs_or_closure:  {negative: true, weight: -0.6, decay_days: 180}
-# pains:
-#   branch_expansion: {personas: [owner_md, ops_head]}
-# personas:
-#   owner_md: {title_patterns: ["owner", "founder", "managing director"]}
-industries: []
-signals: {}
-pains: {}
-personas: {}
+# Ontology — closed vocabulary (Phase 1 interview, 2026-11-01). Accounts may only be tagged with these terms.
+# Signals imply pains; products solve pains; hook signals give a reason to reach out. See PLAN.md §6.
+industries: [retail, fnb, logistics, professional_services, clinics, education]
+signals:
+  new_branch_opened:   {implies: [branch_expansion],   weight: 1.0, decay_days: 120}
+  contract_win:        {implies: [scale_up],           weight: 0.9, decay_days: 90}
+  new_company:         {implies: [setup_needs],        weight: 0.7, decay_days: 60}
+  hiring_ops_it:       {implies: [it_stretch],         weight: 0.6, decay_days: 60}
+  office_move:         {implies: [connectivity_reset], weight: 0.8, decay_days: 90}
+  exhibiting_at_event: {implies: [],                   weight: 0.5, decay_days: 30, hook: true}
+  funding_round:       {implies: [scale_up],           weight: 0.8, decay_days: 90}
+  incentive_window:    {implies: [],                   weight: 0.4, decay_days: 60, hook: true}  # e.g. SG PSG/EDG changes
+  fiscal_year_start:   {implies: [],                   weight: 0.3, decay_days: 45, hook: true, markets: [IN]}
+  contract_ending:     {implies: [renewal_window],     weight: 1.0, decay_days: 120}
+  layoffs_or_closure:  {negative: true,                weight: -0.6, decay_days: 180}
+pains:
+  branch_expansion:   {personas: [owner_md, ops_head]}
+  scale_up:           {personas: [owner_md, finance_head]}
+  setup_needs:        {personas: [owner_md]}
+  it_stretch:         {personas: [it_lead, ops_head]}
+  connectivity_reset: {personas: [ops_head, it_lead]}
+  renewal_window:     {personas: [owner_md, finance_head]}
+personas:
+  owner_md:     {title_patterns: ["owner", "founder", "co-founder", "managing director", "director", "ceo"]}
+  ops_head:     {title_patterns: ["operations", "ops", "general manager", "outlet manager"]}
+  finance_head: {title_patterns: ["finance", "cfo", "accounts", "controller"]}
+  it_lead:      {title_patterns: ["it ", "it manager", "technology", "systems", "cto"]}

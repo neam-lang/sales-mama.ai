@@ -1,0 +1,37 @@
+{
+  "name": "sales-mama-console",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Sales Mama Console (Phase 9): a localhost cockpit that drives Claude Code headless and renders mama-cards.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "tsx server/index.ts",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "record": "tsx bin/record.ts"
+  },
+  "dependencies": {
+    "ajv": "8.17.1",
+    "dompurify": "3.2.4",
+    "marked": "15.0.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tsx": "4.19.3",
+    "vite": "5.4.14",
+    "@vitejs/plugin-react": "4.3.4",
+    "ws": "8.18.1",
+    "yaml": "2.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.24",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "@types/ws": "8.18.0",
+    "typescript": "5.7.3",
+    "vitest": "2.1.9"
+  }
+}

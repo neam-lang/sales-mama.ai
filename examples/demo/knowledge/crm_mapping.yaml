@@ -1,0 +1,34 @@
+# FICTIONAL demo CRM mapping for examples/demo/raw/crm/2026-11-01-demo-export-50.csv.
+# selftest.py installs it in a temporary copy of the repo; it never replaces knowledge/crm_mapping.yaml.
+export:
+  "Account Name": name
+  "Country": market
+  "Registration No": reg_id
+  "GSTIN": alt_ids.gstin
+  "City": city
+  "Website": domain
+  "Industry": industry
+  "Employees": employees
+  "Products": products_owned
+  "Contract End": contract_end
+  "Parent Account": group
+  "NPTB Score": propensity
+date_formats: ["%Y-%m-%d", "%d/%m/%Y"]
+country_values: {Singapore: SG, Malaysia: MY, India: IN}
+industry_values:
+  "Food & Beverage": fnb
+  "Retail": retail
+  "Logistics": logistics
+  "Healthcare": clinics
+  "Professional Services": professional_services
+  "Education": education
+product_values:
+  "Cloud Phone": cloud-phone
+  "Managed WiFi": managed-wifi
+  "IT Care": it-care
+import:
+  - "Account Name"
+  - "Stage"
+  - "Next Step"
+  - "Owner Email"
+  - "Notes"

@@ -25,7 +25,7 @@ description: 'Recommend best-fit products for an owned account from its signals 
    - Proof only from `knowledge/proof/` (rule 4), preferring proof from the same market or industry. If none fits, write "no proof yet".
    - Note any incentive the product qualifies for in that market (e.g. SG EDGE Grant), only if the product file lists it.
 4. Write a 2–3 sentence talk track in the rep's `tone`, naming only things in the chain.
-5. Update the page: replace `## Recommendation` with the chain(s), talk track and the script's main exclusions (e.g. "skipped <product>: already owned"). Set `recommended: [<product ids>]` and `updated:` today. Don't change `stage`.
+5. Update the page: replace `## Recommendation` with the chain(s), talk track and the script's main exclusions (e.g. "skipped <product>: already owned"). Set `recommended:` to the script's top 1–2 candidate ids in the script's order (primary first) and `updated:` today. Don't change `stage`.
 6. No candidates: write "No fit now: <reason from the script>" in `## Recommendation`, set `recommended: []`, and suggest what would change it (e.g. "a new signal such as office_move").
 
 ## Never

@@ -10,7 +10,7 @@ Sales Mama has two front doors. Both talk to the **same** repo, skills and rules
 | Extra setup | None | Node 20+, then `npm run console` from the repo |
 | Rules and safety | AGENTS.md, hooks, permissions | Exactly the same: the console only *sends prompts* and *renders output* |
 
-The console never adds capabilities. It cannot send email, change permissions or bypass the guard. Anything it can do, a rep can also do by typing in Claude Code.
+The console never adds capabilities. It cannot send email or WhatsApp, change permissions or bypass the guard: sending needs the permission prompt of `send.py --send`, which the console skips, so sending happens only in chat in Claude Code (ADR-0007). Anything it can do, a rep can also do by typing in Claude Code.
 
 ---
 

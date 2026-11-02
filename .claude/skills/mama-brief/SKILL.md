@@ -23,7 +23,7 @@ description: 'Prepare a one-page brief for a call with an owned account, or a me
    - **Why now**: dated signals, each with its source link (rule 3).
    - **What we believe**: pains and the recommendation chain (signal → pain → product → proof), price in the market's currency.
    - **History**: touches so far and what they said.
-   - **Likely objections**: each with the matching `approved` response from `wiki/responses/objections/`; "no approved answer yet" if none.
+   - **Likely objections**: from `## Open objections`, past replies classed `objection`, and objection pages whose `personas` include the contact's persona. Quote only `## Approved responses` from pages with `status: approved`; for a `draft` page say "no approved answer yet (draft in the library)".
    - **Questions**: 3–5 open questions that test the pains.
    - **Goal and next step**: the call goal and the next step to propose.
 4. Write it into the account page as `## Call brief (<YYYY-MM-DD>)`, replacing the template's empty `## Call brief` heading or an older brief. Set `updated:` today. Don't change `stage`.

@@ -52,19 +52,14 @@ FOLDER_TYPES = {
     "wiki/responses/patterns/": "pattern",
     "wiki/responses/faq/": "faq",
 }
-REG_PATTERNS = {
-    "uen": (re.compile(r"^[A-Z0-9]{8,9}[A-Z]$"), "9-10 letters/digits ending in a letter"),
-    "ssm": (re.compile(r"^\d{12}$"), "12 digits"),
-    "cin": (re.compile(r"^[A-Z0-9]{21}$"), "21 letters/digits"),
-    "llpin": (re.compile(r"^[A-Z]{3}-\d{4}$"), "AAA-0000"),
-    "gstin": (re.compile(r"^[A-Z0-9]{15}$"), "15 letters/digits"),
-    "udyam": (re.compile(r"^UDYAM-[A-Z]{2}-\d{2}-\d{7}$"), "UDYAM-XX-00-0000000"),
-}
-DEFAULT_ID_TYPES = {"SG": ["uen"], "MY": ["ssm"], "IN": ["cin", "llpin", "gstin", "udyam"]}
+REG_PATTERNS = mc.REG_PATTERNS
+DEFAULT_ID_TYPES = mc.DEFAULT_ID_TYPES
 ROLES = ("rep", "manager", "inactive")
 LINK_RE = re.compile(r"\[\[([^\]\n]+)\]\]")
 MD_LINK_RE = re.compile(r"\]\(([^)\s]+)\)")
 PLACEHOLDER_BULLETS = {"unknown", "none", "none yet", "n/a", "-"}
+# Template keys added later; older pages may lack them without a warning.
+OPTIONAL_KEYS = {"contact": {"whatsapp", "whatsapp_opt_in_date", "whatsapp_opt_in_source"}}
 
 
 class Report:
@@ -187,7 +182,7 @@ def check_schema(pages, reps_pages, tmpl, rep: Report) -> None:
             rep.err("schema", page.rel, f"type `{ptype}` in a {expected} folder")
         if ptype in tmpl:
             keys = tmpl[ptype]
-            missing = [k for k in keys if k not in m]
+            missing = [k for k in keys if k not in m and k not in OPTIONAL_KEYS.get(ptype, ())]
             extra = [k for k in m if k not in keys]
             if missing:
                 rep.warn("schema", page.rel, f"missing keys vs templates/{ptype}.md: {', '.join(missing)}")
@@ -482,6 +477,28 @@ def check_suppression(root: Path, contacts, touches, rep: Report) -> None:
                     f"contact {email} on {acc}: delete the mailbox draft")
 
 
+def check_secrets(root: Path, rep: Report) -> None:
+    """Secrets files or token strings in tracked files (ADR-0007: secrets live in ~/.config/sales-mama/)."""
+    from guard import SECRET_NAME_RE, SECRET_RE
+    code, out, _ = mc.run_git(["ls-files", "--cached", "--others", "--exclude-standard"], cwd=root, timeout=30)
+    files = [ln for ln in out.splitlines() if ln.strip()] if code == 0 else \
+        [mc.rel_posix(p, root) for p in root.rglob("*") if p.is_file() and ".git" not in p.parts
+         and "node_modules" not in p.parts]
+    for rel in files:
+        p = root / rel
+        if SECRET_NAME_RE.search(rel):
+            rep.err("secrets", rel, "secrets file in the repo: move it to ~/.config/sales-mama/ and rotate it")
+            continue
+        try:
+            if not p.is_file() or p.stat().st_size > 1_000_000:
+                continue
+            text = p.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        if SECRET_RE.search(text):
+            rep.err("secrets", rel, "contains what looks like a token or private key: remove it and rotate it")
+
+
 def check_skills(root: Path, rep: Report) -> None:
     try:
         import sync_skills
@@ -525,6 +542,7 @@ def run(root: Path) -> Report:
     check_signals(accounts, root, rep)
     check_retention(root, on, rep)
     check_suppression(root, contacts, touches, rep)
+    check_secrets(root, rep)
     check_skills(root, rep)
     return rep
 

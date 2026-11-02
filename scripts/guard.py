@@ -11,6 +11,10 @@ Blocked (exit 2):
 - a non-manager edits an account page whose `owner` is set to someone else
 - a non-manager edits another person's reps/ file, or writes `role: manager`
   into any reps/ file
+- anyone (manager included, even during bootstrap) writes a secrets file into
+  the repo (.env, gmail.json, whatsapp.json, OAuth client or *token*.json) or
+  text containing an access token, refresh token, client secret or private key.
+  Secrets live in ~/.config/sales-mama/ (ADR-0007).
 
 Allowed:
 - everything while reps/ has no rep files yet (bootstrap)
@@ -46,6 +50,11 @@ PROTECTED_FILES = ("AGENTS.md", "CLAUDE.md")
 WRITE_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
 CASE_INSENSITIVE_FS = sys.platform.startswith(("win", "darwin"))
 ROLE_MANAGER_RE = re.compile(r"""^\s*role\s*:\s*["']?manager\b""", re.M | re.I)
+SECRET_NAME_RE = re.compile(r"(^|/)(\.env(\.[^/]*)?|gmail\.json|whatsapp\.json|google-oauth-client[^/]*\.json|"
+                            r"client_secret[^/]*\.json|[^/]*token[^/]*\.json)$", re.I)
+# Shared with lint.py: Google access token, Meta token, OAuth refresh token value, Google client secret, PEM key.
+SECRET_RE = re.compile(r"ya29\.[\w-]{20,}|EAA[A-Za-z0-9]{40,}|\"refresh_token\"\s*:\s*\"[^\"]{10,}\"|"
+                       r"GOCSPX-[\w-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----")
 
 
 class Block(Exception):
@@ -160,6 +169,14 @@ def check(payload: dict, root: Path, mc) -> None:
     if rel is None or rel in ("", "."):
         return  # outside the repo
     target = root / rel
+
+    # Secrets never go in the repo, whoever writes them (ADR-0007).
+    if SECRET_NAME_RE.search(rel):
+        raise Block(f"{rel} looks like a secrets file; secrets live outside the repo in ~/.config/sales-mama/ "
+                    "(use scripts/connect.py).")
+    if any(SECRET_RE.search(t or "") for t in new_texts(tool, ti)):
+        raise Block(f"the text for {rel} contains what looks like a token or private key; keep secrets in "
+                    "~/.config/sales-mama/, never in the repo.")
 
     if not rep_files(root):
         return  # bootstrap: no rep profiles yet

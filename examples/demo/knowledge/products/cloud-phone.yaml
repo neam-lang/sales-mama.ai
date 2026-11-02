@@ -1,0 +1,10 @@
+# FICTIONAL demo product (selftest only).
+id: cloud-phone
+name: Cloud Phone
+summary: "Hosted business phone lines and a mobile app for small teams."
+solves: [branch_expansion, scale_up]   # pain terms in ontology.yaml
+fits: {industries: [], employees: [5, 250]}
+requires: []
+skip_if_owned: [cloud-phone]
+available_in: [SG, MY, IN]
+typical_value: {SG: 6000, MY: 15000, IN: 300000}

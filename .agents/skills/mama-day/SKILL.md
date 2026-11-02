@@ -28,10 +28,11 @@ description: 'Run a rep''s whole morning: replies, VAM pre-drafts, follow-ups du
    - After research, run **mama-recommend**, then **mama-draft** with step `first` (or `connect` if the playbook starts with LinkedIn).
    - If research found no cited signal, skip the draft and say "needs a signal".
 6. Rebuild the book: `python3 scripts/build_books.py --rep <me>`.
-7. Summary (see Finish): drafts ready, the next send window per market in local time (from `markets.yaml`, skipping holidays and honouring `send_window_override`), meetings requested, hot and at-risk counts, and what needs the rep.
+7. Send: if the send window is open now and `knowledge/sending.yaml` has `enabled: true`, offer "Send N ready drafts now?" and on yes run **mama-send** (preview, the rep picks, the rep approves). Otherwise say when the window opens.
+8. Summary (see Finish): drafts ready, the next send window per market in local time (from `markets.yaml`, skipping holidays and honouring `send_window_override`), meetings requested, hot and at-risk counts, and what needs the rep.
 
 ## Never
-- Send anything. Drafts only, in the rep's own mailbox (rule 1).
+- Send anything outside **mama-send**, or without the rep approving that batch (rule 1).
 - Exceed `daily_quota`. When it's reached, list what's left for tomorrow.
 - Draft without every mama-draft check passing: suppression (2), entity check (5), market channel, language and send window (13, 14).
 - Touch accounts you don't own (rules 6, 16), or act on account facts from earlier in the chat (17).
