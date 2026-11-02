@@ -1,41 +1,63 @@
 <!doctype html>
 <!-- Sales Mama README hero banner. Render: node docs/assets/src/render.mjs (see docs/assets/README.md). -->
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=block" rel="stylesheet">
 <style>
-  :root { --ground:#F6F4FF; --ink:#16131F; --muted:#5B5670; --lime:#C8F031; --mama:#6D28D9;
+  :root { --ink:#16131F; --lime:#C8F031; --muted:#C9C4DA;
     --scout:#1D4ED8; --scout-t:#E5EDFF; --res:#0F766E; --res-t:#DDF5F1; --vam:#BE185D; --vam-t:#FFE6F1;
     --wri:#C2410C; --wri-t:#FFEDE0; --alo:#15803D; --alo-t:#E2F6E8; }
   * { box-sizing: border-box; margin: 0; }
+  svg { display: block; }
   body { width: 1600px; height: 680px; background: var(--ink); color: #fff; font-family: Geist, system-ui, sans-serif; overflow: hidden; position: relative; }
-  .left { position: absolute; left: 80px; top: 70px; width: 700px; display: flex; flex-direction: column; gap: 26px; }
-  .brand { display: flex; align-items: center; gap: 16px; font: 700 30px 'Bricolage Grotesque'; }
-  .logo { width: 56px; height: 56px; border-radius: 15px; background: var(--lime); color: var(--ink); display: grid; place-items: center; font: 800 24px 'Bricolage Grotesque'; }
-  h1 { font: 800 68px/1.02 'Bricolage Grotesque'; letter-spacing: -2px; }
+  .left { position: absolute; left: 76px; top: 58px; width: 720px; display: flex; flex-direction: column; gap: 22px; }
+  .brand { display: flex; align-items: center; gap: 14px; font: 700 28px 'Bricolage Grotesque'; }
+  .logo { width: 52px; height: 52px; border-radius: 14px; background: var(--lime); color: var(--ink); display: grid; place-items: center; font: 800 22px 'Bricolage Grotesque'; }
+  .eyebrow { align-self: flex-start; font: 700 14px Geist; letter-spacing: 1.4px; text-transform: uppercase; color: var(--lime); border: 1px solid #3A3450; padding: 8px 14px; border-radius: 999px; }
+  h1 { font: 800 66px/1.02 'Bricolage Grotesque'; letter-spacing: -2px; }
   h1 em { font-style: normal; color: var(--lime); }
-  p { font: 400 24px/1.45 Geist; color: #C9C4DA; max-width: 640px; }
-  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
-  .chip { font: 600 16px Geist; padding: 9px 16px; border-radius: 999px; }
+  p { font: 400 22px/1.45 Geist; color: var(--muted); max-width: 660px; }
+  .row { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+  .chip { font: 600 15px Geist; padding: 8px 14px; border-radius: 999px; }
   .c1 { background: var(--scout-t); color: var(--scout); } .c2 { background: var(--res-t); color: var(--res); }
   .c3 { background: var(--vam-t); color: var(--vam); } .c4 { background: var(--alo-t); color: var(--alo); }
   .c5 { background: var(--wri-t); color: var(--wri); }
-  .cmd { font: 500 20px 'Geist Mono'; color: var(--lime); }
-  .cmd span { color: #8A84A3; }
-  .desk { position: absolute; left: 830px; top: 64px; width: 900px; height: 560px; border-radius: 26px; overflow: hidden; border: 1px solid #2E2940; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); }
+  .ch { display: flex; align-items: center; gap: 8px; font: 600 15px Geist; padding: 8px 14px; border-radius: 999px; border: 1px solid #3A3450; color: #fff; }
+  .ch svg { width: 18px; height: 18px; color: var(--lime); }
+  .desk { position: absolute; left: 860px; top: 52px; width: 860px; height: 420px; border-radius: 24px; overflow: hidden; border: 1px solid #2E2940; opacity: .92; }
   .desk img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
-  .phone { position: absolute; left: 1290px; top: 250px; width: 250px; height: 520px; border-radius: 36px; overflow: hidden; border: 8px solid #000; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); background: #fff; }
-  .phone img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
+  .term { position: absolute; left: 930px; top: 300px; width: 620px; background: #0E0C14; border: 1px solid #3A3450; border-radius: 22px; padding: 18px 20px; box-shadow: 0 40px 80px -20px rgba(0,0,0,.8); display: flex; flex-direction: column; gap: 10px; }
+  .term .t { display: flex; justify-content: space-between; align-items: center; }
+  .term .t b { font: 800 22px 'Bricolage Grotesque'; }
+  .term .t span { font: 600 12.5px 'Geist Mono'; color: var(--lime); border: 1px solid #3A3450; padding: 4px 10px; border-radius: 999px; }
+  pre { font: 400 13.5px/1.6 'Geist Mono', monospace; color: #E9E6F2; white-space: pre-wrap; }
+  .ok { color: #86EFAC; font-weight: 600; } .q { color: #C4B5FD; }
+  .ask { border: 1.5px solid var(--lime); border-radius: 12px; padding: 9px 12px; display: flex; align-items: center; gap: 10px; font: 500 13.5px Geist; }
+  .ask svg { width: 17px; height: 17px; color: var(--lime); }
+  .ask .btn { margin-left: auto; background: var(--lime); color: var(--ink); font: 700 12.5px Geist; padding: 5px 12px; border-radius: 999px; }
 </style></head>
 <body>
   <div class="left">
     <div class="brand"><span class="logo">SM</span>Sales Mama</div>
-    <h1>The AI sales<br>teammate that sends<br><em>only what you approve.</em></h1>
-    <p>Researches, scores and writes outreach for small B2B teams in Singapore, Malaysia and India. It lives in a git repo and runs inside Claude Code.</p>
-    <div class="chips">
-      <span class="chip c1">Scout</span><span class="chip c2">Researcher</span><span class="chip c3">VAM</span><span class="chip c4">Allocator</span><span class="chip c5">Writer</span>
-    </div>
-    <div class="cmd"><span>&gt;</span> /mama-day</div>
+    <span class="eyebrow">The sales harness for Claude Code</span>
+    <h1>Signal to send.<br><em>You approve each one.</em></h1>
+    <p>Scans the market overnight, scores and routes leads, drafts email and WhatsApp, and sends only what reps approve.</p>
+    <div class="row"><span class="chip c1">Scout</span><span class="chip c2">Researcher</span><span class="chip c3">VAM</span><span class="chip c4">Allocator</span><span class="chip c5">Writer</span></div>
+    <div class="row"><span class="ch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" />
+  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>Gmail</span><span class="ch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>WhatsApp</span><span class="ch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+  <path d="m9 12 2 2 4-4" /></svg>Approve-then-send</span></div>
   </div>
   <div class="desk"><img src="../screens/manager-run.jpg" alt=""></div>
-  <div class="phone"><img src="../screens/mobile-manager.jpg" alt=""></div>
+  <div class="term">
+    <div class="t"><b>Send review</b><span>/mama-send</span></div>
+<pre>[1] <span class="ok">READY</span> · email · harbourlight-foods
+    <span class="q">Subject: Your Tampines kitchen</span>
+[2] <span class="ok">READY</span> · whatsapp · lantern-lane-bakery
+    <span class="q">| Hi Daniel, congratulations on the new Jurong outlet…</span></pre>
+    <div class="ask"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.1 12 6" />
+  <path d="m5.1 8-2.9-.8" />
+  <path d="m6 12-1.9 2" />
+  <path d="M7.2 2.2 8 5.1" />
+  <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z" /></svg><span>Allow send.py --send … --items 1,2?</span><span class="btn">Approved</span></div>
+<pre>[1] <span class="ok">sent</span> · gmail   [2] <span class="ok">sent</span> · whatsapp</pre>
+  </div>
 </body></html>

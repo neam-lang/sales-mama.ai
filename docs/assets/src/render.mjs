@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const out = join(here, '..');
 const browser = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
-for (const [name, w, h, dpr = 2] of [['poster', 1200, 1700], ['hero', 1600, 680], ['logo', 512, 512, 1], ['social', 1280, 640, 1], ['send-review', 1600, 900]]) {
+for (const [name, w, h, dpr = 2] of [['send-review', 1600, 900], ['poster', 1200, 1700], ['hero', 1600, 680], ['logo', 512, 512, 1], ['social', 1280, 640, 1]]) {
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: dpr });
   await page.goto(pathToFileURL(join(here, `${name}.html`)).href, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);

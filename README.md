@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/hero.png" alt="Sales Mama: the AI sales teammate that sends only what you approve" width="100%">
+  <img src="docs/assets/hero.png" alt="Sales Mama: the sales harness for Claude Code. Signal to send, you approve each one." width="100%">
 </p>
 
 <p align="center">
@@ -12,14 +12,26 @@
 </p>
 
 <p align="center">
-  <b>An AI sales teammate for small B2B teams in Singapore, Malaysia and India.</b><br>
-  It finds the signal, researches the lead and writes the email or WhatsApp.<br>
-  Nothing goes out until the rep approves it.
+  <b>The sales harness for Claude Code.</b><br>
+  Skills, subagents, hooks and rules that turn Claude Code into a disciplined sales team<br>
+  for small B2B teams in Singapore, Malaysia and India. You approve every message.
 </p>
 
 <p align="center">
-  <img src="docs/assets/demo.gif" alt="Sales Mama console tour" width="92%">
+  <img src="docs/assets/demo.gif" alt="Console tour, then /mama-send: preview, approve, one email and one WhatsApp sent" width="92%">
+  <br><sub>Console tour, then a real <code>/mama-send</code> run: one email and one WhatsApp, approved and sent. Demo data, fake transport. <a href="docs/assets/demo.mp4">MP4</a></sub>
 </p>
+
+## 🧰 What's in the harness
+
+| Part | What it does |
+|---|---|
+| **18 skills** | `/mama-day`, `/mama-send`, `/mama-manager` … one command per job |
+| **3 subagents** | Scout, Researcher and VAM run in parallel, each with hard limits |
+| **3 hooks** | Session start (your queue), write guard (ownership, secrets), sync (git) |
+| **17 hard rules** | `AGENTS.md`: cite sources, approve-then-send, stay in your book |
+| **Scripts** | Scoring, allocation, checks and sending are deterministic Python |
+| **Evals** | 156 self-tests and 17 evals keep it honest |
 
 ## 🎯 Why
 

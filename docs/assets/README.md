@@ -10,7 +10,7 @@ Images used by the top-level README and the meetup talk. All names and numbers c
 | `architecture-light.svg`, `architecture-dark.svg` | Animated "How it works" infographic (slow; stops under reduced motion). Icons: Lucide, ISC |
 | `poster.png` | Meetup poster (2400 × 3400, prints well at A4/A3) |
 | `send-review.png` | Send review: real `send.py` output on the demo data (fake transport) |
-| `demo.gif`, `demo.mp4` | 36-second console tour: cockpit, book, source drawer, morning run |
+| `demo.gif`, `demo.mp4` | Console tour, then a replay of a real `/mama-send` run (`src/send-demo.html`): one email and one WhatsApp approved and sent, demo data, fake transport |
 | `screens/*.jpg` | Console screenshots (desktop at 1440 px, mobile at 390 px) |
 
 ## Regenerate
