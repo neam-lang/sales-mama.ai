@@ -19,7 +19,7 @@
 
 <p align="center">
   <img src="docs/assets/demo.gif" alt="Console tour, then /mama-send: preview, approve, one email and one WhatsApp sent" width="92%">
-  <br><sub>Console tour, then a real <code>/mama-send</code> run: one email and one WhatsApp, approved and sent. Demo data, fake transport. <a href="docs/assets/demo.mp4">MP4</a></sub>
+  <br><sub>Console tour, then a real <code>/mama-send</code> run: one email and one WhatsApp, approved and sent. Demo data, fake transport.</sub>
 </p>
 
 ## 🧰 What's in the harness

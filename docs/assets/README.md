@@ -1,6 +1,6 @@
 # Assets
 
-Images used by the top-level README and the meetup talk. All names and numbers come from the fictional demo data (`*.example` domains).
+Images used by the top-level README and the meetup talk. `demo.mp4` is for slides and local playback: GitHub does not play video files stored in a repo (only videos uploaded through its editor). All names and numbers come from the fictional demo data (`*.example` domains).
 
 | File | What |
 |---|---|
