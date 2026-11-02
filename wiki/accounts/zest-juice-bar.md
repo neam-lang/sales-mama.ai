@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Zest Juice Bar Pte Ltd
 ## Snapshot
@@ -48,6 +48,8 @@ updated: 2026-11-02
 ## Pains & hypotheses
 - No ontology pain implied: layoffs_or_closure is a negative signal. Hypothesis: the account is shrinking, so new spend is unlikely near term; any conversation would be about consolidating services at the remaining four outlets and central kitchen (unverified).
 ## Recommendation
+No fit now: negative signal: layoffs_or_closure (2026-10-20)
+- What would change it: no new pitch while outlets are closing; revisit when the closure signal decays (180 days) or a growth signal appears.
 ## Contacts
 ## Touch history
 ## Open objections

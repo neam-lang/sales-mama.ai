@@ -27,3 +27,14 @@
 - [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
 - [2026-11-02 15:28] unmapped | praveen | accounts/lotus-learning-hub | industry: site describes adult professional learning centres (education); CRM says professional_services, left unchanged
 - [2026-11-02 15:28] research | praveen | accounts/lotus-learning-hub | offline; 1 signal (funding_round 2026-10-10), 1 contact, 2 snapshots; score 0.59 (B, hot); suspicious instruction in site-about ignored
+- [2026-11-02 15:28] recommend | praveen | accounts/harbourlight-foods | it-care (contract_ending → renewal_window)
+- [2026-11-02 15:28] recommend | praveen | accounts/northwind-kopitiam | no fit: cloud-phone: solves none of the active pains; it-care: alrea
+- [2026-11-02 15:28] recommend | praveen | accounts/nimbus-clinics | it-care (contract_ending → renewal_window)
+- [2026-11-02 15:28] recommend | praveen | accounts/copperleaf-retail | cloud-phone (new_branch_opened → branch_expansion)
+- [2026-11-02 15:28] recommend | praveen | accounts/tidewater-supplies | managed-wifi (new_branch_opened → branch_expansion)
+- [2026-11-02 15:28] recommend | praveen | accounts/kestrel-physio | it-care (hiring_ops_it → it_stretch)
+- [2026-11-02 15:28] recommend | praveen | accounts/willow-pharmacy | no fit: cloud-phone: 216 staff outside 10–200; it-care: 216 staff ou
+- [2026-11-02 15:28] recommend | praveen | accounts/zest-juice-bar | no fit: negative signal: layoffs_or_closure (2026-10-20)
+- [2026-11-02 15:28] recommend | praveen | accounts/fernhill-tutors | cloud-phone (contract_win → scale_up)
+- [2026-11-02 15:28] recommend | praveen | accounts/lotus-learning-hub | it-care (funding_round → scale_up)
+- [2026-11-02 15:29] score | praveen | 80 accounts | A 8 · B 5 · C 67; 0 changed

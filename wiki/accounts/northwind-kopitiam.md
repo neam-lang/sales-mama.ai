@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Northwind Kopitiam Pte Ltd
 ## Snapshot
@@ -50,6 +50,11 @@ updated: 2026-11-02
 - renewal_window — implied by contract_ending (contract ends 2026-12-29) — [source](raw/crm/2026-11-01-demo-export-50.csv)
 - it_stretch — implied by hiring_ops_it: hiring in-house IT to cover POS, outlet networks and laptops across outlets suggests IT support is stretched — [source](raw/research/northwind-kopitiam/2026-11-02-careers.md)
 ## Recommendation
+No fit now: cloud-phone: solves none of the active pains; it-care: already owned; managed-wifi: solves none of the active pains
+- What would change it: a new signal implying a different pain, e.g. new_branch_opened or office_move (Cloud Phone / Managed WiFi).
+- Skipped cloud-phone: solves none of the active pains
+- Skipped it-care: already owned
+- Skipped managed-wifi: solves none of the active pains
 ## Contacts
 - [[contacts/daniel-lim-northwind-kopitiam]] — Daniel Lim, Operations Manager (ops_head) — [source](raw/research/northwind-kopitiam/2026-11-02-careers.md)
 ## Touch history

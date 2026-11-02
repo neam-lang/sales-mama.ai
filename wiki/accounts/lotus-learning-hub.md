@@ -22,7 +22,7 @@ contract_end: 2027-11-24
 signals: [funding_round]
 pains: [scale_up]
 products_owned: [cloud-phone]
-recommended: []
+recommended: [it-care]
 propensity: 0.67
 score: 0.59
 tier: B
@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Lotus Learning Hub Pte Ltd
 ## Snapshot
@@ -50,6 +50,11 @@ updated: 2026-11-02
 ## Pains & hypotheses
 - scale_up (from funding_round) — new capital earmarked for two more centres and systems; likely need phones and IT set up for new sites. Persona: finance_head, owner_md — [source](raw/research/lotus-learning-hub/2026-11-02-news-funding.md)
 ## Recommendation
+1. **it-care** (IT Care, SGD 5,000/yr typical) — score 0.45
+   - funding_round (2026-10-10) → raised S$3 million Series A to fund two new learning centres and systems [source](raw/research/lotus-learning-hub/2026-11-02-news-funding.md) → scale_up → it-care → no proof yet
+- Talk track: After the Series A, two more centres are on the way. IT Care gives you one helpdesk, device setup and backups for every centre as you scale.
+- Skipped cloud-phone: already owned
+- Skipped managed-wifi: solves none of the active pains
 ## Contacts
 - [[contacts/priya-nair-lotus-learning-hub]] — CFO (finance_head)
 ## Touch history

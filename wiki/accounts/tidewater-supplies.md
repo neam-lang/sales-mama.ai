@@ -22,7 +22,7 @@ contract_end: 2027-04-29
 signals: [new_branch_opened]
 pains: [branch_expansion]
 products_owned: [cloud-phone, it-care]
-recommended: []
+recommended: [managed-wifi]
 propensity: 0.92
 score: 0.72
 tier: A
@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Tidewater Supplies Pte Ltd
 ## Snapshot
@@ -48,6 +48,11 @@ updated: 2026-11-02
 ## Pains & hypotheses
 - branch_expansion — implied by new_branch_opened (2026-10-15): a second outlet needs phones, connectivity and IT set up and kept in step with the first site.
 ## Recommendation
+1. **managed-wifi** (Managed WiFi, SGD 4,000/yr typical) — score 0.65
+   - new_branch_opened (2026-10-15) → second outlet opened in Tanjong Pagar for trade customers [source](raw/research/tidewater-supplies/2026-11-02-site-outlet.md) → branch_expansion → managed-wifi → no proof yet
+- Talk track: The second outlet in Tanjong Pagar now serves trade customers six days a week. Managed WiFi gives it business-grade, monitored WiFi like your main site, so ordering and payments stay online.
+- Skipped cloud-phone: already owned
+- Skipped it-care: already owned
 ## Contacts
 - unknown (no named people in sources)
 ## Touch history

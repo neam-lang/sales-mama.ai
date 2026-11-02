@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Willow Pharmacy Pte Ltd
 ## Snapshot
@@ -49,6 +49,11 @@ updated: 2026-11-02
 ## Pains & hypotheses
 - branch_expansion — implied by new_branch_opened (Punggol, 2026-10-18): a ninth site needs network and phone setup consistent with the other branches; personas owner_md, ops_head. Hypothesis only. — [source](raw/research/willow-pharmacy/2026-11-02-news-branch.md)
 ## Recommendation
+No fit now: cloud-phone: 216 staff outside 10–200; it-care: 216 staff outside 10–200; managed-wifi: already owned
+- What would change it: a catalog product sized for 200+ staff, or a smaller entity in the group.
+- Skipped cloud-phone: 216 staff outside 10–200
+- Skipped it-care: 216 staff outside 10–200
+- Skipped managed-wifi: already owned
 ## Contacts
 - None found in sources (the only person named is a shopper, not staff).
 ## Touch history

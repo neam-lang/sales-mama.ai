@@ -22,7 +22,7 @@ contract_end: 2027-02-15
 signals: [contract_ending, new_branch_opened]
 pains: [renewal_window, branch_expansion]
 products_owned: []
-recommended: []
+recommended: [it-care, cloud-phone]
 propensity: 0.71
 score: 0.87
 tier: A
@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Harbourlight Foods
 ## Snapshot
@@ -50,6 +50,11 @@ updated: 2026-11-02
 - renewal_window — from contract_ending: current contract ends 2027-02-15, so a decision window is open now (CRM export).
 - branch_expansion — from new_branch_opened: a second central kitchen (Tampines, early 2027) needs fit-out of connectivity and systems before opening; timing overlaps the renewal window.
 ## Recommendation
+1. **it-care** (IT Care, SGD 5,000/yr typical) — score 0.99
+   - contract_ending (2026-11-01) → contract ends 2027-02-15 (CRM export) [source](raw/crm/2026-11-01-demo-export-50.csv) → renewal_window → it-care → no proof yet
+2. **cloud-phone** (Cloud Phone, SGD 6,000/yr typical) — score 0.69
+   - new_branch_opened (2026-10-20) → announced second central kitchen in Tampines, opening early 2027, doubling daily meal capacity [source](raw/research/harbourlight-foods/2026-11-02-site-news.md) → branch_expansion → cloud-phone → no proof yet
+- Talk track: Your current contract ends on 15 Feb 2027, so now is a good time to settle IT support for the next term. With a second central kitchen coming in Tampines, IT Care can cover device setup and backups at both kitchens from day one.
 ## Contacts
 - [[contacts/rachel-goh-harbourlight-foods]] — Managing Director (owner_md) — [source](raw/research/harbourlight-foods/2026-11-02-site-news.md)
 ## Touch history

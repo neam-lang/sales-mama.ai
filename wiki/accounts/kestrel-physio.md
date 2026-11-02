@@ -22,7 +22,7 @@ contract_end: 2027-06-05
 signals: [hiring_ops_it, exhibiting_at_event]
 pains: [it_stretch]
 products_owned: []
-recommended: []
+recommended: [it-care]
 propensity: 0.18
 score: 0.68
 tier: B
@@ -35,7 +35,7 @@ vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-02
+updated: '2026-11-02'
 ---
 # Kestrel Physio Pte Ltd
 ## Snapshot
@@ -50,6 +50,12 @@ updated: 2026-11-02
 - it_stretch — from hiring_ops_it: they are adding an IT role to cover booking systems, devices and backups, which suggests ops currently carries IT load across clinics.
 - (hook only) exhibiting_at_event — Allied Health Expo, 20–21 Nov 2026, is a timely reason to reach out; implies no pain.
 ## Recommendation
+1. **it-care** (IT Care, SGD 5,000/yr typical) — score 0.43
+   - hiring_ops_it (2026-10-28) → job post for an IT & Systems Executive to look after clinic booking systems, devices and backups [source](raw/research/kestrel-physio/2026-11-02-careers.md) → it_stretch → it-care → no proof yet
+- Hook: exhibiting_at_event (2026-10-27) — booth B12 at Allied Health Expo Singapore, 20–21 Nov 2026 — [source](raw/research/kestrel-physio/2026-11-02-event.md)
+- Talk track: You're hiring an IT & Systems Executive to look after booking systems, devices and backups. IT Care can cover the helpdesk and backups now, so the new hire can focus on the clinic systems. You could also say hello at booth B12 at Allied Health Expo (20–21 Nov).
+- Skipped cloud-phone: solves none of the active pains
+- Skipped managed-wifi: solves none of the active pains
 ## Contacts
 - [[contacts/marcus-teo-kestrel-physio]] — Head of Clinic Operations (ops_head) — [source](raw/research/kestrel-physio/2026-11-02-careers.md)
 ## Touch history
