@@ -12,9 +12,9 @@
 </p>
 
 <p align="center">
-  <b>The sales harness for Claude Code.</b><br>
-  Skills, subagents, hooks and rules that turn Claude Code into a disciplined sales team<br>
-  for small B2B teams in Singapore, Malaysia and India. You approve every message.
+  <b>An AI sales Harness for small B2B teams in Singapore, Malaysia and India.</b><br>
+  Skills, subagents, hooks and rules that turn Claude Code into a disciplined sales team.<br>
+  You approve every message.
 </p>
 
 <p align="center">
