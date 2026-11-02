@@ -14,37 +14,44 @@ owner:
 allocated_on:
 allocated_by:
 claimed_on:
-stage: new
+stage: researched
 industry: clinics
 employees: 191
 region:
 contract_end: 2027-06-05
-signals: []
-pains: []
+signals: [hiring_ops_it, exhibiting_at_event]
+pains: [it_stretch]
 products_owned: []
 recommended: []
 propensity: 0.18
-score: 0.32
-tier: C
-score_parts: {fit: 1.0, intent: 0.0, propensity: 0.18, engagement: 0.0}
+score: 0.68
+tier: B
+score_parts: {fit: 1.0, intent: 0.73, propensity: 0.18, engagement: 0.0}
 score_updated: '2026-11-02'
-risk: []
+risk: [hot]
 nba:
 nba_reason:
 vam_updated:
 next_action:
 next_action_due:
 last_touch:
-updated: 2026-11-01
+updated: 2026-11-02
 ---
 # Kestrel Physio Pte Ltd
 ## Snapshot
 - CRM fields from [crm export](raw/crm/2026-11-01-demo-export-50.csv) (2026-11-01)
+- Physiotherapy clinic operator; runs clinic booking systems, devices and backups in-house, under a Head of Clinic Operations — [source](raw/research/kestrel-physio/2026-11-02-careers.md) (2026-10-28)
+- Number of clinic locations: unknown
 ## Signals
 <!-- - signal_term — evidence (date) — [source](raw/...) -->
+- hiring_ops_it — job post for an IT & Systems Executive to look after clinic booking systems, devices and backups (2026-10-28) — [source](raw/research/kestrel-physio/2026-11-02-careers.md)
+- exhibiting_at_event — booth B12 at Allied Health Expo Singapore, 20–21 Nov 2026 (2026-10-27) — [source](raw/research/kestrel-physio/2026-11-02-event.md)
 ## Pains & hypotheses
+- it_stretch — from hiring_ops_it: they are adding an IT role to cover booking systems, devices and backups, which suggests ops currently carries IT load across clinics.
+- (hook only) exhibiting_at_event — Allied Health Expo, 20–21 Nov 2026, is a timely reason to reach out; implies no pain.
 ## Recommendation
 ## Contacts
+- [[contacts/marcus-teo-kestrel-physio]] — Head of Clinic Operations (ops_head) — [source](raw/research/kestrel-physio/2026-11-02-careers.md)
 ## Touch history
 ## Open objections
 ## VAM notes

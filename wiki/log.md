@@ -12,3 +12,10 @@
 - [2026-11-02 15:27] research | praveen | accounts/tidewater-supplies | 1 signal, 0 contacts, 1 snapshot (offline); score 0.72 (A, hot)
 - [2026-11-02 15:27] score | praveen | 1 accounts | A 1 · B 0 · C 0; 1 changed
 - [2026-11-02 15:27] research | praveen | accounts/northwind-kopitiam | 2 signals, 1 contact, 1 snapshot (offline); score 0.87 (A)
+- [2026-11-02 15:27] score | praveen | 1 accounts | A 1 · B 0 · C 0; 1 changed
+- [2026-11-02 15:27] score | praveen | 1 accounts | A 1 · B 0 · C 0; 1 changed
+- [2026-11-02 15:27] research | praveen | accounts/nimbus-clinics | 2 signals, 1 contact, 1 snapshot; score 0.86 (A)
+- [2026-11-02 15:27] research | praveen | accounts/harbourlight-foods | offline; 2 signals (contract_ending, new_branch_opened 2026-10-20), 1 contact, 1 snapshot; score 0.87 (A)
+- [2026-11-02 15:27] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
+- [2026-11-02 15:27] research | praveen | accounts/willow-pharmacy | 1 signal, 0 contacts, 1 snapshot (offline); score 0.56 (B)
+- [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
