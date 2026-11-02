@@ -41,7 +41,7 @@ updated: 2026-11-02
 ## Snapshot
 - CRM fields from [crm export](raw/crm/2026-11-01-demo-export-50.csv) (2026-11-01)
 - Juice bar chain with seven outlets and a central kitchen; plans to close three outlets by year end after weaker sales, keeping the central kitchen — [source](raw/research/zest-juice-bar/2026-11-02-news-closure.md) (2026-10-20)
-- CRM contract_end 2026-10-15 has already passed; renewal status: unknown
+- CRM contract_end 2026-10-15 has already passed; renewal status: unknown — [source](raw/crm/2026-11-01-demo-export-50.csv)
 ## Signals
 <!-- - signal_term — evidence (date) — [source](raw/...) -->
 - layoffs_or_closure — reported closing three of seven outlets by year end after weaker sales (2026-10-20) — [source](raw/research/zest-juice-bar/2026-11-02-news-closure.md)
