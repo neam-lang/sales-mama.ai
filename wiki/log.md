@@ -44,3 +44,4 @@
 - [2026-11-02 16:20] weekly | praveen | responses/patterns | manual promotion to approved (Phase 4 bootstrap, manager approved in session): first-hiring-it-stretch, first-funding-scale-up, first-office-move
 - [2026-11-02 16:22] reply | praveen | wiki/suppression.csv | suppressed email ops.test@nimbusclinics.example (unsubscribe); contacts 1, accounts stopped 0
 - [2026-11-02 16:22] brief | praveen | accounts/kestrel-physio | call brief for 2026-11-02
+- [2026-11-02 16:53] allocate | praveen | log/allocation/2026-11-02 | proposal: 15 leads, 1 reps, spread 0%
