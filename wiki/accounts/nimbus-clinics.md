@@ -10,9 +10,9 @@ domain: nimbusclinics.example
 city: Singapore
 group:
 source: crm
-owner:
-allocated_on:
-allocated_by:
+owner: praveen
+allocated_on: '2026-11-02'
+allocated_by: praveen
 claimed_on:
 stage: researched
 industry: clinics
@@ -58,7 +58,9 @@ updated: '2026-11-02'
 - Skipped cloud-phone: already owned
 ## Contacts
 - [[contacts/sarah-wong-nimbus-clinics]] — Medical Director (owner_md) — [source](raw/research/nimbus-clinics/2026-11-02-news-move.md)
+- [[contacts/ops-test-nimbus-clinics]] — test contact, do_not_contact — [source](raw/notes/2026-11-02-phase4-unsub-test-contact.md)
 ## Touch history
+- 2026-11-02 reply (unsubscribe) from ops-test-nimbus-clinics, suppressed — [reply](raw/replies/2026-11-02-nimbus-clinics-unsubscribe-test.md)
 ## Open objections
 ## VAM notes
 ## Call brief

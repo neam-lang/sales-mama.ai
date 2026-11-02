@@ -10,9 +10,9 @@ domain: kestrelphysio.example
 city: Singapore
 group:
 source: crm
-owner:
-allocated_on:
-allocated_by:
+owner: praveen
+allocated_on: '2026-11-02'
+allocated_by: praveen
 claimed_on:
 stage: researched
 industry: clinics
@@ -61,6 +61,19 @@ updated: '2026-11-02'
 ## Touch history
 ## Open objections
 ## VAM notes
-## Call brief
+## Call brief (2026-11-02)
+**Who** — Kestrel Physio, physiotherapy clinic operator, SG (CRM: [crm export](raw/crm/2026-11-01-demo-export-50.csv)). Contact: Marcus Teo, Head of Clinic Operations (ops_head). Number of clinic locations: unknown.
+**Why now**
+- hiring_ops_it — job post for an IT & Systems Executive for clinic booking systems, devices and backups (2026-10-28) — [source](raw/research/kestrel-physio/2026-11-02-careers.md)
+- exhibiting_at_event (hook) — booth B12, Allied Health Expo Singapore, 20–21 Nov 2026 (2026-10-27) — [source](raw/research/kestrel-physio/2026-11-02-event.md)
+**What we believe** — hiring_ops_it → it_stretch (ops carries IT load across clinics) → **IT Care** (SGD 5,000/yr typical) → no proof yet.
+**History** — 2026-11-02 first email drafted (pattern first-hiring-it-stretch), not yet sent. No replies.
+**Likely objections** — "We're hiring someone for this" and "already have an IT vendor": no approved answer yet (library empty; seeding in progress).
+**Questions**
+1. Until the IT & Systems Executive starts, who looks after booking systems, devices and backups?
+2. How many clinics and devices does that role cover?
+3. What happens today when the booking system or a device fails during clinic hours?
+4. Once the hire starts, which tasks do you want them off (helpdesk, backups, device setup)?
+**Goal and next step** — Confirm the it_stretch pain and size it (clinics, devices). Propose a 30-minute IT Care scoping call, or a hello at booth B12 on 20–21 Nov.
 ## Meeting log & handover
 ## Next step

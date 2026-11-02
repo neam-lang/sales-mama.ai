@@ -38,3 +38,9 @@
 - [2026-11-02 15:28] recommend | praveen | accounts/fernhill-tutors | cloud-phone (contract_win → scale_up)
 - [2026-11-02 15:28] recommend | praveen | accounts/lotus-learning-hub | it-care (funding_round → scale_up)
 - [2026-11-02 15:29] score | praveen | 80 accounts | A 8 · B 5 · C 67; 0 changed
+- [2026-11-02 16:19] assign | praveen | accounts/kestrel-physio | assigned to praveen by manager approval (Phase 4 draft test; claim.py --assign is Phase 6)
+- [2026-11-02 16:19] assign | praveen | accounts/lotus-learning-hub | assigned to praveen by manager approval (Phase 4 draft test; claim.py --assign is Phase 6)
+- [2026-11-02 16:19] assign | praveen | accounts/nimbus-clinics | assigned to praveen by manager approval (Phase 4 draft test; claim.py --assign is Phase 6)
+- [2026-11-02 16:20] weekly | praveen | responses/patterns | manual promotion to approved (Phase 4 bootstrap, manager approved in session): first-hiring-it-stretch, first-funding-scale-up, first-office-move
+- [2026-11-02 16:22] reply | praveen | wiki/suppression.csv | suppressed email ops.test@nimbusclinics.example (unsubscribe); contacts 1, accounts stopped 0
+- [2026-11-02 16:22] brief | praveen | accounts/kestrel-physio | call brief for 2026-11-02

@@ -10,9 +10,9 @@ domain: lotuslearninghub.example
 city: Singapore
 group:
 source: crm
-owner:
-allocated_on:
-allocated_by:
+owner: praveen
+allocated_on: '2026-11-02'
+allocated_by: praveen
 claimed_on:
 stage: researched
 industry: professional_services
