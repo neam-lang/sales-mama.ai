@@ -24,10 +24,10 @@ pains: []
 products_owned: [managed-wifi]
 recommended: []
 propensity: 0.15
-score:
-tier:
-score_parts: {}
-score_updated:
+score: 0.22
+tier: C
+score_parts: {fit: 0.7, intent: 0.0, propensity: 0.15, engagement: 0.0}
+score_updated: '2026-11-02'
 risk: []
 nba:
 nba_reason:

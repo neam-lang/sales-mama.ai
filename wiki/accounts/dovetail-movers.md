@@ -24,10 +24,10 @@ pains: []
 products_owned: [it-care]
 recommended: []
 propensity: 0.22
-score:
-tier:
-score_parts: {}
-score_updated:
+score: 0.82
+tier: A
+score_parts: {fit: 1.0, intent: 0.99, propensity: 0.22, engagement: 0.0}
+score_updated: '2026-11-02'
 risk: []
 nba:
 nba_reason:

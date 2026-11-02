@@ -24,10 +24,10 @@ pains: []
 products_owned: [cloud-phone]
 recommended: []
 propensity: 0.85
-score:
-tier:
-score_parts: {}
-score_updated:
+score: 0.27
+tier: C
+score_parts: {fit: 0.6, intent: 0.0, propensity: 0.85, engagement: 0.0}
+score_updated: '2026-11-02'
 risk: []
 nba:
 nba_reason:
