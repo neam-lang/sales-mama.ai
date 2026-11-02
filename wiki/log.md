@@ -6,3 +6,9 @@
 - [2026-11-01 16:09] resolve | praveen | run 2026-11-01-1607 | 38 items: 7 linked, 0 review, 30 new_lead, 0 dropped, 0 rejected
 - [2026-11-01 16:12] scan | praveen | run 2026-11-01-1607 | 38 items: 7 linked, 0 review, 30 new_lead, 0 dropped; 1 event (intralogistex-singapore-2026); news 0 in window; GeBIZ 0 (data ends 2026-03-31); ACRA capped at 30
 - [2026-11-02 15:14] score | praveen | 80 accounts | A 7 · B 0 · C 73; 80 changed
+- [2026-11-02 15:27] score | praveen | 1 accounts | A 1 · B 0 · C 0; 1 changed
+- [2026-11-02 15:27] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
+- [2026-11-02 15:27] research | praveen | accounts/copperleaf-retail | 1 signal, 0 contacts, 1 snapshot (offline); score 0.67 (B)
+- [2026-11-02 15:27] research | praveen | accounts/tidewater-supplies | 1 signal, 0 contacts, 1 snapshot (offline); score 0.72 (A, hot)
+- [2026-11-02 15:27] score | praveen | 1 accounts | A 1 · B 0 · C 0; 1 changed
+- [2026-11-02 15:27] research | praveen | accounts/northwind-kopitiam | 2 signals, 1 contact, 1 snapshot (offline); score 0.87 (A)
