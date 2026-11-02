@@ -21,3 +21,6 @@
 - [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
 - [2026-11-02 15:28] research | praveen | accounts/kestrel-physio | offline; 2 signals (hiring_ops_it 2026-10-28, exhibiting_at_event 2026-10-27), 1 contact, 2 snapshots; score 0.68 (B, hot)
 - [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
+- [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 0 · C 1; 0 changed
+- [2026-11-02 15:28] research | praveen | accounts/fernhill-tutors | 2 signals, 0 contacts, 2 snapshots (offline); score 0.67 (B, hot)
+- [2026-11-02 15:28] research | praveen | accounts/zest-juice-bar | offline; 1 signal (layoffs_or_closure 2026-10-20, negative), 0 contacts, 1 snapshot; score 0.36 (C)
