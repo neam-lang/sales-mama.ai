@@ -1,0 +1,122 @@
+<!doctype html>
+<!-- Sales Mama meetup poster. Render: node docs/assets/src/render.mjs (see docs/assets/README.md). -->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=block" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+  :root { --ground:#F6F4FF; --ink:#16131F; --muted:#5B5670; --lime:#C8F031; --mama:#6D28D9; --mama-t:#EFE8FF;
+    --scout:#1D4ED8; --scout-t:#E5EDFF; --res:#0F766E; --res-t:#DDF5F1; --vam:#BE185D; --vam-t:#FFE6F1;
+    --wri:#C2410C; --wri-t:#FFEDE0; --alo:#15803D; --alo-t:#E2F6E8; }
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1200px; height: 1700px; background: var(--ground); color: var(--ink); font-family: Geist, system-ui, sans-serif; padding: 64px 72px; display: flex; flex-direction: column; gap: 28px; overflow: hidden; }
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 16px; font: 700 34px 'Bricolage Grotesque'; }
+  .logo { width: 60px; height: 60px; border-radius: 16px; background: var(--ink); color: var(--lime); display: grid; place-items: center; font: 800 26px 'Bricolage Grotesque'; }
+  .event { font: 600 20px Geist; padding: 12px 22px; border-radius: 999px; background: var(--ink); color: #fff; }
+  .event b { color: var(--lime); font-weight: 600; }
+  h1 { font: 800 86px/0.98 'Bricolage Grotesque'; letter-spacing: -2.5px; }
+  h1 .hl { background: var(--lime); padding: 0 14px; border-radius: 18px; }
+  .sub { font: 400 25px/1.42 Geist; color: var(--muted); max-width: 980px; }
+  .sub b { color: var(--ink); font-weight: 600; }
+  .vs { display: grid; grid-template-columns: 1fr 1fr; border-radius: 28px; overflow: hidden; }
+  .vs > div { padding: 30px 34px 32px; }
+  .pain { background: #fff; }
+  .fix { background: var(--ink); color: #fff; }
+  .vs h3 { font: 700 15px Geist; letter-spacing: 1.6px; text-transform: uppercase; margin-bottom: 18px; }
+  .pain h3 { color: #B91C1C; } .fix h3 { color: var(--lime); }
+  .vs ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .vs li { font: 500 21px/1.3 Geist; display: flex; gap: 14px; align-items: baseline; }
+  .vs li::before { content: ''; flex: 0 0 10px; height: 10px; border-radius: 50%; transform: translateY(-2px); }
+  .pain li::before { background: #F3B4B4; } .fix li::before { background: var(--lime); }
+  .flow { display: flex; align-items: stretch; gap: 10px; }
+  .step { flex: 1; border-radius: 22px; padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .step .who { font: 700 13px Geist; letter-spacing: 1.2px; text-transform: uppercase; }
+  .step .what { font: 700 21px/1.15 'Bricolage Grotesque'; }
+  .arrow { align-self: center; color: #A49DBA; font: 700 22px Geist; }
+  .s1 { background: var(--scout-t); color: var(--scout); } .s2 { background: var(--res-t); color: var(--res); }
+  .s3 { background: var(--vam-t); color: var(--vam); } .s4 { background: var(--alo-t); color: var(--alo); }
+  .s5 { background: var(--wri-t); color: var(--wri); } .s6 { background: var(--ink); color: var(--lime); }
+  .s6 .what { color: #fff; }
+  .shot { flex: 1; min-height: 0; border-radius: 26px; overflow: hidden; border: 1px solid #E4DFF5; box-shadow: 0 30px 60px -30px rgba(22,19,31,.35); background: #fff; position: relative; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
+  .shot .tag { position: absolute; right: 22px; bottom: 20px; font: 600 16px Geist; background: var(--ink); color: #fff; padding: 9px 16px; border-radius: 999px; }
+  .shot .tag b { color: var(--lime); font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .stat { background: #fff; border-radius: 22px; padding: 18px 20px; }
+  .stat .n { font: 800 46px/1 'Bricolage Grotesque'; color: var(--mama); }
+  .stat .l { font: 500 16px Geist; color: var(--muted); margin-top: 6px; }
+  .foot { display: flex; align-items: center; gap: 28px; }
+  .foot .line { flex: 1; }
+  .foot .big { font: 700 30px/1.15 'Bricolage Grotesque'; }
+  .foot .url { font: 500 20px 'Geist Mono'; color: var(--mama); margin-top: 8px; }
+  .foot .by { font: 500 18px Geist; color: var(--muted); margin-top: 6px; }
+  #qr { width: 132px; height: 132px; background: #fff; border-radius: 18px; padding: 10px; }
+  #qr img, #qr svg { width: 100%; height: 100%; display: block; }
+</style></head>
+<body>
+  <div class="top">
+    <div class="brand"><span class="logo">SM</span>Sales Mama</div>
+    <div class="event">Meetup talk · <b>Wed 4 Nov 2026</b></div>
+  </div>
+
+  <h1>Your sales team's<br>morning, <span class="hl">done</span><br>before coffee.</h1>
+
+  <p class="sub">An agentic sales assistant for small B2B teams in <b>Singapore, Malaysia and India</b>.
+    It watches the market overnight, researches and scores every lead, and writes the first email.
+    <b>People press send.</b></p>
+
+  <div class="vs">
+    <div class="pain">
+      <h3>The sales problem</h3>
+      <ul>
+        <li>Leads go cold in the CRM</li>
+        <li>Research eats the selling hours</li>
+        <li>Follow-ups slip through the cracks</li>
+        <li>Leads handed out by gut feel</li>
+        <li>Generic emails nobody answers</li>
+      </ul>
+    </div>
+    <div class="fix">
+      <h3>What Sales Mama does</h3>
+      <ul>
+        <li>Scans news, tenders and registries nightly</li>
+        <li>Researches with cited sources only</li>
+        <li>A virtual account manager per book</li>
+        <li>Explainable scores, fair allocation</li>
+        <li>Drafts from a real signal, in your voice</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="step s1"><span class="who">Scout</span><span class="what">Spot the signal</span></div><span class="arrow">→</span>
+    <div class="step s2"><span class="who">Researcher</span><span class="what">Cite the facts</span></div><span class="arrow">→</span>
+    <div class="step s3"><span class="who">VAM</span><span class="what">Watch the book</span></div><span class="arrow">→</span>
+    <div class="step s4"><span class="who">Allocator</span><span class="what">Route the lead</span></div><span class="arrow">→</span>
+    <div class="step s5"><span class="who">Writer</span><span class="what">Draft the email</span></div><span class="arrow">→</span>
+    <div class="step s6"><span class="who">You</span><span class="what">Press send</span></div>
+  </div>
+
+  <div class="shot"><img src="../screens/manager-wide.jpg" alt=""><span class="tag">Manager cockpit · <b>/mama-manager</b></span></div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">17</div><div class="l">skills</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">subagent types</div></div>
+    <div class="stat"><div class="n">17</div><div class="l">hard rules</div></div>
+    <div class="stat"><div class="n">135</div><div class="l">self-tests passing</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">servers, databases</div></div>
+  </div>
+
+  <div class="foot">
+    <div class="line">
+      <div class="big">Runs inside Claude Code. The repo is the system.</div>
+      <div class="url">github.com/neam-lang/sales-mama.ai</div>
+      <div class="by">Praveen Govindaraj</div>
+    </div>
+    <div id="qr"></div>
+  </div>
+<script>
+  const q = qrcode(0, 'M'); q.addData('https://github.com/neam-lang/sales-mama.ai'); q.make();
+  document.getElementById('qr').innerHTML = q.createSvgTag({ margin: 0, scalable: true });
+</script>
+</body></html>

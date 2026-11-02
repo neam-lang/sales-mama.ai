@@ -1,0 +1,41 @@
+<!doctype html>
+<!-- Sales Mama README hero banner. Render: node docs/assets/src/render.mjs (see docs/assets/README.md). -->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+  :root { --ground:#F6F4FF; --ink:#16131F; --muted:#5B5670; --lime:#C8F031; --mama:#6D28D9;
+    --scout:#1D4ED8; --scout-t:#E5EDFF; --res:#0F766E; --res-t:#DDF5F1; --vam:#BE185D; --vam-t:#FFE6F1;
+    --wri:#C2410C; --wri-t:#FFEDE0; --alo:#15803D; --alo-t:#E2F6E8; }
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1600px; height: 680px; background: var(--ink); color: #fff; font-family: Geist, system-ui, sans-serif; overflow: hidden; position: relative; }
+  .left { position: absolute; left: 80px; top: 70px; width: 700px; display: flex; flex-direction: column; gap: 26px; }
+  .brand { display: flex; align-items: center; gap: 16px; font: 700 30px 'Bricolage Grotesque'; }
+  .logo { width: 56px; height: 56px; border-radius: 15px; background: var(--lime); color: var(--ink); display: grid; place-items: center; font: 800 24px 'Bricolage Grotesque'; }
+  h1 { font: 800 68px/1.02 'Bricolage Grotesque'; letter-spacing: -2px; }
+  h1 em { font-style: normal; color: var(--lime); }
+  p { font: 400 24px/1.45 Geist; color: #C9C4DA; max-width: 640px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { font: 600 16px Geist; padding: 9px 16px; border-radius: 999px; }
+  .c1 { background: var(--scout-t); color: var(--scout); } .c2 { background: var(--res-t); color: var(--res); }
+  .c3 { background: var(--vam-t); color: var(--vam); } .c4 { background: var(--alo-t); color: var(--alo); }
+  .c5 { background: var(--wri-t); color: var(--wri); }
+  .cmd { font: 500 20px 'Geist Mono'; color: var(--lime); }
+  .cmd span { color: #8A84A3; }
+  .desk { position: absolute; left: 830px; top: 64px; width: 900px; height: 560px; border-radius: 26px; overflow: hidden; border: 1px solid #2E2940; box-shadow: 0 40px 80px -30px rgba(0,0,0,.6); }
+  .desk img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
+  .phone { position: absolute; left: 1290px; top: 250px; width: 250px; height: 520px; border-radius: 36px; overflow: hidden; border: 8px solid #000; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); background: #fff; }
+  .phone img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
+</style></head>
+<body>
+  <div class="left">
+    <div class="brand"><span class="logo">SM</span>Sales Mama</div>
+    <h1>The AI sales<br>teammate that<br><em>drafts, never sends.</em></h1>
+    <p>Researches, scores and writes outreach for small B2B teams in Singapore, Malaysia and India. It lives in a git repo and runs inside Claude Code.</p>
+    <div class="chips">
+      <span class="chip c1">Scout</span><span class="chip c2">Researcher</span><span class="chip c3">VAM</span><span class="chip c4">Allocator</span><span class="chip c5">Writer</span>
+    </div>
+    <div class="cmd"><span>&gt;</span> /mama-day</div>
+  </div>
+  <div class="desk"><img src="../screens/manager-run.jpg" alt=""></div>
+  <div class="phone"><img src="../screens/mobile-manager.jpg" alt=""></div>
+</body></html>
