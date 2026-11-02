@@ -4,6 +4,8 @@ Images used by the top-level README and the meetup talk. All names and numbers c
 
 | File | What |
 |---|---|
+| `logo.png` | Square logo (512 × 512, transparent corners) |
+| `social-preview.png` | GitHub social preview (1280 × 640). Upload in repo **Settings → General → Social preview** |
 | `hero.png` | README banner |
 | `architecture-light.svg`, `architecture-dark.svg` | Animated "How it works" infographic (slow; stops under reduced motion). Icons: Lucide, ISC |
 | `poster.png` | Meetup poster (2400 × 3400, prints well at A4/A3) |
@@ -17,7 +19,7 @@ Screens and the GIF come from the console's **replay mode**, which renders recor
 npm run console                                   # shell 1 → http://localhost:4173
 npm i --no-save playwright-core && npx playwright install chromium
 node docs/assets/src/tour.mjs /tmp/sm-tour        # stills in shots/, GIF frames in frames/
-node docs/assets/src/render.mjs                   # poster.png and hero.png from src/*.html
+node docs/assets/src/render.mjs                   # poster, hero, logo and social preview from src/*.html
 npm i --no-save lucide-static@0.460.0
 python3 docs/assets/src/architecture.py node_modules/lucide-static/icons   # the two architecture SVGs
 ```
