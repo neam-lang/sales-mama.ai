@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 868" width="1280" height="868" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+<title id="t">How Sales Mama works</title>
+<desc id="d">Overnight, scouts find signals, resolve.py links them to accounts, score.py tiers them, VAMs set next steps and allocate.py proposes a split. At 08:30 the manager approves. At 08:45 each rep runs /mama-day: research, recommend, draft, saved in their own mailbox. In the send window a person presses send; replies, handover and the weekly review feed back into tomorrow's scores.</desc>
+<style>
+  .flow { stroke-dasharray: 3 7; animation: flow 2.8s linear infinite; }
+  .loop { stroke-dasharray: 2 8; animation: flow 4s linear infinite; }
+  .glow { opacity: 0; animation: glow 15s ease-in-out infinite; }
+  .pulse { animation: pulse 2.4s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  @keyframes flow { to { stroke-dashoffset: -40; } }
+  @keyframes glow { 0% { opacity: 0; } 2% { opacity: 1; } 9% { opacity: 1; } 13% { opacity: 0; } 100% { opacity: 0; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+  @media (prefers-reduced-motion: reduce) { .flow, .loop, .glow, .pulse { animation: none; } }
+</style>
+<defs><marker id="ah-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1.5 1.5L8.5 5L1.5 8.5" fill="none" stroke="#6E6787" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="1280" height="868" rx="28" fill="#0F0D16"/>
+<text x="40" y="52" font-size="26" font-weight="800" fill="#F4F2FA" letter-spacing="-0.5">How Sales Mama works</text>
+<text x="40" y="78" font-size="14.5" fill="#A9A3BE">One loop a day. Agents prepare, people decide.</text>
+<rect x="40" y="108" width="920" height="160" rx="24" fill="#17141F" stroke="#2A2538"/>
+<rect x="58" y="124" width="273" height="28" rx="14" fill="#2A1B4D"/>
+<g transform="translate(68.0,130.0) scale(0.6667)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></g>
+<text x="92" y="143" font-size="12.5" font-weight="700" fill="#C4B5FD">02:00 · Overnight, on the runner</text>
+<circle class="pulse" cx="345" cy="138" r="5" fill="#C8F031"/>
+<rect x="40" y="288" width="920" height="160" rx="24" fill="#17141F" stroke="#2A2538"/>
+<rect x="58" y="304" width="152" height="28" rx="14" fill="#2A1B4D"/>
+<g transform="translate(68.0,310.0) scale(0.6667)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+  <circle cx="9" cy="7" r="4" />
+  <polyline points="16 11 18 13 22 9" /></g>
+<text x="92" y="323" font-size="12.5" font-weight="700" fill="#C4B5FD">08:30 · Manager</text>
+<rect x="40" y="468" width="920" height="160" rx="24" fill="#17141F" stroke="#2A2538"/>
+<rect x="58" y="484" width="160" height="28" rx="14" fill="#2A1B4D"/>
+<g transform="translate(68.0,490.0) scale(0.6667)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" />
+  <path d="M12 2v2" />
+  <path d="M12 20v2" />
+  <path d="m4.93 4.93 1.41 1.41" />
+  <path d="m17.66 17.66 1.41 1.41" />
+  <path d="M2 12h2" />
+  <path d="M20 12h2" />
+  <path d="m6.34 17.66-1.41 1.41" />
+  <path d="m19.07 4.93-1.41 1.41" /></g>
+<text x="92" y="503" font-size="12.5" font-weight="700" fill="#C4B5FD">08:45 · Each rep</text>
+<rect x="40" y="648" width="920" height="160" rx="24" fill="#17141F" stroke="#2A2538"/>
+<rect x="240" y="664" width="224" height="28" rx="14" fill="#2A1B4D"/>
+<g transform="translate(250.0,670.0) scale(0.6667)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+  <path d="m21.854 2.147-10.94 10.939" /></g>
+<text x="274" y="683" font-size="12.5" font-weight="700" fill="#C4B5FD">09:00–11:30 · Send window</text>
+<rect x="70" y="344" width="500" height="78" rx="18" fill="#2B1D14"/>
+<g transform="translate(88.0,371.0) scale(1.0000)" fill="none" stroke="#FDBA74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+  <path d="M7 11V7a5 5 0 0 1 10 0v4" /></g>
+<text x="126" y="375" font-size="14" font-weight="700" fill="#FDBA74">Human gate</text>
+<text x="126" y="395" font-size="12.5" fill="#FDBA74">Nothing is assigned until the manager approves.</text>
+<text x="126" y="411" font-size="12.5" fill="#FDBA74">Unsure company matches wait in the review queue.</text>
+<path class="flow" d="M225.0 203.0 H241.5" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M402.5 203.0 H419.0" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M580.0 203.0 H596.5" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M757.5 203.0 H774.0" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M855 246 V340" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M855 426 V520" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M775.0 563.0 H758.5" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M597.5 563.0 H581.0" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M420.0 563.0 H403.5" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M242.5 563.0 H226.0" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M145 606 V700" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M225.0 743.0 H241.5" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M402.5 743.0 H419.0" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="flow" d="M580.0 743.0 H596.5" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<path class="loop" d="M757.5 743.0 H975 V96 H500.0 V160" fill="none" stroke="#6E6787" stroke-width="2" stroke-linecap="round" marker-end="url(#ah-dark)"/>
+<text x="967" y="90" text-anchor="end" font-size="12" font-weight="600" fill="#A9A3BE">calibrates tomorrow's scores</text>
+<rect class="glow" style="animation-delay:5.00s" x="595" y="339" width="340" height="88" rx="22" fill="none" stroke="#C4B5FD" stroke-width="2.5"/>
+<rect x="600" y="344" width="330" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="614" y="363" width="40" height="40" rx="12" fill="#2A1B4D"/>
+<g transform="translate(624.0,373.0) scale(0.8333)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+  <circle cx="9" cy="7" r="4" />
+  <polyline points="16 11 18 13 22 9" /></g>
+<text x="666" y="379" font-size="14.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#F4F2FA">/mama-manager</text>
+<text x="666" y="399" font-size="12.5" fill="#A9A3BE">approve allocation · clear review queue</text>
+<rect class="glow" style="animation-delay:0.00s" x="65.0" y="159" width="160" height="88" rx="22" fill="none" stroke="#93B4FF" stroke-width="2.5"/>
+<rect x="70.0" y="164" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="82.0" y="183" width="40" height="40" rx="12" fill="#1B2A52"/>
+<g transform="translate(92.0,193.0) scale(0.8333)" fill="none" stroke="#93B4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" />
+  <path d="M4 6h.01" />
+  <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35" />
+  <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67" />
+  <path d="M12 18h.01" />
+  <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="m13.41 10.59 5.66-5.66" /></g>
+<text x="132.0" y="199" font-size="14.5" font-weight="700" fill="#F4F2FA">Scout</text>
+<text x="132.0" y="219" font-size="11.5" fill="#A9A3BE">news · tenders</text>
+<rect class="glow" style="animation-delay:1.00s" x="242.5" y="159" width="160" height="88" rx="22" fill="none" stroke="#93B4FF" stroke-width="2.5"/>
+<rect x="247.5" y="164" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="259.5" y="183" width="40" height="40" rx="12" fill="#1B2A52"/>
+<g transform="translate(269.5,193.0) scale(0.8333)" fill="none" stroke="#93B4FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7A5 5 0 0 1 7 7h2" />
+  <path d="M15 7h2a5 5 0 1 1 0 10h-2" />
+  <line x1="8" x2="16" y1="12" y2="12" /></g>
+<text x="309.5" y="199" font-size="14.5" font-weight="700" fill="#F4F2FA">Resolve</text>
+<text x="309.5" y="219" font-size="11.5" fill="#A9A3BE">match ≥ 0.90</text>
+<rect class="glow" style="animation-delay:2.00s" x="420.0" y="159" width="160" height="88" rx="22" fill="none" stroke="#C4B5FD" stroke-width="2.5"/>
+<rect x="425.0" y="164" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="437.0" y="183" width="40" height="40" rx="12" fill="#2A1B4D"/>
+<g transform="translate(447.0,193.0) scale(0.8333)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 14 4-4" />
+  <path d="M3.34 19a10 10 0 1 1 17.32 0" /></g>
+<text x="487.0" y="199" font-size="14.5" font-weight="700" fill="#F4F2FA">Score</text>
+<text x="487.0" y="219" font-size="11.5" fill="#A9A3BE">tiers A · B · C</text>
+<rect class="glow" style="animation-delay:3.00s" x="597.5" y="159" width="160" height="88" rx="22" fill="none" stroke="#F9A8D4" stroke-width="2.5"/>
+<rect x="602.5" y="164" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="614.5" y="183" width="40" height="40" rx="12" fill="#3D1730"/>
+<g transform="translate(624.5,193.0) scale(0.8333)" fill="none" stroke="#F9A8D4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8" />
+  <rect width="16" height="12" x="4" y="8" rx="2" />
+  <path d="M2 14h2" />
+  <path d="M20 14h2" />
+  <path d="M15 13v2" />
+  <path d="M9 13v2" /></g>
+<text x="664.5" y="199" font-size="14.5" font-weight="700" fill="#F4F2FA">VAM</text>
+<text x="664.5" y="219" font-size="11.5" fill="#A9A3BE">risk · next step</text>
+<rect class="glow" style="animation-delay:4.00s" x="775.0" y="159" width="160" height="88" rx="22" fill="none" stroke="#86EFAC" stroke-width="2.5"/>
+<rect x="780.0" y="164" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="792.0" y="183" width="40" height="40" rx="12" fill="#143322"/>
+<g transform="translate(802.0,193.0) scale(0.8333)" fill="none" stroke="#86EFAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
+  <path d="m18 2 4 4-4 4" />
+  <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" />
+  <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" />
+  <path d="m18 14 4 4-4 4" /></g>
+<text x="842.0" y="199" font-size="14.5" font-weight="700" fill="#F4F2FA">Allocate</text>
+<text x="842.0" y="219" font-size="11.5" fill="#A9A3BE">fair proposal</text>
+<rect class="glow" style="animation-delay:6.00s" x="775.0" y="519" width="160" height="88" rx="22" fill="none" stroke="#C4B5FD" stroke-width="2.5"/>
+<rect x="780.0" y="524" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="792.0" y="543" width="40" height="40" rx="12" fill="#2A1B4D"/>
+<g transform="translate(802.0,553.0) scale(0.8333)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" />
+  <path d="M12 2v2" />
+  <path d="M12 20v2" />
+  <path d="m4.93 4.93 1.41 1.41" />
+  <path d="m17.66 17.66 1.41 1.41" />
+  <path d="M2 12h2" />
+  <path d="M20 12h2" />
+  <path d="m6.34 17.66-1.41 1.41" />
+  <path d="m19.07 4.93-1.41 1.41" /></g>
+<text x="842.0" y="559" font-size="13.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#F4F2FA">/mama-day</text>
+<text x="842.0" y="579" font-size="11.5" fill="#A9A3BE">one command</text>
+<rect class="glow" style="animation-delay:7.00s" x="597.5" y="519" width="160" height="88" rx="22" fill="none" stroke="#5EEAD4" stroke-width="2.5"/>
+<rect x="602.5" y="524" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="614.5" y="543" width="40" height="40" rx="12" fill="#12332E"/>
+<g transform="translate(624.5,553.0) scale(0.8333)" fill="none" stroke="#5EEAD4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" />
+  <path d="m21 21-4.3-4.3" /></g>
+<text x="664.5" y="559" font-size="14.5" font-weight="700" fill="#F4F2FA">Research</text>
+<text x="664.5" y="579" font-size="11.5" fill="#A9A3BE">cited facts</text>
+<rect class="glow" style="animation-delay:8.00s" x="420.0" y="519" width="160" height="88" rx="22" fill="none" stroke="#5EEAD4" stroke-width="2.5"/>
+<rect x="425.0" y="524" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="437.0" y="543" width="40" height="40" rx="12" fill="#12332E"/>
+<g transform="translate(447.0,553.0) scale(0.8333)" fill="none" stroke="#5EEAD4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+  <path d="M9 18h6" />
+  <path d="M10 22h4" /></g>
+<text x="487.0" y="559" font-size="13.5" font-weight="700" fill="#F4F2FA">Recommend</text>
+<text x="487.0" y="579" font-size="11.5" fill="#A9A3BE">product fit</text>
+<rect class="glow" style="animation-delay:9.00s" x="242.5" y="519" width="160" height="88" rx="22" fill="none" stroke="#FDBA74" stroke-width="2.5"/>
+<rect x="247.5" y="524" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="259.5" y="543" width="40" height="40" rx="12" fill="#3B2215"/>
+<g transform="translate(269.5,553.0) scale(0.8333)" fill="none" stroke="#FDBA74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9" />
+  <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" /></g>
+<text x="309.5" y="559" font-size="14.5" font-weight="700" fill="#F4F2FA">Draft</text>
+<text x="309.5" y="579" font-size="11.5" fill="#A9A3BE">in your tone</text>
+<rect class="glow" style="animation-delay:10.00s" x="65.0" y="519" width="160" height="88" rx="22" fill="none" stroke="#FDBA74" stroke-width="2.5"/>
+<rect x="70.0" y="524" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="82.0" y="543" width="40" height="40" rx="12" fill="#3B2215"/>
+<g transform="translate(92.0,553.0) scale(0.8333)" fill="none" stroke="#FDBA74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8" />
+  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+  <path d="m16 19 2 2 4-4" /></g>
+<text x="132.0" y="559" font-size="14.5" font-weight="700" fill="#F4F2FA">Mailbox</text>
+<text x="132.0" y="579" font-size="11.5" fill="#A9A3BE">draft, not sent</text>
+<rect class="glow" style="animation-delay:11.00s" x="65.0" y="699" width="160" height="88" rx="22" fill="none" stroke="#C8F031" stroke-width="2.5"/>
+<rect x="70.0" y="704" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="82.0" y="723" width="40" height="40" rx="12" fill="#C8F031"/>
+<g transform="translate(92.0,733.0) scale(0.8333)" fill="none" stroke="#16131F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+  <path d="m21.854 2.147-10.94 10.939" /></g>
+<text x="132.0" y="739" font-size="13.5" font-weight="700" fill="#F4F2FA">Press send</text>
+<text x="132.0" y="759" font-size="11.5" fill="#A9A3BE">by a person</text>
+<rect class="glow" style="animation-delay:12.00s" x="242.5" y="699" width="160" height="88" rx="22" fill="none" stroke="#C4B5FD" stroke-width="2.5"/>
+<rect x="247.5" y="704" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="259.5" y="723" width="40" height="40" rx="12" fill="#2A1B4D"/>
+<g transform="translate(269.5,733.0) scale(0.8333)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
+  <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></g>
+<text x="309.5" y="739" font-size="14.5" font-weight="700" fill="#F4F2FA">Replies</text>
+<text x="309.5" y="759" font-size="11.5" fill="#A9A3BE">triage replies</text>
+<rect class="glow" style="animation-delay:13.00s" x="420.0" y="699" width="160" height="88" rx="22" fill="none" stroke="#86EFAC" stroke-width="2.5"/>
+<rect x="425.0" y="704" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="437.0" y="723" width="40" height="40" rx="12" fill="#143322"/>
+<g transform="translate(447.0,733.0) scale(0.8333)" fill="none" stroke="#86EFAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 1 0 3-3" />
+  <path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4" />
+  <path d="m21 3 1 11h-2" />
+  <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" />
+  <path d="M3 4h8" /></g>
+<text x="487.0" y="739" font-size="14.5" font-weight="700" fill="#F4F2FA">Handover</text>
+<text x="487.0" y="759" font-size="11.5" fill="#A9A3BE">notes · CRM</text>
+<rect class="glow" style="animation-delay:14.00s" x="597.5" y="699" width="160" height="88" rx="22" fill="none" stroke="#C4B5FD" stroke-width="2.5"/>
+<rect x="602.5" y="704" width="150" height="78" rx="18" fill="#1D1928" stroke="#342E46"/>
+<rect x="614.5" y="723" width="40" height="40" rx="12" fill="#2A1B4D"/>
+<g transform="translate(624.5,733.0) scale(0.8333)" fill="none" stroke="#C4B5FD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+  <polyline points="16 7 22 7 22 13" /></g>
+<text x="664.5" y="739" font-size="14.5" font-weight="700" fill="#F4F2FA">Weekly</text>
+<text x="664.5" y="759" font-size="11.5" fill="#A9A3BE">calibrate · PR</text>
+<rect x="990" y="108" width="250" height="412" rx="24" fill="#1D1928" stroke="#342E46"/>
+<g transform="translate(1012.0,130.0) scale(0.8333)" fill="none" stroke="#C8F031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="6" y1="3" y2="15" />
+  <circle cx="18" cy="6" r="3" />
+  <circle cx="6" cy="18" r="3" />
+  <path d="M18 9a9 9 0 0 1-9 9" /></g>
+<text x="1042" y="146" font-size="15" font-weight="800" fill="#F4F2FA">The repo is the system</text>
+<rect x="1008" y="176" width="214" height="62" rx="16" fill="none" stroke="#342E46"/>
+<g transform="translate(1022.0,195.0) scale(0.9167)" fill="none" stroke="#C8F031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14" />
+  <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></g>
+<text x="1058" y="203" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#F4F2FA">knowledge/</text>
+<text x="1058" y="222" font-size="12" fill="#A9A3BE">truth · manager only</text>
+<rect x="1008" y="250" width="214" height="62" rx="16" fill="none" stroke="#342E46"/>
+<g transform="translate(1022.0,269.0) scale(0.9167)" fill="none" stroke="#C8F031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1" />
+  <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+  <path d="M10 12h4" /></g>
+<text x="1058" y="277" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#F4F2FA">raw/</text>
+<text x="1058" y="296" font-size="12" fill="#A9A3BE">sources · never edited</text>
+<rect x="1008" y="324" width="214" height="62" rx="16" fill="none" stroke="#342E46"/>
+<g transform="translate(1022.0,343.0) scale(0.9167)" fill="none" stroke="#C8F031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4" />
+  <path d="M2 6h4" />
+  <path d="M2 10h4" />
+  <path d="M2 14h4" />
+  <path d="M2 18h4" />
+  <path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" /></g>
+<text x="1058" y="351" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#F4F2FA">wiki/</text>
+<text x="1058" y="370" font-size="12" fill="#A9A3BE">memory · agents write</text>
+<rect x="1008" y="398" width="214" height="62" rx="16" fill="none" stroke="#342E46"/>
+<g transform="translate(1022.0,417.0) scale(0.9167)" fill="none" stroke="#C8F031" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12h-5" />
+  <path d="M15 8h-5" />
+  <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+  <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" /></g>
+<text x="1058" y="425" font-size="14" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" fill="#F4F2FA">log/</text>
+<text x="1058" y="444" font-size="12" fill="#A9A3BE">append-only activity</text>
+<text x="1012" y="500" font-size="12.5" font-weight="600" fill="#C8F031">0 servers · 0 databases · git sync</text>
+<rect x="990" y="540" width="250" height="268" rx="24" fill="#17141F" stroke="#2A2538"/>
+<g transform="translate(1012.0,562.0) scale(0.8333)" fill="none" stroke="#86EFAC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+  <path d="m9 12 2 2 4-4" /></g>
+<text x="1042" y="578" font-size="15" font-weight="800" fill="#F4F2FA">Guardrails</text>
+<circle cx="1020" cy="606" r="4" fill="#86EFAC"/>
+<text x="1034" y="610" font-size="13" fill="#F4F2FA">Drafts only, never sends</text>
+<circle cx="1020" cy="636" r="4" fill="#86EFAC"/>
+<text x="1034" y="640" font-size="13" fill="#F4F2FA">Every fact cites a source</text>
+<circle cx="1020" cy="666" r="4" fill="#86EFAC"/>
+<text x="1034" y="670" font-size="13" fill="#F4F2FA">Manager approves each lead</text>
+<circle cx="1020" cy="696" r="4" fill="#86EFAC"/>
+<text x="1034" y="700" font-size="13" fill="#F4F2FA">Suppression checked first</text>
+<circle cx="1020" cy="726" r="4" fill="#86EFAC"/>
+<text x="1034" y="730" font-size="13" fill="#F4F2FA">Scores computed by scripts</text>
+<circle cx="1020" cy="756" r="4" fill="#86EFAC"/>
+<text x="1034" y="760" font-size="13" fill="#F4F2FA">Web text is data, not orders</text>
+<text x="40" y="838" font-size="12.5" fill="#A9A3BE">Agents: Scout · Researcher · VAM · Writer · Allocator  —  maths in scripts, judgement in the LLM, decisions with people. Times shown for Singapore.</text>
+</svg>
