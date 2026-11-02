@@ -19,3 +19,5 @@
 - [2026-11-02 15:27] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
 - [2026-11-02 15:27] research | praveen | accounts/willow-pharmacy | 1 signal, 0 contacts, 1 snapshot (offline); score 0.56 (B)
 - [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
+- [2026-11-02 15:28] research | praveen | accounts/kestrel-physio | offline; 2 signals (hiring_ops_it 2026-10-28, exhibiting_at_event 2026-10-27), 1 contact, 2 snapshots; score 0.68 (B, hot)
+- [2026-11-02 15:28] score | praveen | 1 accounts | A 0 · B 1 · C 0; 1 changed
