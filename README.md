@@ -61,13 +61,15 @@ Small teams lose deals to busywork, not to competitors.
 ## ✅ Send review
 
 <p align="center">
-  <img src="docs/assets/send-review.png" alt="Send review: real send.py output on demo data" width="100%">
+  <img src="docs/assets/send-demo.gif" alt="/mama-send: preview two drafts, approve, one email and one WhatsApp sent and logged" width="100%">
 </p>
 
 1. `/mama-draft` writes the email or WhatsApp.
 2. `/mama-send` previews the batch: full text, every check, **READY** or **BLOCKED**.
 3. The rep picks ("send 1, 2") and clicks **Approve**.
 4. Sales Mama sends through Gmail or WhatsApp and logs every touch.
+
+<sub>Replay of a real run on demo data with the fake transport. Still version: <a href="docs/assets/send-review.png">send-review.png</a>.</sub>
 
 `send.py` refuses outside the send window, on holidays, to suppressed contacts, without WhatsApp opt-in, over quota, for the nightly runner, or if anything changed after the preview. Sending is **off** until the manager turns it on ([ADR-0007](docs/adr/0007-approve-then-send.md)).
 
