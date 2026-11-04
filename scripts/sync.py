@@ -27,7 +27,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-SYNC_DIRS = ("wiki", "raw", "log", "reps")
+SYNC_DIRS = ("wiki", "raw", "log", "reps", "company-check")
 GENERATED = ("wiki/index.md", "wiki/books")
 
 

@@ -7,7 +7,7 @@
   <img alt="Codex compatible" src="https://img.shields.io/badge/Codex-compatible-16131F?style=flat-square">
   <img alt="Approve-then-send" src="https://img.shields.io/badge/sending-approve%20then%20send-C2410C?style=flat-square">
   <img alt="Gmail and WhatsApp" src="https://img.shields.io/badge/channels-Gmail%20%C2%B7%20WhatsApp-0F766E?style=flat-square">
-  <img alt="Self-test 156 of 156" src="https://img.shields.io/badge/self--test-156%2F156-15803D?style=flat-square">
+  <img alt="Self-test 173 of 173" src="https://img.shields.io/badge/self--test-173%2F173-15803D?style=flat-square">
   <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/licence-Apache%202.0-5B5670?style=flat-square"></a>
 </p>
 
@@ -26,12 +26,12 @@
 
 | Part | What it does |
 |---|---|
-| **18 skills** | `/mama-day`, `/mama-send`, `/mama-manager` … one command per job |
-| **3 subagents** | Scout, Researcher and VAM run in parallel, each with hard limits |
+| **19 skills** | `/mama-day`, `/mama-send`, `/company-check` … one command per job |
+| **4 subagents** | Scout, Researcher, VAM and Verifier run in parallel, each with hard limits |
 | **3 hooks** | Session start (your queue), write guard (ownership, secrets), sync (git) |
 | **17 hard rules** | `AGENTS.md`: cite sources, approve-then-send, stay in your book |
 | **Scripts** | Scoring, allocation, checks and sending are deterministic Python |
-| **Evals** | 156 self-tests and 17 evals keep it honest |
+| **Evals** | 173 self-tests and 17 evals keep it honest |
 
 ## 🎯 Why
 
@@ -73,6 +73,27 @@ Small teams lose deals to busywork, not to competitors.
 
 `send.py` refuses outside the send window, on holidays, to suppressed contacts, without WhatsApp opt-in, over quota, for the nightly runner, or if anything changed after the preview. Sending is **off** until the manager turns it on ([ADR-0007](docs/adr/0007-approve-then-send.md)).
 
+## 🔎 Company check
+
+**Know a company is real before you spend a minute selling to it.**
+
+<p align="center">
+  <img src="docs/assets/company-check.png" alt="Company check: a Verified company and a Caution company side by side, with every rule and its reason" width="100%">
+</p>
+
+`/company-check <UEN or name>` checks any Singapore company against a local copy of ACRA, BCA, GeBIZ and HDB open data (~2.12M entities, refreshed monthly), then sends three `verifier` subagents to the web for identity, people and risk.
+
+| It checks | Rule |
+|---|---|
+| Live | ACRA status `Live Company` or `Live` only |
+| Filing | Annual return in the last 13 months |
+| Physical or virtual | Own address vs a shared registered address (20+ companies) or home-based |
+| Size | More than 3 employees, from evidence only (ACRA has no headcount) |
+| Outside signals | BCA contractor, GeBIZ supplier, website shows the UEN, recent activity |
+| Red flags | Adverse media, MAS alert, shell-like profile, frequent name changes |
+
+Verdicts: **Verified · Likely legitimate · Registry OK · Caution · Red flag · Not active**. `/company-check leads` turns the same data into a ranked list of new ICP leads, and CompanyData, RocketReach or Apollo can add headcount bands when connected. [How it works](company-check/README.md)
+
 ## 🖥️ Screens
 
 <table>
@@ -91,7 +112,7 @@ Small teams lose deals to busywork, not to competitors.
 ```bash
 git clone https://github.com/neam-lang/sales-mama.ai.git && cd sales-mama.ai
 python3 -m pip install --user pyyaml
-python3 scripts/selftest.py                 # 156/156 passed
+python3 scripts/selftest.py                 # 173/173 passed
 claude                                      # then type: Set me up for Sales Mama
 ```
 
@@ -160,7 +181,7 @@ Codex reads `AGENTS.md` and `.agents/skills/` (`$mama-day`). It has no hooks or 
 ## 📊 Quality
 
 ```bash
-python3 scripts/selftest.py   # 156/156
+python3 scripts/selftest.py   # 173/173
 python3 scripts/eval.py       # 13 pass · 0 fail · 8 pending
 python3 scripts/lint.py       # 0 errors
 ```

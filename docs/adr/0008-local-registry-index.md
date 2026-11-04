@@ -1,0 +1,6 @@
+# ADR-0008: A local, rebuildable registry index for company checks
+
+- **Status:** accepted (2026-11-05). A scoped exception to ADR-0002 (git as the database).
+- **Context:** `/company-check` needs to look up any of ~2.12M Singapore entities by UEN or name in under a second. The ACRA, BCA, GeBIZ and HDB open datasets are about 1 GB of CSV, refreshed monthly, and far too large for git or for scanning on every check.
+- **Decision:** `scripts/registry_data.py` downloads the datasets from data.gov.sg into `company-check/data/` (git-ignored) and builds `registry.sqlite` with the standard-library `sqlite3` (FTS5 for names). It is a cache of public open data, never the system of record: it can be deleted and rebuilt at any time, nothing else reads it, and no account, touch or decision lives in it. Reports and web evidence, which the team must see, are plain files in `company-check/reports/` and `company-check/evidence/`, committed by `sync.py` like the rest of the wiki.
+- **Consequences:** each machine downloads the data once and refreshes it monthly (ACRA updates mid-month). A report states the dataset month it used, so it can be reproduced. Reports carry the Singapore Open Data Licence attribution. Home addresses of home-based businesses are never written into reports (rule 8).

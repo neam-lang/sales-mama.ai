@@ -2,6 +2,8 @@
 
     python3 scripts/connect.py gmail [--client-file ~/Downloads/client_secret_….json]
     ! python3 scripts/connect.py whatsapp      # type the token yourself; it never reaches the chat
+    ! python3 scripts/connect.py companydata   # company data vendors for /company-check (API key)
+    python3 scripts/connect.py rocketreach | apollo   # OAuth: then sign in with /mcp
     python3 scripts/connect.py status [--json]
 
 gmail     Opens Google sign-in in the browser (loopback + PKCE); you click Allow.
@@ -12,7 +14,11 @@ gmail     Opens Google sign-in in the browser (loopback + PKCE); you click Allow
 whatsapp  Asks for the phone-number ID, the WhatsApp Business Account ID and a System
           User token, checks them against the Cloud API, compares approved templates
           with knowledge/whatsapp_templates.yaml and saves to ~/.config/sales-mama/whatsapp.json.
-status    Sending switch, Gmail and WhatsApp state and template coverage. No secrets printed.
+companydata | rocketreach | apollo
+          Adds the vendor's hosted MCP server to YOUR Claude Code config (`claude mcp add --scope user`),
+          never to the repo. CompanyData asks for an API key; RocketReach and Apollo sign in with OAuth
+          (type /mcp, pick the server, Authenticate). Paid lookups ask before they run (.claude/settings.json).
+status    Sending switch, Gmail and WhatsApp state, template coverage and vendor MCP servers. No secrets printed.
 
 Connecting does not send anything. Sending needs knowledge/sending.yaml `enabled: true`
 (manager) and the rep's approval of each batch in /mama-send.
@@ -22,11 +28,13 @@ from __future__ import annotations
 import argparse
 import base64
 import getpass
+import subprocess
 import hashlib
 import http.server
 import json
 import os
 import secrets
+import shutil
 import sys
 import threading
 import urllib.parse
@@ -167,6 +175,58 @@ def connect_whatsapp(root: Path, phone_id: str | None, waba_id: str | None) -> i
 
 
 # ----------------------------------------------------------------------------
+# Company-data vendors (hosted MCP servers, /company-check)
+# ----------------------------------------------------------------------------
+def vendors_cfg(root: Path) -> dict:
+    data = mc.load_yaml(root / "knowledge" / "company_check.yaml", {}) or {}
+    v = data.get("vendors") if isinstance(data, dict) else None
+    return v if isinstance(v, dict) else {}
+
+
+def vendor_status(root: Path) -> dict:
+    """Which vendor MCP servers are configured (user ~/.claude.json or project .mcp.json); no secrets."""
+    names: set[str] = set()
+    for p in (Path.home() / ".claude.json", root / ".mcp.json"):
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        names |= set((data.get("mcpServers") or {}).keys())
+        for proj in (data.get("projects") or {}).values():
+            if isinstance(proj, dict):
+                names |= set((proj.get("mcpServers") or {}).keys())
+    return {n: n in names for n in vendors_cfg(root)}
+
+
+def connect_vendor(root: Path, name: str) -> int:
+    cfg = vendors_cfg(root).get(name) or {}
+    if not cfg.get("url"):
+        print(f"{name} is not listed under vendors: in knowledge/company_check.yaml")
+        return 1
+    cmd = ["claude", "mcp", "add", "--transport", "http", "--scope", "user", name, cfg["url"]]
+    shown = list(cmd)
+    if cfg.get("auth") == "api_key":
+        key = os.environ.get(f"{name.upper()}_API_KEY") or getpass.getpass(f"{name} API key (hidden): ").strip()
+        if not key:
+            print(f"{name} not connected: no API key.")
+            return 1
+        cmd += ["--header", f"x-api-key: {key}"]
+        shown += ["--header", "x-api-key: ****"]
+    if not shutil.which("claude"):
+        print("The `claude` CLI isn't on PATH. Run this yourself:\n  " + " ".join(shown))
+        return 1
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        print(f"{name} not connected: {(res.stderr or res.stdout).strip()[:300]}")
+        return 1
+    print(f"{name} added to your Claude Code MCP servers (user scope, not the repo).")
+    if cfg.get("auth") == "oauth":
+        print(f"Next: in Claude Code type /mcp, pick {name}, choose Authenticate, and sign in.")
+    print("Start a new Claude Code session so the tools load. Paid lookups will ask before running.")
+    return 0
+
+
+# ----------------------------------------------------------------------------
 # Status
 # ----------------------------------------------------------------------------
 def status(root: Path) -> dict:
@@ -179,6 +239,7 @@ def status(root: Path) -> dict:
             "channels": {"email": bool((cfg.get("channels") or {}).get("email", True)),
                          "whatsapp": bool((cfg.get("channels") or {}).get("whatsapp", True))},
             "gmail": gm, "whatsapp": wa, "whatsapp_templates": len(wa_templates_cfg(root)),
+            "vendors": vendor_status(root),
             "user": (user or {}).get("id")}
 
 
@@ -200,6 +261,8 @@ def main(argv: list[str] | None = None) -> int:
     wsp = sub.add_parser("whatsapp", help="connect the WhatsApp Business Cloud API (run with `!` so you type the token)")
     wsp.add_argument("--phone-number-id")
     wsp.add_argument("--waba-id")
+    for v in ("companydata", "rocketreach", "apollo"):
+        sub.add_parser(v, help=f"add the {v} MCP server for /company-check (your user config)")
     st = sub.add_parser("status", help="show what is connected (no secrets)")
     st.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
@@ -215,6 +278,8 @@ def main(argv: list[str] | None = None) -> int:
         return connect_gmail(root, args.client_file, args.no_browser)
     if args.cmd == "whatsapp":
         return connect_whatsapp(root, args.phone_number_id, args.waba_id)
+    if args.cmd in ("companydata", "rocketreach", "apollo"):
+        return connect_vendor(root, args.cmd)
     s = status(root)
     if args.json:
         print(json.dumps(s, indent=2))
@@ -223,6 +288,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  Gmail:    {s['gmail']['detail']}" + (f" ({s['gmail']['email']})" if s['gmail'].get('email') else ""))
         print(f"  WhatsApp: {s['whatsapp']['detail']}" + (f" ({s['whatsapp']['number']})" if s['whatsapp'].get('number') else ""))
         print(f"  WhatsApp templates mapped: {s['whatsapp_templates']}")
+        print("  Company data: " + (" · ".join(f"{k} {'ok' if v else 'not connected'}" for k, v in s["vendors"].items())
+                                    or "no vendors configured"))
     return 0
 
 

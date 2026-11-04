@@ -99,6 +99,8 @@ def _ignore(src_root: Path):
                 skip |= {"books"}
         if rel == "runner":
             skip |= {"logs"}
+        if rel == "company-check":
+            skip |= {"data", "reports", "evidence", "leads"}  # local index and real outputs never enter the test copy
         if rel == ".claude":
             skip |= {"settings.local.json"}
         return skip
@@ -1166,6 +1168,93 @@ def t_send(r: Runner) -> None:
         draft.unlink(missing_ok=True)
 
 
+def t_company_check(r: Runner) -> None:
+    """registry_data.py + company_check.py on fictional fixtures (examples/demo/company-check/fixtures)."""
+    root = r.root
+    fx = root / "company-check" / "fixtures"
+    code, out, err = r.py("registry_data.py", "refresh", "--from-dir", str(fx), email=MEI)
+    st = _json(r.py("registry_data.py", "stats", "--json", email=MEI)[1])
+    c = st.get("counts", {})
+    r.record("company_check: index builds from fixtures (live = Live Company + Live)",
+             code == 0 and c.get("acra_rows") == 29 and c.get("live") == 28 and c.get("uen_rows") == 30,
+             str(c), out + err)
+    cc = {x["check"]: x["ok"] for x in st.get("crosscheck", [])}
+    r.record("company_check: cross-check flags counts far from 2.12M / 624K", cc == {"uen_register_rows": False,
+                                                                                 "live_entities": False}, str(cc))
+
+    def check(q: str, *extra: str) -> dict:
+        return _json(r.py("company_check.py", "check", q, "--json", *extra, email=MEI)[1])
+
+    def res(d: dict) -> dict:
+        return {x["id"]: x["result"] for x in d.get("checks", [])}
+
+    d = check("202012345K")
+    x = res(d)
+    r.record("company_check: healthy company, no web yet -> Registry OK", d.get("verdict") == "Registry OK - needs web check"
+             and x.get("C1") == "pass" and x.get("P2") == "pass" and x.get("A2") == "pass" and x.get("E1") == "unknown",
+             str(d.get("verdict")) + str(x))
+    d = check("Brightpath Logistics")
+    r.record("company_check: lookup by name", d.get("uen") == "202012345K", str(d.get("how")))
+    d = check("201811111A")
+    x = res(d)
+    r.record("company_check: AR overdue + shared address + shell + name changes -> Caution",
+             d.get("verdict") == "Caution" and x.get("C1") == "fail" and x.get("P2") == "warn"
+             and x.get("R2") == "warn" and x.get("R3") == "warn", str(x))
+    x = res(check("202599999B"))
+    r.record("company_check: new company -> first AR n/a, age warn", x.get("C1") == "n/a" and x.get("C3") == "warn", str(x))
+    d = check("201500001C")
+    r.record("company_check: struck off -> Not active", d.get("verdict") == "Not active", str(d.get("verdict")))
+    d = check("53212345K")
+    r.record("company_check: HDB home-based -> address hidden (rule 8)", res(d).get("P3") == "info"
+             and "TAMPINES" not in json.dumps(d) and "home-based" in d.get("address", "").lower(), d.get("address", ""))
+    r.record("company_check: BCA contractor", res(check("201900002D")).get("A1") == "pass")
+    d = check("Harbour Light Trading")
+    r.record("company_check: two same-name entities -> Ambiguous with candidates",
+             d.get("verdict") == "Ambiguous" and len(d.get("candidates", [])) == 2, str(d.get("candidates")))
+    ev = root.parent / "ev-good.json"
+    mc.write_text(ev, json.dumps({"website": {"url": "https://brightpath.example", "shows_uen": True,
+                                              "snapshot": "company-check/evidence/202012345K/x.md"},
+                                  "premises": {"seen": True, "detail": "office on contact page"},
+                                  "employees": {"min": 12, "detail": "team of 12 on the website"},
+                                  "activity": [{"date": "2026-09-01", "what": "new contract"}], "adverse": []}))
+    d = check("202012345K", "--evidence", str(ev), "--save")
+    rep_md = root / "company-check" / "reports" / "2026-11-03-202012345K.md"
+    r.record("company_check: evidence -> Verified, report + log saved", d.get("verdict") == "Verified"
+             and rep_md.is_file() and "Open Data Licence" in mc.read_text(rep_md)
+             and "check | mei | company-check/202012345K" in mc.read_text(root / "wiki" / "log.md"), str(d.get("verdict")))
+    bad = root.parent / "ev-bad.json"
+    mc.write_text(bad, json.dumps({"adverse": [{"what": "police warning about a scam (news)"}]}))
+    r.record("company_check: adverse media -> Red flag",
+             check("202012345K", "--evidence", str(ev), "--evidence", str(bad)).get("verdict") == "Red flag")
+    few = root.parent / "ev-few.json"
+    mc.write_text(few, json.dumps({"employees": {"max": 2, "detail": "owner and one assistant"}}))
+    r.record("company_check: evidence of <= 3 people -> E1 fail", res(check("202012345K", "--evidence", str(few))).get("E1") == "fail")
+    code, out, err = r.py("company_check.py", "batch", "--file", str(fx / "acra" / "d_demo_acra.csv"), "--json", email=MEI)
+    rows = _json(out) if out.strip().startswith("[") else []
+    r.record("company_check: batch over a CSV", code == 0 and len(rows) == 29, out[-300:] + err)
+    est = root.parent / "ev-est.json"
+    mc.write_text(est, json.dumps({"employees": {"max": 2, "estimate": True, "source": "rocketreach"},
+                                   "vendor": [{"name": "rocketreach", "employees": "1-2"}]}))
+    r.record("company_check: vendor headcount estimate <= 3 -> E1 warn, never fail",
+             res(check("202012345K", "--evidence", str(est))).get("E1") == "warn")
+    code, out, err = r.py("company_check.py", "leads", "--save", "--json", email=MEI)
+    leads = _json(out[out.index("["):]) if "[" in out else []
+    r.record("company_check: ACRA leads = live ICP companies with clean filings, not home-based or shared",
+             code == 0 and [x["reg_id"] for x in leads] == ["202012345K"] and leads[0]["industry"] == "logistics",
+             out[-400:] + err)
+    lead_csv = root / "company-check" / "leads" / "2026-11-03-acra-leads.csv"
+    vj = root.parent / "vendor.json"
+    mc.write_text(vj, json.dumps({"202012345K": {"employees": "11-50", "domain": "brightpath.example",
+                                                 "vendor": "companydata"}}))
+    code, out, err = r.py("company_check.py", "enrich-leads", str(lead_csv), str(vj), email=MEI)
+    rows = mc.read_csv(lead_csv) if lead_csv.is_file() else []
+    r.record("company_check: vendor enrichment fills employees/domain and flags the ICP size band",
+             code == 0 and rows and rows[0].get("icp_size") == "yes" and rows[0].get("domain") == "brightpath.example",
+             out + err)
+    for f in (rep_md, rep_md.with_suffix(".json"), ev, bad, few, est, vj, lead_csv):
+        f.unlink(missing_ok=True)
+
+
 def t_classify(r: Runner) -> None:
     cases = {"Please remove me from your mailing list.": "unsubscribe",
              "Delivery Status Notification (Failure): address not found": "bounce",
@@ -1492,7 +1581,8 @@ def t_help(r: Runner) -> None:
               "build_books.py", "find.py", "guard.py", "lint.py", "sync_skills.py",
               "ingest.py", "eval.py", "fetch_dataset.py", "resolve.py", "score.py", "recommend.py",
               "draft_check.py", "classify_reply.py", "suppress.py", "claim.py", "allocate.py",
-              "weekly.py", "crm_update.py", "channels.py", "connect.py", "send.py"):
+              "weekly.py", "crm_update.py", "channels.py", "connect.py", "send.py", "registry_data.py",
+              "company_check.py"):
         code, out, _ = r.py(s, "--help")
         if code != 0 or "usage" not in out.lower():
             bad.append(s)
@@ -1518,7 +1608,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.path.insert(0, str(root / "scripts"))
         for test in (t_help, t_frontmatter, t_guard, t_lint, t_lint_secrets, t_find, t_index, t_books, t_session,
                      t_sync, t_skills, t_ingest, t_fetch, t_resolve, t_score, t_recommend, t_eval,
-                     t_draft_check, t_send, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
+                     t_draft_check, t_send, t_company_check, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
                      t_weekly, t_crm_update):
             try:
                 test(runner)

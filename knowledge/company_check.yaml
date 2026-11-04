@@ -1,0 +1,71 @@
+# Company check — manager-owned. Thresholds for /company-check (company-check/README.md, ADR-0008).
+# Data: data.gov.sg open datasets under the Singapore Open Data Licence v1.0.
+
+datasets:                       # data.gov.sg ids (verified 2026-11-05)
+  acra_collection: 2            # ACRA Information on Corporate Entities: 27 CSVs (A–Z + others), monthly mid-month
+  uen_register: d_3f960c10fed6145404ca7b821f263b87   # ACRA entities with UEN (~2.12M rows), Registered/Deregistered
+  bca_contractors: d_dcda79be4aded5f9e769b8e23ff69b47
+  gebiz_awards: d_acde1106003906a75c3fa052592f2fcb
+  hdb_blocks: d_17f5382f26140b1fdae0ba2ef6239d2f
+
+live_statuses: [Live Company, Live]   # only these count as live (exact ACRA text)
+
+crosscheck:                     # warn after a refresh when counts drift more than tolerance
+  uen_register_rows: 2120000
+  live_entities: 624000
+  tolerance: 0.05
+
+filters:
+  annual_return_months: 13      # C1: last annual return within this many months
+  new_company_months: 19        # C1: younger than this -> first annual return not due yet (n/a)
+  accounts_overdue_days: 30     # C2
+  min_age_months: 12            # C3: younger -> warn "new company"
+  shared_address_warn: 20       # P2: live entities at the same postal code + unit
+  shared_address_strong: 100
+  min_employees: 4              # E1: "more than 3 employees"
+  gebiz_years: 3                # A2: an award within this many years
+  gebiz_match: 0.92             # A2: supplier-name match confidence
+  name_changes_flag: 3          # R1: this many former names or more
+  shell_ssic_prefixes: ["64202", "70201", "66", "64"]   # R1 with a shared address and no web presence
+  virtual_office_postal_codes: []   # P2: known virtual-office / corporate-secretary postal codes (curate)
+
+name_match:                     # same thresholds as resolve.py
+  auto: 0.90
+  candidates: 0.70
+
+weights:                        # 0-100 score parts (verdict rules come first; see company_check.py)
+  live: 25
+  annual_return: 20
+  physical_address: 15
+  employees: 10
+  external: 20                  # BCA, GeBIZ, website identity, recent activity (5 each)
+  age: 10
+
+sources_off:                    # undocumented endpoints with unverified terms: the verifier uses search instead
+  mas_investor_alert: false
+  mycareersfuture_api: false
+
+vendors:                        # hosted MCP connectors; connect with `python3 scripts/connect.py <name>` (keys later)
+  companydata:
+    url: https://companydata.com/mcp/
+    auth: api_key               # x-api-key header, stored in your user MCP config, never in the repo
+    tools: {search: company_search, enrich: company_enrich}
+    use: enrichment by UEN (ACRA-based); employees, website, industry
+  rocketreach:
+    url: https://mcp.rocketreach.co/mcp
+    auth: oauth                 # sign in with /mcp after connecting
+    tools: {search: company_search, enrich: company_lookup}
+    use: company search is free; a company lookup costs 1 credit
+  apollo:
+    url: https://mcp.apollo.io/mcp
+    auth: oauth
+    tools: {search: apollo_mixed_companies_search, enrich: apollo_organizations_enrich}
+    use: search + enrich; its email-campaign tools are denied in .claude/settings.json
+
+leads:                          # /company-check leads: live ACRA companies that fit the SG ICP
+  entity_types: [Local Company]
+  min_age_months: 12
+  require: [annual_return, physical_address]   # C1 pass, P1 pass and no shared/virtual (P2) or home-based (P3)
+  exclude_shell: true
+  default_limit: 100
+  employees_from_icp: true      # vendor headcount bands outside icp.md `employees` are marked out of band

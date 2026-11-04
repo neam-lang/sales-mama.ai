@@ -22,6 +22,8 @@ approval.
   and append-only `log.md` and `suppression.csv`.
 - `log/` — append-only CSVs (touches, signals, review), allocation proposals, briefs, reports.
 - `reps/<id>.md` — role, markets, territory, capacity, targets, tone, signature.
+- `company-check/` — company legitimacy checks (ADR-0008): `data/` is a git-ignored local index of
+  ACRA, BCA, GeBIZ and HDB open data; `reports/` and `evidence/` are shared. It never edits accounts.
 
 ## Session protocol
 1. START: `python3 scripts/session_start.py` (automatic in Claude Code). It pulls, rebuilds
@@ -90,7 +92,7 @@ approval.
 ## Log format (`wiki/log.md`)
 `- [YYYY-MM-DD HH:MM] <op> | <user> | <target> | <summary>`
 op ∈ setup, ingest, scan, resolve, score, research, recommend, draft, send, reply, brief, handover,
-vam, allocate, assign, claim, release, lint, nightly, weekly, unmapped.
+vam, allocate, assign, claim, release, lint, nightly, weekly, check, unmapped.
 
 ## CSV schemas
 - `log/touches.csv`: `ts,rep,account,contact,channel,step,pattern,products,status,reply_class,ref`
@@ -115,7 +117,7 @@ vam, allocate, assign, claim, release, lint, nightly, weekly, unmapped.
 Rep: mama-setup, mama-day, mama-book, mama-target, mama-research, mama-recommend,
 mama-draft, mama-send, mama-replies, mama-brief, mama-handover.
 Manager: mama-manager, mama-allocate, mama-scan, mama-vam, mama-nightly, mama-weekly,
-mama-ingest (CRM). Prefer a skill over ad-hoc steps whenever one fits.
+mama-ingest (CRM). Anyone: company-check. Prefer a skill over ad-hoc steps whenever one fits.
 If a skill needs a script that does not exist yet, say which build phase adds it and stop.
 
 ## Console mode (cards)
