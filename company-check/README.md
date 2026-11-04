@@ -40,5 +40,18 @@ An optional data.gov.sg API key raises rate limits: `DATAGOV_API_KEY` or `~/.con
 
 Verdicts: **Not found · Not active · Red flag · Verified · Likely legitimate · Registry OK – needs web check · Caution**.
 
+## Leads and data vendors
+`/company-check leads` lists live ACRA companies that fit the SG ICP (industry by SSIC, annual return in 13 months, 12+ months old, own address, not shell-like, not already an account) into `leads/<date>-acra-leads.csv`. The manager copies it to `raw/lists/` and runs `/mama-ingest`.
+
+Optional vendors add headcount bands, websites and industry. Connect any of them later; nothing breaks without them:
+
+| Vendor | Connect | Auth | Used for |
+|---|---|---|---|
+| CompanyData.com | `! python3 scripts/connect.py companydata` | API key | enrichment by UEN (ACRA-based) |
+| RocketReach | `python3 scripts/connect.py rocketreach`, then `/mcp` | OAuth | free company search; 1 credit per lookup |
+| Apollo.io | `python3 scripts/connect.py apollo`, then `/mcp` | OAuth | search and enrich (campaign tools denied) |
+
+Servers go into your own Claude Code config, never the repo. Paid lookups and people tools ask first (`.claude/settings.json`). Vendor headcounts are estimates built mostly from online profiles: they can confirm "more than 3 employees" but never fail a company on their own.
+
 ## Licence and privacy
 Contains information from ACRA, BCA, MOF (GeBIZ) and HDB datasets accessed from data.gov.sg, made available under the terms of the [Singapore Open Data Licence v1.0](https://data.gov.sg/open-data-licence). Results are indicative, not legal or credit advice. Reports never show the address of a home-based business (AGENTS.md rule 8).
