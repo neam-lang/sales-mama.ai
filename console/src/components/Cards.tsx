@@ -1,6 +1,6 @@
 // Renders mama-card blocks (docs/UI.md §2). Cards are views of wiki/raw/knowledge facts;
 // buttons only send their prompt as the next turn.
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import type { Card as CardT, CardAction } from '../../shared/cards';
 
 export interface CardCtx { onPrompt: (p: string) => void; onSource: (p: string) => void; disabled: boolean }
@@ -393,6 +393,128 @@ const ErrorBody: Body = ({ c }) => (
   </>
 );
 
+// ---- Analytics cards (company insights, generated from scripts/company_analytics.py) ----
+const RESULT_COLOR: Record<string, string> = {
+  pass: 'var(--allocator)', fail: 'var(--risk)', warn: '#B45309', unknown: 'var(--muted)', 'n/a': '#A49DBA', info: 'var(--scout)',
+};
+const PALETTE = ['var(--mama)', 'var(--researcher)', 'var(--scout)', 'var(--writer)', 'var(--vam)', 'var(--allocator)', '#A16207', 'var(--muted)'];
+const fmt = (v: unknown) => (typeof v === 'number' ? v.toLocaleString('en-SG', { maximumFractionDigits: 1 }) : s(v) || '–');
+
+const Stats: Body = ({ c }) => (
+  <div className="tiles">
+    {arr(c.tiles).map((t: any, i) => (
+      <div key={i} className={`tile tone-${s(t.tone) || 'neutral'}`}>
+        <span className="k">{s(t.label)}</span>
+        <span className="n">{fmt(t.value)}{t.unit ? <small>{s(t.unit)}</small> : null}</span>
+        {t.note ? <span className="f">{s(t.note)}</span> : null}
+      </div>
+    ))}
+  </div>
+);
+
+const Chart: Body = ({ c }) => {
+  const series = arr(c.series).map((x: any) => ({ label: s(x.label), value: n(x.value) }));
+  const top = Math.max(1, ...series.map(x => x.value));
+  const unit = c.unit ? ` ${s(c.unit)}` : '';
+  if (c.kind === 'donut') {
+    const total = series.reduce((a, x) => a + x.value, 0) || 1, r = 36, circ = 2 * Math.PI * r;
+    let acc = 0;
+    return (
+      <div className="donut-chart">
+        <svg role="img" aria-label={series.map(x => `${x.label} ${x.value}`).join(', ')} width="132" height="132" viewBox="0 0 96 96">
+          {series.map((x, i) => {
+            const frac = x.value / total, el = (
+              <circle key={i} cx="48" cy="48" r={r} fill="none" stroke={PALETTE[i % PALETTE.length]} strokeWidth="14"
+                strokeDasharray={`${circ * frac} ${circ}`} strokeDashoffset={-circ * acc} transform="rotate(-90 48 48)"><title>{`${x.label}: ${x.value}`}</title></circle>);
+            acc += frac;
+            return el;
+          })}
+        </svg>
+        <ul className="legend">
+          {series.map((x, i) => (
+            <li key={i}><i style={{ background: PALETTE[i % PALETTE.length] }} /><span>{x.label}</span><b>{fmt(x.value)}</b><small>{Math.round(100 * x.value / total)}%</small></li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+  if (c.kind === 'hbar') {
+    return (
+      <div className="hbars" role="img" aria-label={series.map(x => `${x.label} ${x.value}${unit}`).join(', ')}>
+        {series.map((x, i) => (
+          <div key={i} className="hb"><span title={x.label}>{x.label}</span><span className="bar"><span style={{ width: `${pct(x.value, top)}%` }} /></span><b>{fmt(x.value)}</b></div>
+        ))}
+        {c.note ? <span className="muted">{s(c.note)}</span> : null}
+      </div>
+    );
+  }
+  return (
+    <>
+      <div className="vbars" role="img" aria-label={series.map(x => `${x.label} ${x.value}${unit}`).join(', ')}>
+        {series.map((x, i) => (
+          <div key={i} className="vb" title={`${x.label}: ${x.value}${unit}`}><b>{fmt(x.value)}</b><i style={{ height: `${pct(x.value, top)}%` }} /><span>{x.label}</span></div>
+        ))}
+      </div>
+      {c.note ? <span className="muted">{s(c.note)}</span> : null}
+    </>
+  );
+};
+
+const Table: Body = ({ c }) => {
+  const cols = arr(c.columns).map((x: any) => ({ key: s(x.key), label: s(x.label), align: s(x.align) }));
+  return (
+    <div className="table-wrap">
+      <table className="data">
+        <thead><tr>{cols.map(col => <th key={col.key} className={col.align === 'right' ? 'r' : ''}>{col.label}</th>)}</tr></thead>
+        <tbody>{arr(c.rows).slice(0, 25).map((row: any, i) => (
+          <tr key={i}>{cols.map(col => <td key={col.key} className={col.align === 'right' ? 'r' : ''}>{fmt(row?.[col.key])}</td>)}</tr>
+        ))}</tbody>
+      </table>
+    </div>
+  );
+};
+
+const Company: Body = ({ c }) => {
+  const facts = Object.entries((c.facts ?? {}) as Record<string, unknown>).filter(([, v]) => s(v));
+  return (
+    <>
+      <div className="verdict-row">
+        <span className={`verdict v-${s(c.verdict).split(' ')[0].toLowerCase()}`}>{s(c.verdict)}</span>
+        <span className="big">{n(c.score)}<small>/100</small></span>
+        <span className="muted">UEN {s(c.uen)} · {s(c.status)}</span>
+      </div>
+      {facts.length > 0 && <dl className="facts">{facts.map(([k, v]) => <Fragment key={k}><dt>{k}</dt><dd>{s(v)}</dd></Fragment>)}</dl>}
+      {arr(c.groups).map((g: any, gi) => (
+        <div key={gi} className="check-group">
+          <h4>{s(g.name)}</h4>
+          {arr(g.checks).map((x: any) => (
+            <div key={s(x.id)} className="check-row">
+              <i style={{ background: RESULT_COLOR[s(x.result)] ?? 'var(--muted)' }} /><b>{s(x.id)}</b><span>{s(x.check)}</span>
+              <em style={{ color: RESULT_COLOR[s(x.result)] ?? 'var(--muted)' }}>{s(x.result)}</em><small>{s(x.detail)}</small>
+            </div>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+};
+
+const Compare: Body = ({ c }) => {
+  const cos = arr(c.companies);
+  return (
+    <div className="table-wrap">
+      <table className="data compare">
+        <thead><tr><th />{cos.map((x: any, i) => <th key={i}>{s(x.name)}<small>{s(x.verdict)}{x.score != null ? ` · ${n(x.score)}/100` : ''}</small></th>)}</tr></thead>
+        <tbody>{arr(c.rows).map((r: any, i) => (
+          <tr key={i}><td>{s(r.check)}</td>{arr(r.values).map((v: any, j) => (
+            <td key={j} title={s(v?.text)}><i style={{ background: RESULT_COLOR[s(v?.result)] ?? 'var(--muted)' }} />{s(v?.text) || s(v?.result)}</td>
+          ))}</tr>
+        ))}</tbody>
+      </table>
+    </div>
+  );
+};
+
 const Fallback: Body = ({ c }) => {
   const { type, title, subtitle, agent, refs, actions, ...rest } = c;
   return <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontFamily: 'var(--mono)', fontSize: 12 }}>{JSON.stringify(rest, null, 2)}</pre>;
@@ -402,4 +524,5 @@ const BODIES: Record<string, Body> = {
   plan: Plan, agents: Agents, day_summary: DaySummary, draft: Draft, reply: Reply, book: Book,
   account: Account, brief: Brief, allocation: Allocation, review_queue: ReviewQueue,
   run_status: RunStatus, team_book: TeamBook, error: ErrorBody,
+  stats: Stats, chart: Chart, table: Table, company: Company, compare: Compare,
 };

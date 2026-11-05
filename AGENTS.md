@@ -117,7 +117,7 @@ vam, allocate, assign, claim, release, lint, nightly, weekly, check, unmapped.
 Rep: mama-setup, mama-day, mama-book, mama-target, mama-research, mama-recommend,
 mama-draft, mama-send, mama-replies, mama-brief, mama-handover.
 Manager: mama-manager, mama-allocate, mama-scan, mama-vam, mama-nightly, mama-weekly,
-mama-ingest (CRM). Anyone: company-check. Prefer a skill over ad-hoc steps whenever one fits.
+mama-ingest (CRM). Anyone: company-check, company-insights. Prefer a skill over ad-hoc steps whenever one fits.
 If a skill needs a script that does not exist yet, say which build phase adds it and stop.
 
 ## Console mode (cards)

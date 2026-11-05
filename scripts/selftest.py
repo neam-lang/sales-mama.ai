@@ -1223,9 +1223,14 @@ def t_company_check(r: Runner) -> None:
              and rep_md.is_file() and "Open Data Licence" in mc.read_text(rep_md)
              and "check | mei | company-check/202012345K" in mc.read_text(root / "wiki" / "log.md"), str(d.get("verdict")))
     bad = root.parent / "ev-bad.json"
-    mc.write_text(bad, json.dumps({"adverse": [{"what": "police warning about a scam (news)"}]}))
-    r.record("company_check: adverse media -> Red flag",
+    mc.write_text(bad, json.dumps({"adverse": [{"what": "police warning about a scam (news)", "date": "2026-10-01",
+                                                 "about": "company"}]}))
+    r.record("company_check: recent adverse media about the company -> Red flag",
              check("202012345K", "--evidence", str(ev), "--evidence", str(bad)).get("verdict") == "Red flag")
+    mc.write_text(bad, json.dumps({"adverse": [{"what": "old fine on a subsidiary", "date": "2012-01",
+                                                 "about": "subsidiary"}]}))
+    r.record("company_check: historic or subsidiary adverse item -> R1 warn, not a red flag",
+             res(check("202012345K", "--evidence", str(ev), "--evidence", str(bad))).get("R1") == "warn")
     few = root.parent / "ev-few.json"
     mc.write_text(few, json.dumps({"employees": {"max": 2, "detail": "owner and one assistant"}}))
     r.record("company_check: evidence of <= 3 people -> E1 fail", res(check("202012345K", "--evidence", str(few))).get("E1") == "fail")
@@ -1253,6 +1258,40 @@ def t_company_check(r: Runner) -> None:
              out + err)
     for f in (rep_md, rep_md.with_suffix(".json"), ev, bad, few, est, vj, lead_csv):
         f.unlink(missing_ok=True)
+
+
+def t_company_analytics(r: Runner) -> None:
+    """company_analytics.py on the fixture index built by t_company_check."""
+    def spec(*args: str) -> dict:
+        return _json(r.py("company_analytics.py", *args, "--json", email=MEI)[1])
+
+    def tiles(sp: dict) -> dict:
+        st = next((c for c in sp.get("cards", []) if c["type"] == "stats"), {})
+        return {t["label"]: t["value"] for t in st.get("tiles", [])}
+
+    sp = spec("segment", "--industry", "logistics")
+    r.record("analytics: segment counts live companies in the industry",
+             tiles(sp).get("Live companies") == 1 and {c["type"] for c in sp.get("cards", [])} >= {"stats", "chart", "table"},
+             str(tiles(sp)))
+    sp = spec("segment", "--ssic", "70")
+    r.record("analytics: shared-address share for the 21-company cluster", tiles(sp).get("Shared / virtual address") == 100.0,
+             str(tiles(sp)))
+    sp = spec("company", "202012345K")
+    first = (sp.get("cards") or [{}])[0]
+    r.record("analytics: company view = company card + peers", first.get("type") == "company"
+             and first.get("uen") == "202012345K" and any(c["type"] == "stats" for c in sp.get("cards", [])), str(first)[:200])
+    sp = spec("compare", "202012345K", "201811111A")
+    comp = (sp.get("cards") or [{}])[0]
+    r.record("analytics: compare lines up two companies", comp.get("type") == "compare" and len(comp.get("companies", [])) == 2
+             and comp["companies"][0]["verdict"] != comp["companies"][1]["verdict"], str(comp.get("companies")))
+    sp = spec("book", "--file", str(r.root / "company-check" / "fixtures" / "acra" / "d_demo_acra.csv"))
+    r.record("analytics: book over a list", tiles(sp).get("Companies checked") == 29, str(tiles(sp)))
+    page = r.root / "company-check" / "reports" / "insights-test.html"
+    code, out, err = r.py("company_analytics.py", "segment", "--industry", "logistics", "--html", str(page), email=MEI)
+    text = mc.read_text(page) if page.is_file() else ""
+    r.record("analytics: --html writes a self-contained page", code == 0 and "<svg" not in text[:10] and "Open Data Licence" in text
+             and "<script" not in text and 'src="http' not in text and "stylesheet" not in text, (out + err)[-300:])
+    page.unlink(missing_ok=True)
 
 
 def t_classify(r: Runner) -> None:
@@ -1582,7 +1621,7 @@ def t_help(r: Runner) -> None:
               "ingest.py", "eval.py", "fetch_dataset.py", "resolve.py", "score.py", "recommend.py",
               "draft_check.py", "classify_reply.py", "suppress.py", "claim.py", "allocate.py",
               "weekly.py", "crm_update.py", "channels.py", "connect.py", "send.py", "registry_data.py",
-              "company_check.py"):
+              "company_check.py", "company_analytics.py"):
         code, out, _ = r.py(s, "--help")
         if code != 0 or "usage" not in out.lower():
             bad.append(s)
@@ -1608,7 +1647,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.path.insert(0, str(root / "scripts"))
         for test in (t_help, t_frontmatter, t_guard, t_lint, t_lint_secrets, t_find, t_index, t_books, t_session,
                      t_sync, t_skills, t_ingest, t_fetch, t_resolve, t_score, t_recommend, t_eval,
-                     t_draft_check, t_send, t_company_check, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
+                     t_draft_check, t_send, t_company_check, t_company_analytics, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
                      t_weekly, t_crm_update):
             try:
                 test(runner)

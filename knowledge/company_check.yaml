@@ -18,6 +18,7 @@ crosscheck:                     # warn after a refresh when counts drift more th
 filters:
   annual_return_months: 13      # C1: last annual return within this many months
   new_company_months: 19        # C1: younger than this -> first annual return not due yet (n/a)
+  filing_grace_days: 60         # C1: up to this many days past the due date -> warn (may not be in the monthly data yet)
   accounts_overdue_days: 30     # C2
   min_age_months: 12            # C3: younger -> warn "new company"
   shared_address_warn: 20       # P2: live entities at the same postal code + unit
@@ -25,8 +26,10 @@ filters:
   min_employees: 4              # E1: "more than 3 employees"
   gebiz_years: 3                # A2: an award within this many years
   gebiz_match: 0.92             # A2: supplier-name match confidence
-  name_changes_flag: 3          # R1: this many former names or more
-  shell_ssic_prefixes: ["64202", "70201", "66", "64"]   # R1 with a shared address and no web presence
+  name_changes_flag: 3          # R3: this many former names or more
+  adverse_years: 5              # R1: adverse media about the company itself within this many years = red flag
+  shell_ssic_prefixes: ["64201", "64202", "66301", "70201"]   # R2: holding / investment holding / head-office codes
+  group_address_share: 0.5      # P2: this share of entities at a shared address with the same leading name word = group HQ, not a virtual office
   virtual_office_postal_codes: []   # P2: known virtual-office / corporate-secretary postal codes (curate)
 
 name_match:                     # same thresholds as resolve.py

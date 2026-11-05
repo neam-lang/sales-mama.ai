@@ -54,6 +54,25 @@ describe('cards', () => {
     ]));
   });
 
+  it('validates the analytics cards (company insights)', () => {
+    const ok = [
+      '{"type":"stats","title":"Clinics","tiles":[{"label":"Live","value":9618,"tone":"neutral"},{"label":"On time","value":92.7,"unit":"%","tone":"good"}]}',
+      '{"type":"chart","title":"Per year","kind":"bar","series":[{"label":"2025","value":808}]}',
+      '{"type":"chart","title":"Types","kind":"donut","series":[{"label":"Local Company","value":7166},{"label":"Other","value":2452}]}',
+      '{"type":"table","title":"Leads","columns":[{"key":"name","label":"Company"},{"key":"rank","label":"Rank","align":"right"}],"rows":[{"name":"A","rank":43}]}',
+      '{"type":"company","title":"SIA","uen":"197200078R","verdict":"Likely legitimate","score":80,"groups":[{"name":"Registry","checks":[{"id":"G2","check":"Live","result":"pass","detail":"Live Company"}]}]}',
+      '{"type":"compare","title":"Side by side","companies":[{"name":"A","verdict":"Verified","score":90},{"name":"B","verdict":"Caution","score":40}],"rows":[{"check":"Status","values":[{"result":"pass","text":"Live"},{"result":"fail","text":"Struck Off"}]}]}',
+    ];
+    for (const raw of ok) {
+      const p = parseCard(raw);
+      expect(p.kind === 'card' && p.issues).toEqual([]);
+    }
+    const bad = parseCard('{"type":"chart","title":"x","kind":"pie","series":[]}');
+    expect(bad.kind === 'card' && bad.issues).toEqual(expect.arrayContaining([expect.stringMatching(/^\/kind must be equal to one of the allowed values/)]));
+    const noGroups = parseCard('{"type":"company","title":"x","uen":"1","verdict":"Caution","score":1}');
+    expect(noGroups.kind === 'card' && noGroups.issues).toEqual(["(card) must have required property 'groups'"]);
+  });
+
   it('never offers a send button', () => {
     expect(safeActions([
       { label: 'Send now', prompt: 'send it' },

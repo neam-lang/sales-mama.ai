@@ -8,7 +8,8 @@ import { sendWindow, type MarketWindow } from '../shared/window';
 import type { Me, Rail } from '../shared/protocol';
 
 /** Folders a source chip may open. Everything else (e.g. .env, .git) is refused. */
-const READABLE = ['wiki/', 'raw/', 'knowledge/', 'log/', 'reps/', 'templates/', 'docs/'];
+const READABLE = ['wiki/', 'raw/', 'knowledge/', 'log/', 'reps/', 'templates/', 'docs/',
+  'company-check/reports/', 'company-check/evidence/', 'company-check/leads/', 'company-check/README.md']; // never company-check/data/
 const MAX_BYTES = 256 * 1024;
 
 export function findRepoRoot(start: string): string {

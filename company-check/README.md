@@ -40,6 +40,12 @@ An optional data.gov.sg API key raises rate limits: `DATAGOV_API_KEY` or `~/.con
 
 Verdicts: **Not found · Not active · Red flag · Verified · Likely legitimate · Registry OK – needs web check · Caution**.
 
+## Insights (generative analytics)
+Ask in chat and get stats, charts and tables back: `/company-insights` (or `python3 scripts/company_analytics.py`):
+`company <UEN|name>` (profile, checks, peers, evidence), `segment --industry clinics | --ssic 86 | --district 52 | --name kopi`,
+`book --owner me | --pool | --file leads.csv`, `compare A B [C …]`. Add `--cards` for the console, `--html <path>` for a shareable page.
+Every number comes from the script, as of the ACRA data date.
+
 ## Leads and data vendors
 `/company-check leads` lists live ACRA companies that fit the SG ICP (industry by SSIC, annual return in 13 months, 12+ months old, own address, not shell-like, not already an account) into `leads/<date>-acra-leads.csv`. The manager copies it to `raw/lists/` and runs `/mama-ingest`.
 

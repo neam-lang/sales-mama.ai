@@ -8,7 +8,8 @@
   "properties": {
     "type": {
       "enum": ["plan", "agents", "day_summary", "draft", "reply", "book", "account", "brief",
-               "allocation", "review_queue", "run_status", "team_book", "error"]
+               "allocation", "review_queue", "run_status", "team_book", "error",
+               "stats", "chart", "table", "company", "compare"]
     },
     "title": {"type": "string", "maxLength": 120},
     "subtitle": {"type": "string", "maxLength": 200},
@@ -92,6 +93,33 @@
     {"if": {"properties": {"type": {"const": "team_book"}}},
      "then": {"required": ["rows"], "properties": {"rows": {"type": "array"}, "pool": {"type": "object"}}}},
     {"if": {"properties": {"type": {"const": "error"}}},
-     "then": {"required": ["message"], "properties": {"message": {"type": "string"}, "fix": {"type": "string"}}}}
+     "then": {"required": ["message"], "properties": {"message": {"type": "string"}, "fix": {"type": "string"}}}},
+    {"if": {"properties": {"type": {"const": "stats"}}},
+     "then": {"required": ["tiles"], "properties": {"tiles": {"type": "array", "maxItems": 12, "items": {"type": "object",
+       "required": ["label", "value"], "properties": {"label": {"type": "string"}, "value": {"type": ["number", "string", "null"]},
+       "unit": {"type": "string"}, "note": {"type": "string"}, "tone": {"enum": ["good", "warn", "risk", "neutral"]}}}}}}},
+    {"if": {"properties": {"type": {"const": "chart"}}},
+     "then": {"required": ["kind", "series"], "properties": {"kind": {"enum": ["bar", "hbar", "donut", "line"]},
+       "unit": {"type": "string"}, "note": {"type": "string"},
+       "series": {"type": "array", "maxItems": 30, "items": {"type": "object", "required": ["label", "value"],
+         "properties": {"label": {"type": "string"}, "value": {"type": "number"}}}}}}},
+    {"if": {"properties": {"type": {"const": "table"}}},
+     "then": {"required": ["columns", "rows"], "properties": {
+       "columns": {"type": "array", "items": {"type": "object", "required": ["key", "label"],
+         "properties": {"key": {"type": "string"}, "label": {"type": "string"}, "align": {"enum": ["left", "right"]}}}},
+       "rows": {"type": "array", "maxItems": 25, "items": {"type": "object"}}}}},
+    {"if": {"properties": {"type": {"const": "company"}}},
+     "then": {"required": ["uen", "verdict", "score", "groups"], "properties": {"uen": {"type": "string"},
+       "status": {"type": "string"}, "verdict": {"type": "string"}, "score": {"type": "number"}, "facts": {"type": "object"},
+       "groups": {"type": "array", "items": {"type": "object", "required": ["name", "checks"], "properties": {
+         "name": {"type": "string"}, "checks": {"type": "array", "items": {"type": "object", "required": ["id", "result"],
+           "properties": {"id": {"type": "string"}, "check": {"type": "string"},
+             "result": {"enum": ["pass", "fail", "warn", "unknown", "n/a", "info"]}, "detail": {"type": "string"}}}}}}}}}},
+    {"if": {"properties": {"type": {"const": "compare"}}},
+     "then": {"required": ["companies", "rows"], "properties": {
+       "companies": {"type": "array", "minItems": 2, "maxItems": 5, "items": {"type": "object", "required": ["name", "verdict"],
+         "properties": {"uen": {"type": "string"}, "name": {"type": "string"}, "verdict": {"type": "string"}, "score": {"type": "number"}}}},
+       "rows": {"type": "array", "items": {"type": "object", "required": ["check", "values"],
+         "properties": {"check": {"type": "string"}, "values": {"type": "array"}}}}}}}
   ]
 }

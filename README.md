@@ -7,7 +7,7 @@
   <img alt="Codex compatible" src="https://img.shields.io/badge/Codex-compatible-16131F?style=flat-square">
   <img alt="Approve-then-send" src="https://img.shields.io/badge/sending-approve%20then%20send-C2410C?style=flat-square">
   <img alt="Gmail and WhatsApp" src="https://img.shields.io/badge/channels-Gmail%20%C2%B7%20WhatsApp-0F766E?style=flat-square">
-  <img alt="Self-test 173 of 173" src="https://img.shields.io/badge/self--test-173%2F173-15803D?style=flat-square">
+  <img alt="Self-test 180 of 180" src="https://img.shields.io/badge/self--test-180%2F180-15803D?style=flat-square">
   <a href="LICENSE"><img alt="Apache 2.0" src="https://img.shields.io/badge/licence-Apache%202.0-5B5670?style=flat-square"></a>
 </p>
 
@@ -26,12 +26,12 @@
 
 | Part | What it does |
 |---|---|
-| **19 skills** | `/mama-day`, `/mama-send`, `/company-check` … one command per job |
+| **20 skills** | `/mama-day`, `/mama-send`, `/company-check`, `/company-insights` … one command per job |
 | **4 subagents** | Scout, Researcher, VAM and Verifier run in parallel, each with hard limits |
 | **3 hooks** | Session start (your queue), write guard (ownership, secrets), sync (git) |
 | **17 hard rules** | `AGENTS.md`: cite sources, approve-then-send, stay in your book |
 | **Scripts** | Scoring, allocation, checks and sending are deterministic Python |
-| **Evals** | 173 self-tests and 17 evals keep it honest |
+| **Evals** | 180 self-tests and 17 evals keep it honest |
 
 ## 🎯 Why
 
@@ -94,6 +94,19 @@ Small teams lose deals to busywork, not to competitors.
 
 Verdicts: **Verified · Likely legitimate · Registry OK · Caution · Red flag · Not active**. `/company-check leads` turns the same data into a ranked list of new ICP leads, and CompanyData, RocketReach or Apollo can add headcount bands when connected. [How it works](company-check/README.md)
 
+## 📊 Company insights
+
+**Ask a question, get a report.** `/company-insights` turns the same registry data into generated stats, charts and tables, live in the console or as a shareable page.
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/insights-segment.jpg" alt="Insights for Singapore clinics: 9,618 live, filing on time, new companies per year, age bands, activities"><br><sub><b>"Clinics in Singapore"</b> · 9,618 live, 92.7% filing on time, growth by year, top activities, best leads.</sub></td>
+<td width="50%"><img src="docs/assets/insights-company.jpg" alt="Company deep-dive for Singapore Airlines: verdict, every check, peers"><br><sub><b>"Tell me about Singapore Airlines"</b> · verdict, every check with its reason, peers, web evidence.</sub></td>
+</tr>
+</table>
+
+Also: *"how clean is my book?"* and *"compare SIA, Singtel and DBS"*. Real ACRA data (14 Oct 2026); numbers come from scripts, never the model.
+
 ## 🖥️ Screens
 
 <table>
@@ -112,7 +125,7 @@ Verdicts: **Verified · Likely legitimate · Registry OK · Caution · Red flag 
 ```bash
 git clone https://github.com/neam-lang/sales-mama.ai.git && cd sales-mama.ai
 python3 -m pip install --user pyyaml
-python3 scripts/selftest.py                 # 173/173 passed
+python3 scripts/selftest.py                 # 180/180 passed
 claude                                      # then type: Set me up for Sales Mama
 ```
 
@@ -181,7 +194,7 @@ Codex reads `AGENTS.md` and `.agents/skills/` (`$mama-day`). It has no hooks or 
 ## 📊 Quality
 
 ```bash
-python3 scripts/selftest.py   # 173/173
+python3 scripts/selftest.py   # 180/180
 python3 scripts/eval.py       # 13 pass · 0 fail · 8 pending
 python3 scripts/lint.py       # 0 errors
 ```

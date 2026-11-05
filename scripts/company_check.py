@@ -146,6 +146,8 @@ def crm_employees(root: Path, uen: str) -> tuple[int | None, str]:
 def evaluate(root: Path, con: sqlite3.Connection, row: dict, cfg: dict, ev: dict | None) -> list[dict]:
     f = cfg.get("filters") or {}
     today = mc.today()
+    meta = dict(con.execute("SELECT key, value FROM meta").fetchall())
+    as_of = mc.to_date(str(meta.get("acra_updated") or "")[:10]) or today  # filings are as of the data, not today
     out: list[dict] = []
     ev = ev or {}
     etype = (row.get("entity_type") or "").lower()
@@ -158,15 +160,24 @@ def evaluate(root: Path, con: sqlite3.Connection, row: dict, cfg: dict, ev: dict
         out.append(chk("C1", "Annual return", "n/a", f"{row.get('entity_type')}: no annual return"))
     elif age is not None and age < float(f.get("new_company_months", 19)) and not ar:
         out.append(chk("C1", "Annual return", "n/a", f"incorporated {reg} ({age:.0f} months): first annual return not due"))
-    elif ar and months_between(ar, today) <= float(f.get("annual_return_months", 13)):
-        out.append(chk("C1", "Annual return", "pass", f"filed {ar} ({months_between(ar, today):.0f} months ago)"))
+    elif ar and months_between(ar, as_of) <= float(f.get("annual_return_months", 13)):
+        out.append(chk("C1", "Annual return", "pass", f"filed {ar} ({months_between(ar, as_of):.0f} months before the "
+                                                      f"{as_of} data)"))
     else:
-        out.append(chk("C1", "Annual return", "fail",
-                       f"last filed {ar or 'never'}; more than {f.get('annual_return_months', 13)} months"))
+        due0 = mc.to_date(row.get("acct_due"))
+        grace = int(f.get("filing_grace_days", 60))
+        if due0 and 0 <= (as_of - due0).days <= grace:
+            out.append(chk("C1", "Annual return", "warn", f"last filed {ar or 'never'}; next was due {due0}, "
+                                                          f"{(as_of - due0).days} days before the {as_of} data: may be "
+                                                          "filed but not yet in this month's data"))
+        else:
+            out.append(chk("C1", "Annual return", "fail",
+                           f"last filed {ar or 'never'}; more than {f.get('annual_return_months', 13)} months before "
+                           f"the {as_of} data"))
 
     # C2 accounts overdue
     due = mc.to_date(row.get("acct_due"))
-    if due and (today - due).days > int(f.get("accounts_overdue_days", 30)) and not any(x in etype for x in NO_AR):
+    if due and (as_of - due).days > int(f.get("accounts_overdue_days", 30)) and not any(x in etype for x in NO_AR):
         out.append(chk("C2", "Accounts due", "warn", f"accounts were due {due}"))
     else:
         out.append(chk("C2", "Accounts due", "pass" if due else "n/a", f"next due {due}" if due else "none on record"))
@@ -190,7 +201,25 @@ def evaluate(root: Path, con: sqlite3.Connection, row: dict, cfg: dict, ev: dict
         r = con.execute("SELECT n FROM address_counts WHERE key = ?", (key,)).fetchone()
         n_same = int(r["n"]) if r else 0
     vo = postal in [str(x) for x in mc.as_list(f.get("virtual_office_postal_codes"))]
-    if vo or n_same >= int(f.get("shared_address_strong", 100)):
+    group = 0
+    if n_same >= int(f.get("shared_address_warn", 20)) and not vo and not (row.get("level") or row.get("unit")):
+        # no unit number: the count is the whole building (a tower), so it can't show a virtual office
+        out.append(chk("P2", "Physical or virtual", "info",
+                       f"no unit number in ACRA; {n_same} live entities list this building without a unit"))
+    elif n_same >= int(f.get("shared_address_warn", 20)) and not vo:
+        # a group headquarters (DBS, Singtel…) houses many related entities: not a registered-address service
+        first = next((t for t in (row.get("name_norm") or "").split() if len(t) >= 3), "")
+        names = [r[0] for r in con.execute(
+            "SELECT name_norm FROM live WHERE postal = ? AND UPPER(LTRIM(level, '0')) = ? AND UPPER(LTRIM(unit, '0')) = ? "
+            "LIMIT 1000", (postal, (row.get("level") or "").upper().lstrip("0"), (row.get("unit") or "").upper().lstrip("0")))]
+        stem = first[:4]
+        group = sum(1 for nm in names if stem and nm.split()[:1] and nm.split()[0][:4] == stem) if names else 0
+        if names and group / len(names) >= float(f.get("group_address_share", 0.5)):
+            out.append(chk("P2", "Physical or virtual", "pass",
+                           f"group address: {group} of {len(names)} entities here share the name “{first.upper()}…”"))
+    if any(c["id"] == "P2" for c in out):
+        pass
+    elif vo or n_same >= int(f.get("shared_address_strong", 100)):
         out.append(chk("P2", "Physical or virtual", "warn",
                        f"{n_same} live entities share this address" + (" (known virtual office)" if vo else "")
                        + ": corporate secretary or virtual office"))
@@ -269,10 +298,18 @@ def evaluate(root: Path, con: sqlite3.Connection, row: dict, cfg: dict, ev: dict
 
     # R1-R3 red flags
     adverse = ev.get("adverse") or []
-    if adverse or ev.get("mas_alert"):
+    since = (today - dt.timedelta(days=365 * int(f.get("adverse_years", 5)))).isoformat()
+    # a red flag is recent and about this company; historic, subsidiary or undated items only warn
+    serious = [a for a in adverse if str(a.get("about", "company")) in ("company", "")
+               and str(a.get("date", ""))[:10] >= since and re.match(r"\d{4}-\d{2}", str(a.get("date", "")))]
+    if serious or ev.get("mas_alert"):
         out.append(chk("R1", "Adverse media / MAS alert", "fail",
-                       "; ".join(a.get("what", "") for a in adverse) or "on the MAS Investor Alert List",
-                       (adverse[0].get("snapshot") if adverse else "") or "web"))
+                       "; ".join(a.get("what", "") for a in serious) or "on the MAS Investor Alert List",
+                       (serious[0].get("snapshot") if serious else "") or "web"))
+    elif adverse:
+        out.append(chk("R1", "Adverse media / MAS alert", "warn",
+                       "historic, subsidiary or undated: " + "; ".join(a.get("what", "")[:120] for a in adverse),
+                       adverse[0].get("snapshot") or "web"))
     else:
         out.append(chk("R1", "Adverse media / MAS alert", "pass" if ev else "unknown",
                        "none found" if ev else "no web evidence yet", "web"))
@@ -296,7 +333,8 @@ def verdict(checks: list[dict], has_evidence: bool, cfg: dict) -> tuple[str, int
     w = cfg.get("weights") or {}
     external = sum(1 for k in ("A1", "A2", "A3", "A4") if r.get(k) == "pass")
     score = (int(w.get("live", 25))
-             + (int(w.get("annual_return", 20)) if r.get("C1") in ("pass", "n/a") else 0)
+             + (int(w.get("annual_return", 20)) if r.get("C1") in ("pass", "n/a")
+                else int(w.get("annual_return", 20)) // 2 if r.get("C1") == "warn" else 0)
              + (int(w.get("physical_address", 15)) if r.get("P1") == "pass" and r.get("P2") != "warn" else 0)
              + (int(w.get("employees", 10)) if r.get("E1") == "pass" else 0)
              + min(int(w.get("external", 20)), 5 * external)
@@ -311,8 +349,8 @@ def verdict(checks: list[dict], has_evidence: bool, cfg: dict) -> tuple[str, int
     if not has_evidence:
         return ("Registry OK - needs web check" if ar_ok and physical and r.get("C2") != "warn" else "Caution"), \
             score, reasons
-    if ar_ok and r.get("P1") == "pass" and external >= 1 and r.get("R2") != "warn":
-        return "Likely legitimate", score, reasons
+    if (ar_ok or r.get("C1") == "warn") and r.get("P1") == "pass" and external >= 1 and r.get("R2") != "warn":
+        return "Likely legitimate", score, reasons  # a filing only just due (grace window) doesn't block this
     return "Caution", score, reasons
 
 

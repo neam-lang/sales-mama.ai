@@ -74,6 +74,11 @@ Card types (full JSON Schema in `console/cards.schema.json`):
 | `run_status` | `ok, started, finished, markets[], items, linked, review, new_leads, errors` | mama-nightly, mama-manager |
 | `team_book` | `rows[{rep, market, active, capacity, a, b, c, sent_7d, replies_7d, meetings, target, at_risk}], pool{a,b,c}` | mama-manager |
 | `error` | `message, fix` | any |
+| `stats` | `tiles[{label, value, unit?, note?, tone?: good\|warn\|risk\|neutral}]` | company-insights |
+| `chart` | `kind: bar\|hbar\|donut\|line`, `series[{label, value}]`, `unit?`, `note?` | company-insights |
+| `table` | `columns[{key, label, align?}]`, `rows[]` (max 25) | company-insights |
+| `company` | `uen, status, verdict, score, facts{}, groups[{name, checks[{id, check, result, detail}]}]` | company-insights |
+| `compare` | `companies[{uen, name, verdict, score}]` (2–5), `rows[{check, values[{result, text}]}]` | company-insights |
 
 Rules for skills:
 - Cards come **after** a one-line plain summary, never instead of it.
