@@ -15,7 +15,7 @@
   .logo { width: 58px; height: 58px; border-radius: 16px; background: var(--ink); color: var(--lime); display: grid; place-items: center; font: 800 25px 'Bricolage Grotesque'; }
   .event { font: 600 19px Geist; padding: 11px 20px; border-radius: 999px; background: var(--ink); color: #fff; }
   .event b { color: var(--lime); font-weight: 600; }
-  h1 { font: 800 84px/0.96 'Bricolage Grotesque'; letter-spacing: -3px; }
+  h1 { font: 800 80px/0.96 'Bricolage Grotesque'; letter-spacing: -3px; }
   h1 .hl { background: var(--lime); padding: 0 14px; border-radius: 18px; }
   .sub { font: 400 23px/1.4 Geist; color: var(--muted); }
   .sub b { color: var(--ink); font-weight: 600; }
@@ -38,7 +38,25 @@
   .s3 { background: var(--vam-t); color: var(--vam); } .s4 { background: var(--alo-t); color: var(--alo); }
   .s5 { background: var(--wri-t); color: var(--wri); } .s6 { background: var(--ink); color: var(--lime); }
   .s6 .what { color: #fff; }
-  .feature { display: grid; grid-template-columns: 1.08fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+  .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex: 1; min-height: 0; }
+  .stack { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow: hidden; }
+  .panel { background: #fff; border: 1px solid #E4DFF5; border-radius: 24px; padding: 14px 18px; display: flex; flex-direction: column; gap: 7px; }
+  .panel .t { display: flex; justify-content: space-between; align-items: center; }
+  .panel .t b { font: 800 22px 'Bricolage Grotesque'; }
+  .panel .t span { font: 600 12.5px 'Geist Mono'; color: var(--mama); background: var(--mama-t); padding: 4px 10px; border-radius: 999px; }
+  .vrow { display: flex; align-items: baseline; gap: 10px; }
+  .vbadge { font: 800 16px 'Bricolage Grotesque'; background: var(--lime); padding: 4px 10px; border-radius: 10px; }
+  .vscore { font: 800 30px 'Bricolage Grotesque'; } .vscore small { font-size: 14px; color: var(--muted); }
+  .vname { font: 600 13px Geist; color: var(--muted); }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 14px; font: 500 13px Geist; }
+  .checks span { display: flex; align-items: center; gap: 7px; }
+  .checks i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .meta { font: 500 12.5px Geist; color: var(--muted); }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .kpi { background: var(--ground); border-radius: 14px; padding: 8px 10px; }
+  .kpi b { display: block; font: 800 22px 'Bricolage Grotesque'; color: var(--mama); } .kpi small { font: 500 11.5px Geist; color: var(--muted); }
+  .bars { display: flex; align-items: flex-end; gap: 5px; height: 52px; }
+  .bars i { flex: 1; background: var(--mama); border-radius: 4px 4px 1px 1px; }
   .term { background: var(--ink); border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; color: #E9E6F2; }
   .term .t { display: flex; align-items: center; justify-content: space-between; }
   .term .t b { font: 800 26px 'Bricolage Grotesque'; color: #fff; }
@@ -75,16 +93,16 @@
   <h1>Your sales team's<br>morning, <span class="hl">done</span><br>before coffee.</h1>
 
   <p class="sub">An agentic sales assistant for small B2B teams in <b>Singapore, Malaysia and India</b>.
-    It finds the signal, researches the lead and writes the email or WhatsApp. <b>Nothing goes out until you approve.</b></p>
+    It finds the signal, checks the company is real, researches the lead and writes the email or WhatsApp. <b>Nothing goes out until you approve.</b></p>
 
   <div class="vs">
     <div class="pain">
       <h3>The sales problem</h3>
-      <ul><li>Leads go cold in the CRM</li><li>Research eats the selling hours</li><li>Follow-ups slip</li><li>Leads handed out by gut feel</li><li>Generic messages nobody answers</li></ul>
+      <ul><li>Leads go cold in the CRM</li><li>Research eats the selling hours</li><li>Is this company even real?</li><li>Leads handed out by gut feel</li><li>Generic messages nobody answers</li></ul>
     </div>
     <div class="fix">
       <h3>What Sales Mama does</h3>
-      <ul><li>Scans news, tenders, registries nightly</li><li>Researches with cited sources only</li><li>A virtual account manager per book</li><li>Explainable scores, fair allocation</li><li>Email + WhatsApp, sent after you approve</li></ul>
+      <ul><li>Scans news, tenders, registries nightly</li><li>Researches with cited sources only</li><li>Checks any SG company against ACRA</li><li>Explainable scores, fair allocation</li><li>Email + WhatsApp, sent after you approve</li></ul>
     </div>
   </div>
 
@@ -134,14 +152,32 @@
 <span class="m">logged: approvals.csv · touches.csv</span></pre>
       <div class="chips"><span class="chip">outside window</span><span class="chip">holiday</span><span class="chip">suppressed</span><span class="chip">no WhatsApp opt-in</span><span class="chip">changed after preview</span><span class="chip">over quota</span><span class="chip">nightly runner</span></div>
     </div>
-    <div class="shot"><img src="../screens/mobile-manager.jpg" alt=""><span class="tag">Manager approves leads · <b>/mama-manager</b></span></div>
+    <div class="stack">
+      <div class="panel">
+        <div class="t"><b>Company check</b><span>/company-check</span></div>
+        <div class="vrow"><span class="vbadge">Likely legitimate</span><span class="vscore">80<small>/100</small></span></div>
+        <div class="vname">SINGAPORE AIRLINES LIMITED · 197200078R · real ACRA data</div>
+        <div class="checks">
+          <span><i style="background:#15803D"></i>Live company</span><span><i style="background:#B45309"></i>Annual return just due</span>
+          <span><i style="background:#15803D"></i>Own address, not virtual</span><span><i style="background:#15803D"></i>Employees &gt; 3</span>
+          <span><i style="background:#15803D"></i>Website shows UEN</span><span><i style="background:#15803D"></i>Recent activity</span>
+        </div>
+        <div class="meta">2.12M entities, 624K live · 18 rules · 3 verifier subagents</div>
+      </div>
+      <div class="panel">
+        <div class="t"><b>Company insights</b><span>/company-insights</span></div>
+        <div class="kpis"><div class="kpi"><b>9,618</b><small>live clinics</small></div><div class="kpi"><b>92.7%</b><small>file on time</small></div><div class="kpi"><b>15.9%</b><small>shared address</small></div></div>
+        <div class="bars" role="img" aria-label="New clinics per year 2017 to 2026"><i style="height:49%"></i><i style="height:47%"></i><i style="height:50%"></i><i style="height:50%"></i><i style="height:64%"></i><i style="height:68%"></i><i style="height:81%"></i><i style="height:81%"></i><i style="height:100%"></i><i style="height:73%"></i></div>
+        <div class="meta"><b style="color:var(--ink)">“Clinics in Singapore”</b> · new clinics per year, 2017–2026</div>
+      </div>
+    </div>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="n">18</div><div class="l">skills</div></div>
-    <div class="stat"><div class="n">2</div><div class="l">channels</div></div>
-    <div class="stat"><div class="n">17</div><div class="l">hard rules</div></div>
-    <div class="stat"><div class="n">156</div><div class="l">self-tests passing</div></div>
+    <div class="stat"><div class="n">20</div><div class="l">skills</div></div>
+    <div class="stat"><div class="n">2.1M</div><div class="l">SG companies indexed</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">subagent types</div></div>
+    <div class="stat"><div class="n">180</div><div class="l">self-tests passing</div></div>
     <div class="stat"><div class="n">0</div><div class="l">servers, databases</div></div>
   </div>
 

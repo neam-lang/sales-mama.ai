@@ -233,26 +233,6 @@ Every pilot mistake becomes a failing eval case before it is fixed.
 
 </details>
 
-## 📣 Meetup
-
-<table>
-<tr>
-<td width="34%"><a href="docs/assets/poster.png"><img src="docs/assets/poster.png" alt="Meetup poster"></a></td>
-<td valign="top">
-
-**Your sales team's morning, done before coffee**<br>
-Wed 4 Nov 2026 · Praveen Govindaraj
-
-1. The small-team sales problem
-2. The repo is the system
-3. Live: approve leads, run the day, review and send
-4. Guardrails that hold
-5. Pilot to three markets
-
-</td>
-</tr>
-</table>
-
 ## 📚 Docs
 
 [GUIDE](GUIDE.md) · [PLAN](PLAN.md) · [SETUP](SETUP.md) · [AGENTS](AGENTS.md) · [UI](docs/UI.md) · [SECURITY](docs/SECURITY.md) · [ADRs](docs/adr/)
