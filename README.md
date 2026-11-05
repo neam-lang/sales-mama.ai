@@ -18,6 +18,12 @@
 </p>
 
 <p align="center">
+  <b>New:</b> <a href="#-company-check"><code>/company-check</code></a> is this company real? ·
+  <a href="#-company-insights"><code>/company-insights</code></a> ask for stats, get charts ·
+  <a href="#-send-review"><code>/mama-send</code></a> approve-then-send
+</p>
+
+<p align="center">
   <img src="docs/assets/demo.gif" alt="Console tour, then /mama-send: preview, approve, one email and one WhatsApp sent" width="92%">
   <br><sub>Console tour, then a real <code>/mama-send</code> run: one email and one WhatsApp, approved and sent. Demo data, fake transport.</sub>
 </p>
@@ -78,10 +84,15 @@ Small teams lose deals to busywork, not to competitors.
 **Know a company is real before you spend a minute selling to it.**
 
 <p align="center">
-  <img src="docs/assets/company-check.png" alt="Company check: a Verified company and a Caution company side by side, with every rule and its reason" width="100%">
+  <img src="docs/assets/company-check-e2e.png" alt="Company check end to end: ask in the console, registry rules, three verifier subagents, verdict with every check; real run on Singapore Airlines" width="100%">
 </p>
 
-`/company-check <UEN or name>` checks any Singapore company against a local copy of ACRA, BCA, GeBIZ and HDB open data (~2.12M entities, refreshed monthly), then sends three `verifier` subagents to the web for identity, people and risk.
+How it works, in one run (`/company-check 197200078R`):
+1. **Ask** in chat or click the `/company-check` chip in the console, with a UEN or a name (ambiguous names show candidates).
+2. **Registry**: a local copy of ACRA, BCA, GeBIZ and HDB open data (2,127,089 entities, 624,271 live, refreshed monthly) answers the registry rules in under a second.
+3. **Verifiers**: three subagents search the web in parallel for identity, people and risk, and save cited evidence.
+4. **Rules**: 18 deterministic checks, each pass, warn, fail or unknown with its reason, scored 0–100.
+5. **Verdict**: a report in `company-check/reports/` and visual cards in the console. [Full result screenshot](docs/assets/screens/company-check-result.jpg)
 
 | It checks | Rule |
 |---|---|

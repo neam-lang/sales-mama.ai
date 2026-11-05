@@ -39,6 +39,23 @@ export function useBridge() {
     })).then(setTurns);
   }, [replay]);
 
+  // A saved result shown as a chat turn: /?result=company-check/reports/<date>-<uen>.cards.md&ask=/company-check%20<uen>
+  // (the same cards a live run prints; read through /api/source, so only readable folders).
+  const params = new URLSearchParams(location.search);
+  const result = params.get('result');
+  useEffect(() => {
+    if (!result) return;
+    fetch(`/api/source?path=${encodeURIComponent(result)}`)
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`${r.status}`))))
+      .then((file: { text: string }) => {
+        const b = new TurnBuilder();
+        b.apply({ type: 'assistant', message: { id: 'saved-result', content: [{ type: 'text', text: file.text }] } });
+        b.apply({ type: 'result', subtype: 'success', is_error: false });
+        setTurns([{ id: 'saved-result', prompt: params.get('ask') ?? result, turn: { ...b.turn }, text: b.text(), running: false }]);
+      })
+      .catch(() => setTurns([]));
+  }, [result]);
+
   useEffect(() => {
     let closed = false;
     let retry: ReturnType<typeof setTimeout>;
@@ -103,5 +120,5 @@ export function useBridge() {
     setTurns([]);
   }, []);
 
-  return { turns, rail, connected, busy: busy || !!replay, replay: !!replay, sessionId, ask, stop, newChat };
+  return { turns, rail, connected, busy: busy || !!replay || !!result, replay: !!replay, saved: !!result, sessionId, ask, stop, newChat };
 }

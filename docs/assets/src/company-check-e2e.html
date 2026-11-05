@@ -1,0 +1,73 @@
+<!doctype html>
+<!-- Company check, end to end: the flow plus real console screenshots. Render: node docs/assets/src/render.mjs -->
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500&display=block" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; } svg { display: block; }
+  body { width: 1600px; height: 1240px; background: #F6F4FF; color: #16131F; font-family: Geist, system-ui, sans-serif; padding: 44px 52px; display: flex; flex-direction: column; gap: 22px; overflow: hidden; }
+  h1 { font: 800 46px/1 'Bricolage Grotesque'; letter-spacing: -1.5px; }
+  .lead { font: 400 19px/1.4 Geist; color: #5B5670; margin-top: 8px; }
+  .flow { display: flex; gap: 10px; align-items: stretch; }
+  .st { flex: 1; background: #fff; border: 1px solid #E4DFF5; border-radius: 20px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .st .i { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; }
+  .st .i svg { width: 22px; height: 22px; }
+  .st b { font: 800 18px 'Bricolage Grotesque'; } .st small { font: 400 14px/1.35 Geist; color: #5B5670; }
+  .st code { font: 500 12.5px 'Geist Mono'; color: #6D28D9; }
+  .ar { align-self: center; color: #A49DBA; font: 700 22px Geist; }
+  .s1 .i { background: #EFE8FF; color: #6D28D9; } .s2 .i { background: #E5EDFF; color: #1D4ED8; } .s3 .i { background: #DDF5F1; color: #0F766E; }
+  .s4 .i { background: #E2F6E8; color: #15803D; } .s5 { background: #16131F; color: #fff; border-color: #16131F; } .s5 .i { background: #C8F031; color: #16131F; } .s5 small { color: #C9C4DA; }
+  .shots { flex: 1; min-height: 0; display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 18px; }
+  .left { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .left .shot { flex: none; }
+  .left .shot img { height: auto; }
+  .get { flex: 1; background: #fff; border: 1px solid #E4DFF5; border-radius: 20px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .get h3 { font: 800 20px 'Bricolage Grotesque'; }
+  .get ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 9px; font: 400 15px/1.4 Geist; color: #3A3550; }
+  .get li { display: flex; gap: 10px; } .get li::before { content: ''; flex: 0 0 8px; height: 8px; margin-top: 7px; border-radius: 50%; background: #6D28D9; }
+  .get code { font: 500 13px 'Geist Mono'; color: #6D28D9; }
+  .verdicts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .v { font: 700 13px Geist; padding: 5px 11px; border-radius: 999px; }
+  .shot { border-radius: 20px; overflow: hidden; border: 1px solid #E4DFF5; background: #fff; position: relative; box-shadow: 0 30px 60px -36px rgba(22,19,31,.45); }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
+  .tag { position: absolute; left: 14px; bottom: 14px; font: 600 14px Geist; background: #16131F; color: #fff; padding: 8px 14px; border-radius: 999px; }
+  .tag b { color: #C8F031; font-weight: 600; }
+</style></head>
+<body>
+  <div><h1>Company check, end to end</h1><p class="lead">One command. Registry rules in under a second, three verifier subagents on the web, a deterministic verdict with every reason. Real run on Singapore Airlines.</p></div>
+  <div class="flow">
+    <div class="st s1"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4.1 12 6" />
+  <path d="m5.1 8-2.9-.8" />
+  <path d="m6 12-1.9 2" />
+  <path d="M7.2 2.2 8 5.1" />
+  <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z" /></svg></span><b>1 · Ask</b><code>/company-check 197200078R</code><small>UEN or company name</small></div><span class="ar">→</span>
+    <div class="st s2"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" />
+  <path d="m21 21-4.3-4.3" /></svg></span><b>2 · Registry</b><small>624,271 live of 2,127,089 ACRA entities; annual return, address, BCA, GeBIZ, HDB</small></div><span class="ar">→</span>
+    <div class="st s3"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" />
+  <path d="M4 6h.01" />
+  <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35" />
+  <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67" />
+  <path d="M12 18h.01" />
+  <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="m13.41 10.59 5.66-5.66" /></svg></span><b>3 · Verifiers</b><small>3 subagents in parallel: identity, people, risk; cited evidence</small></div><span class="ar">→</span>
+    <div class="st s4"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+  <path d="m9 12 2 2 4-4" /></svg></span><b>4 · Rules</b><small>18 checks, pass · warn · fail · unknown, scored 0–100</small></div><span class="ar">→</span>
+    <div class="st s5"><span class="i"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4" />
+  <path d="m3 7 2 2 4-4" />
+  <path d="M13 6h8" />
+  <path d="M13 12h8" />
+  <path d="M13 18h8" /></svg></span><b>5 · Verdict</b><small>Likely legitimate · 80/100, report + cards in the console</small></div>
+  </div>
+  <div class="shots">
+    <div class="left">
+      <div class="shot"><img src="../screens/company-check-ask.jpg" alt=""><span class="tag">Ask · <b>/company-check</b> chip in the console</span></div>
+      <div class="get"><h3>What you get</h3><ul>
+        <li>A verdict and a 0–100 score you can explain line by line</li>
+        <li>Annual return, live status, physical vs virtual address, employees &gt; 3</li>
+        <li>Peers in the same industry, and cited web evidence</li>
+        <li>A saved report: <code>company-check/reports/&lt;date&gt;-&lt;uen&gt;.md</code></li></ul>
+        <div class="verdicts"><span class="v" style="background:#C8F031">Verified</span><span class="v" style="background:#E2F6E8;color:#15803D">Likely legitimate</span><span class="v" style="background:#EFE8FF;color:#6D28D9">Registry OK</span><span class="v" style="background:#FDE9C8;color:#7C3A06">Caution</span><span class="v" style="background:#FDE2E2;color:#B91C1C">Red flag</span><span class="v" style="background:#ECEAF3;color:#5B5670">Not active</span></div></div>
+    </div>
+    <div class="shot"><img src="../screens/company-check-result.jpg" alt=""><span class="tag">Result · <b>every check with its reason</b></span></div>
+  </div>
+</body></html>
