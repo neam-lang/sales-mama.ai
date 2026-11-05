@@ -51,3 +51,4 @@
 - [2026-11-02 17:55] setup | praveen | reps/praveen | health check: prereqs, profile, lint, skills ok; Gmail connector lacks draft scope; runner not scheduled
 - [2026-11-05 08:20] check | praveen | company-check/197200078R | Likely legitimate (80/100)
 - [2026-11-05 08:25] check | praveen | company-check/199201624D | Caution (65/100)
+- [2026-11-05 08:27] check | praveen | company-check/201011892K | Registry OK - needs web check (70/100)
