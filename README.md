@@ -28,17 +28,6 @@
   <br><sub>Console tour, then a real <code>/mama-send</code> run: one email and one WhatsApp, approved and sent. Demo data, fake transport.</sub>
 </p>
 
-## 🧰 What's in the harness
-
-| Part | What it does |
-|---|---|
-| **20 skills** | `/mama-day`, `/mama-send`, `/company-check`, `/company-insights` … one command per job |
-| **4 subagents** | Scout, Researcher, VAM and Verifier run in parallel, each with hard limits |
-| **3 hooks** | Session start (your queue), write guard (ownership, secrets), sync (git) |
-| **17 hard rules** | `AGENTS.md`: cite sources, approve-then-send, stay in your book |
-| **Scripts** | Scoring, allocation, checks and sending are deterministic Python |
-| **Evals** | 180 self-tests and 17 evals keep it honest |
-
 ## 🎯 Why
 
 Small teams lose deals to busywork, not to competitors.
