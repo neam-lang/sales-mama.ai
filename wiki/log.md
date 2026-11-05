@@ -49,3 +49,5 @@
 - [2026-11-02 17:12] scan | praveen | run 2026-11-02-1700 | 39 items: 0 linked, 0 review, 14 new_lead, 0 dropped, 23 seen, 2 events; dry-run
 - [2026-11-02 17:12] nightly | praveen | run 2026-11-02-1700 | ok; 39 items, 0 linked, 0 review, 14 new_lead; 0 leads proposed (skipped); lint 0 errors; dry-run
 - [2026-11-02 17:55] setup | praveen | reps/praveen | health check: prereqs, profile, lint, skills ok; Gmail connector lacks draft scope; runner not scheduled
+- [2026-11-05 08:20] check | praveen | company-check/197200078R | Likely legitimate (80/100)
+- [2026-11-05 08:25] check | praveen | company-check/199201624D | Caution (65/100)

@@ -1,0 +1,149 @@
+{
+  "query": "199201624D",
+  "how": "UEN",
+  "candidates": [],
+  "checked": "2026-11-05",
+  "dataset": "ACRA data updated 2026-10-14T17:21:16+08:00, index built 2026-11-05 08:12",
+  "uen": "199201624D",
+  "name": "SINGAPORE TELECOMMUNICATIONS LIMITED",
+  "status": "Live Company",
+  "entity_type": "Local Company",
+  "registered": "1992-03-28",
+  "ssic": "61010 ",
+  "address": "10 EUNOS ROAD 8 #07-31 SINGAPORE POST CENTRE Singapore 408600",
+  "verdict": "Caution",
+  "score": 65,
+  "reasons": [
+    "Annual return: last filed 2025-08-21; next was due 2026-08-31, 44 days before the 2026-10-14 data: may be filed but not yet in this month's data",
+    "Accounts due: accounts were due 2026-08-31"
+  ],
+  "checks": [
+    {
+      "id": "G1",
+      "check": "Found in ACRA",
+      "result": "pass",
+      "detail": "199201624D by UEN",
+      "source": "ACRA"
+    },
+    {
+      "id": "G2",
+      "check": "Live",
+      "result": "pass",
+      "detail": "Live Company",
+      "source": "ACRA"
+    },
+    {
+      "id": "C1",
+      "check": "Annual return",
+      "result": "warn",
+      "detail": "last filed 2025-08-21; next was due 2026-08-31, 44 days before the 2026-10-14 data: may be filed but not yet in this month's data",
+      "source": "ACRA"
+    },
+    {
+      "id": "C2",
+      "check": "Accounts due",
+      "result": "warn",
+      "detail": "accounts were due 2026-08-31",
+      "source": "ACRA"
+    },
+    {
+      "id": "C3",
+      "check": "Age",
+      "result": "pass",
+      "detail": "registered 1992-03-28 (34.6 years)",
+      "source": "ACRA"
+    },
+    {
+      "id": "P1",
+      "check": "Address on record",
+      "result": "pass",
+      "detail": "postal sector 40",
+      "source": "ACRA"
+    },
+    {
+      "id": "P2",
+      "check": "Physical or virtual",
+      "result": "pass",
+      "detail": "group address: 41 of 76 entities here share the name “SINGAPORE…”",
+      "source": "ACRA"
+    },
+    {
+      "id": "P3",
+      "check": "Home-based",
+      "result": "n/a",
+      "detail": "not an HDB residential block",
+      "source": "HDB"
+    },
+    {
+      "id": "P4",
+      "check": "Premises seen",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "E1",
+      "check": "Employees > 3",
+      "result": "unknown",
+      "detail": "no reliable headcount evidence (ACRA has none)",
+      "source": "web"
+    },
+    {
+      "id": "E2",
+      "check": "Size hints",
+      "result": "info",
+      "detail": "65 officers",
+      "source": "ACRA"
+    },
+    {
+      "id": "A1",
+      "check": "BCA contractor",
+      "result": "n/a",
+      "detail": "not a BCA registered contractor",
+      "source": "BCA"
+    },
+    {
+      "id": "A2",
+      "check": "GeBIZ supplier",
+      "result": "pass",
+      "detail": "14 award(s), last 2026-03-17, S$24,082,772",
+      "source": "GeBIZ"
+    },
+    {
+      "id": "A3",
+      "check": "Website identity",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "A4",
+      "check": "Recent activity",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "R1",
+      "check": "Adverse media / MAS alert",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "R2",
+      "check": "Shell-like profile",
+      "result": "pass",
+      "detail": "no",
+      "source": "ACRA"
+    },
+    {
+      "id": "R3",
+      "check": "Name changes",
+      "result": "pass",
+      "detail": "1 former name(s)",
+      "source": "ACRA"
+    }
+  ],
+  "evidence": {}
+}

@@ -1,0 +1,190 @@
+{
+  "query": "197200078R",
+  "how": "UEN",
+  "candidates": [],
+  "checked": "2026-11-05",
+  "dataset": "ACRA data updated 2026-10-14T17:21:16+08:00, index built 2026-11-05 08:12",
+  "uen": "197200078R",
+  "name": "SINGAPORE AIRLINES LIMITED",
+  "status": "Live Company",
+  "entity_type": "Local Company",
+  "registered": "1972-01-28",
+  "ssic": "51001 ",
+  "address": "25 AIRLINE ROAD AIRLINE HOUSE Singapore 819829",
+  "verdict": "Likely legitimate",
+  "score": 80,
+  "reasons": [
+    "Annual return: last filed 2025-08-14; next was due 2026-08-31, 44 days before the 2026-10-14 data: may be filed but not yet in this month's data",
+    "Accounts due: accounts were due 2026-08-31",
+    "Adverse media / MAS alert: historic, subsidiary or undated: historic air-cargo price-fixing fines on subsidiary SIA Cargo"
+  ],
+  "checks": [
+    {
+      "id": "G1",
+      "check": "Found in ACRA",
+      "result": "pass",
+      "detail": "197200078R by UEN",
+      "source": "ACRA"
+    },
+    {
+      "id": "G2",
+      "check": "Live",
+      "result": "pass",
+      "detail": "Live Company",
+      "source": "ACRA"
+    },
+    {
+      "id": "C1",
+      "check": "Annual return",
+      "result": "warn",
+      "detail": "last filed 2025-08-14; next was due 2026-08-31, 44 days before the 2026-10-14 data: may be filed but not yet in this month's data",
+      "source": "ACRA"
+    },
+    {
+      "id": "C2",
+      "check": "Accounts due",
+      "result": "warn",
+      "detail": "accounts were due 2026-08-31",
+      "source": "ACRA"
+    },
+    {
+      "id": "C3",
+      "check": "Age",
+      "result": "pass",
+      "detail": "registered 1972-01-28 (54.8 years)",
+      "source": "ACRA"
+    },
+    {
+      "id": "P1",
+      "check": "Address on record",
+      "result": "pass",
+      "detail": "postal sector 81",
+      "source": "ACRA"
+    },
+    {
+      "id": "P2",
+      "check": "Physical or virtual",
+      "result": "pass",
+      "detail": "18 live entities at this address",
+      "source": "ACRA"
+    },
+    {
+      "id": "P3",
+      "check": "Home-based",
+      "result": "n/a",
+      "detail": "not an HDB residential block",
+      "source": "HDB"
+    },
+    {
+      "id": "P4",
+      "check": "Premises seen",
+      "result": "pass",
+      "detail": "registered office 25 Airline Road per SGX corporate information (some divisions may move to a new HQ from 2026)",
+      "source": "company-check/evidence/197200078R/2026-11-05-identity-sgx-registered-office.md"
+    },
+    {
+      "id": "E1",
+      "check": "Employees > 3",
+      "result": "pass",
+      "detail": "about 18,233 airline employees FY2025/26 (secondary source)",
+      "source": "company-check/evidence/197200078R/2026-11-05-people-headcount-fy2526.md"
+    },
+    {
+      "id": "E2",
+      "check": "Size hints",
+      "result": "info",
+      "detail": "57 officers",
+      "source": "ACRA"
+    },
+    {
+      "id": "A1",
+      "check": "BCA contractor",
+      "result": "n/a",
+      "detail": "not a BCA registered contractor",
+      "source": "BCA"
+    },
+    {
+      "id": "A2",
+      "check": "GeBIZ supplier",
+      "result": "n/a",
+      "detail": "no government award since 2023-11-06",
+      "source": "GeBIZ"
+    },
+    {
+      "id": "A3",
+      "check": "Website identity",
+      "result": "pass",
+      "detail": "https://www.singaporeair.com shows the UEN",
+      "source": "company-check/evidence/197200078R/2026-11-05-identity-singaporeair-website.md"
+    },
+    {
+      "id": "A4",
+      "check": "Recent activity",
+      "result": "pass",
+      "detail": "2 item(s) in 12 months, e.g. FY2025/26 results: record revenue above S$20b",
+      "source": "company-check/evidence/197200078R/2026-11-05-people-fy2526-results.md"
+    },
+    {
+      "id": "R1",
+      "check": "Adverse media / MAS alert",
+      "result": "warn",
+      "detail": "historic, subsidiary or undated: historic air-cargo price-fixing fines on subsidiary SIA Cargo",
+      "source": "company-check/evidence/197200078R/2026-11-05-risk-cargo-price-fixing.md"
+    },
+    {
+      "id": "R2",
+      "check": "Shell-like profile",
+      "result": "pass",
+      "detail": "no",
+      "source": "ACRA"
+    },
+    {
+      "id": "R3",
+      "check": "Name changes",
+      "result": "pass",
+      "detail": "0 former name(s)",
+      "source": "ACRA"
+    }
+  ],
+  "evidence": {
+    "activity": [
+      {
+        "date": "2026-05-15",
+        "what": "FY2025/26 results: record revenue above S$20b",
+        "snapshot": "company-check/evidence/197200078R/2026-11-05-people-fy2526-results.md"
+      },
+      {
+        "date": "2026-08-12",
+        "what": "Johannesburg frequency change from late Oct 2026",
+        "snapshot": "company-check/evidence/197200078R/2026-11-05-people-johannesburg-frequency.md"
+      }
+    ],
+    "adverse": [
+      {
+        "what": "historic air-cargo price-fixing fines on subsidiary SIA Cargo",
+        "about": "subsidiary",
+        "snapshot": "company-check/evidence/197200078R/2026-11-05-risk-cargo-price-fixing.md"
+      }
+    ],
+    "vendor": [],
+    "uen": "197200078R",
+    "focus": "identity",
+    "website": {
+      "url": "https://www.singaporeair.com",
+      "shows_name": true,
+      "shows_uen": true,
+      "snapshot": "company-check/evidence/197200078R/2026-11-05-identity-singaporeair-website.md"
+    },
+    "premises": {
+      "seen": true,
+      "detail": "registered office 25 Airline Road per SGX corporate information (some divisions may move to a new HQ from 2026)",
+      "snapshot": "company-check/evidence/197200078R/2026-11-05-identity-sgx-registered-office.md"
+    },
+    "employees": {
+      "min": 18233,
+      "detail": "about 18,233 airline employees FY2025/26 (secondary source)",
+      "snapshot": "company-check/evidence/197200078R/2026-11-05-people-headcount-fy2526.md"
+    },
+    "mas_alert": false
+  }
+}
