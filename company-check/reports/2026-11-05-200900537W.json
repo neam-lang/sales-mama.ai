@@ -1,0 +1,146 @@
+{
+  "query": "200900537W",
+  "how": "UEN",
+  "candidates": [],
+  "checked": "2026-11-05",
+  "dataset": "ACRA data updated 2026-10-14T17:21:16+08:00, index built 2026-11-05 08:12",
+  "uen": "200900537W",
+  "name": "CUBEX PTE. LTD.",
+  "status": "Live Company",
+  "entity_type": "Local Company",
+  "registered": "2009-01-09",
+  "ssic": "82303 ",
+  "address": "111 NORTH BRIDGE ROAD #07-03 PENINSULA PLAZA Singapore 179098",
+  "verdict": "Registry OK - needs web check",
+  "score": 70,
+  "reasons": [],
+  "checks": [
+    {
+      "id": "G1",
+      "check": "Found in ACRA",
+      "result": "pass",
+      "detail": "200900537W by UEN",
+      "source": "ACRA"
+    },
+    {
+      "id": "G2",
+      "check": "Live",
+      "result": "pass",
+      "detail": "Live Company",
+      "source": "ACRA"
+    },
+    {
+      "id": "C1",
+      "check": "Annual return",
+      "result": "pass",
+      "detail": "filed 2026-07-22 (3 months before the 2026-10-14 data)",
+      "source": "ACRA"
+    },
+    {
+      "id": "C2",
+      "check": "Accounts due",
+      "result": "pass",
+      "detail": "next due 2027-07-31",
+      "source": "ACRA"
+    },
+    {
+      "id": "C3",
+      "check": "Age",
+      "result": "pass",
+      "detail": "registered 2009-01-09 (17.8 years)",
+      "source": "ACRA"
+    },
+    {
+      "id": "P1",
+      "check": "Address on record",
+      "result": "pass",
+      "detail": "postal sector 17",
+      "source": "ACRA"
+    },
+    {
+      "id": "P2",
+      "check": "Physical or virtual",
+      "result": "pass",
+      "detail": "5 live entities at this address",
+      "source": "ACRA"
+    },
+    {
+      "id": "P3",
+      "check": "Home-based",
+      "result": "n/a",
+      "detail": "not an HDB residential block",
+      "source": "HDB"
+    },
+    {
+      "id": "P4",
+      "check": "Premises seen",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "E1",
+      "check": "Employees > 3",
+      "result": "unknown",
+      "detail": "no reliable headcount evidence (ACRA has none)",
+      "source": "web"
+    },
+    {
+      "id": "E2",
+      "check": "Size hints",
+      "result": "info",
+      "detail": "4 officers",
+      "source": "ACRA"
+    },
+    {
+      "id": "A1",
+      "check": "BCA contractor",
+      "result": "n/a",
+      "detail": "not a BCA registered contractor",
+      "source": "BCA"
+    },
+    {
+      "id": "A2",
+      "check": "GeBIZ supplier",
+      "result": "n/a",
+      "detail": "no government award since 2023-11-06",
+      "source": "GeBIZ"
+    },
+    {
+      "id": "A3",
+      "check": "Website identity",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "A4",
+      "check": "Recent activity",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "R1",
+      "check": "Adverse media / MAS alert",
+      "result": "unknown",
+      "detail": "no web evidence yet",
+      "source": "web"
+    },
+    {
+      "id": "R2",
+      "check": "Shell-like profile",
+      "result": "pass",
+      "detail": "no",
+      "source": "ACRA"
+    },
+    {
+      "id": "R3",
+      "check": "Name changes",
+      "result": "pass",
+      "detail": "0 former name(s)",
+      "source": "ACRA"
+    }
+  ],
+  "evidence": {}
+}
