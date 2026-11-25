@@ -454,7 +454,9 @@ def out_path(root: Path, date: str) -> Path:
 
 def latest_proposal(root: Path, date: str | None) -> Path | None:
     folder = root / "log" / "allocation"
-    files = sorted(folder.glob(f"{date or '*'}*.md")) if folder.is_dir() else []
+    # f"{None or '*'}*.md" would be "**.md", which pathlib rejects on Python 3.12 ("**" must be a whole
+    # path component), so the undated manager approval crashed there.
+    files = sorted(folder.glob(f"{date}*.md" if date else "*.md")) if folder.is_dir() else []
     files = [f for f in files if (mc.read_page(f, root) or None) and
              mc.norm((mc.read_page(f, root).meta or {}).get("type")) == "allocation"]
     return files[-1] if files else None
