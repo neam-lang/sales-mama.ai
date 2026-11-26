@@ -223,6 +223,96 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return []
 
 
+SUPPRESSION_FILE = "wiki/suppression.csv"
+SUPPRESSION_HEADER = "value,type,reason,added_by,added_on"
+SUPPRESSION_TYPES = ("email", "domain")
+
+
+class Suppression:
+    """wiki/suppression.csv read strictly: the one implementation of AGENTS.md rule 2.
+
+    `error` is set when the list is missing, unreadable or malformed (no `value` column, a duplicate
+    column, a row with the wrong number of fields, an unknown `type`). Callers must then refuse outreach
+    (`suppression_state_unavailable`) instead of treating the list as "nobody is suppressed". A valid list
+    with no rows (header only) is fine.
+
+    Matching keeps the semantics of the earlier draft_check.suppression_hit(): case-insensitive and
+    trimmed. An `email` row matches that exact address. A `domain` row (a leading "@" is ignored) matches
+    the domain and its subdomains, never a look-alike (acme.example blocks sales.acme.example, not
+    notacme.example). A row without `type` is an email when its value contains "@", else a domain.
+    Every row is kept, so duplicates with different `added_on` dates are all visible to audits.
+    """
+
+    def __init__(self, rows: list[dict[str, str]], error: str = ""):
+        self.rows, self.error = rows, error
+        self.emails: dict[str, list[dict[str, str]]] = {}
+        self.domains: dict[str, list[dict[str, str]]] = {}
+        for row in rows:
+            value = norm(row.get("value")).lower()
+            if not value:
+                continue
+            kind = norm(row.get("type")).lower() or ("email" if "@" in value else "domain")
+            if kind == "domain":
+                self.domains.setdefault(value.lstrip("@"), []).append(row)
+            else:
+                self.emails.setdefault(value, []).append(row)
+
+    def match_all(self, email: str = "", domain: str = "") -> list[tuple[str, str, dict[str, str]]]:
+        """Every (kind, value, row) that blocks this address and/or this (account) domain. The account
+        domain is checked as given and without a leading "www."."""
+        e = norm(email).lower()
+        out = [("email", e, row) for row in self.emails.get(e, [])] if e else []
+        doms = {e.split("@", 1)[1]} if "@" in e else set()
+        d = norm(domain).lower().lstrip("@")
+        if d:
+            doms |= {d, d.removeprefix("www.")}
+        doms.discard("")
+        for value, rows in self.domains.items():
+            if any(x == value or x.endswith("." + value) for x in doms):
+                out.extend(("domain", value, row) for row in rows)
+        return out
+
+    def match(self, email: str = "", domain: str = "") -> tuple[str, str, dict[str, str]] | None:
+        hits = self.match_all(email, domain)
+        return hits[0] if hits else None
+
+
+def load_suppression(root: Path) -> Suppression:
+    """The suppression list, or a Suppression with `error` set: never a silent empty list."""
+    path = root / SUPPRESSION_FILE
+    rows: list[dict[str, str]] = []
+    try:
+        with open(path, "r", encoding="utf-8-sig", newline="") as fh:
+            reader = csv.reader(fh, strict=True)
+            header = [h.strip().lower() for h in next(reader, [])]
+            if "value" not in header:
+                return Suppression([], f"{SUPPRESSION_FILE} has no `value` column (expected {SUPPRESSION_HEADER})")
+            if "" in header:
+                return Suppression([], f"{SUPPRESSION_FILE} has an unnamed column (expected {SUPPRESSION_HEADER})")
+            dup = sorted({h for h in header if header.count(h) > 1})
+            if dup:
+                return Suppression([], f"{SUPPRESSION_FILE} has duplicate columns: {', '.join(dup)}")
+            for cells in reader:
+                if not any(c.strip() for c in cells):
+                    continue  # blank line
+                if len(cells) != len(header):
+                    return Suppression([], f"{SUPPRESSION_FILE} line {reader.line_num} has {len(cells)} fields, "
+                                           f"expected {len(header)} ({','.join(header)})")
+                row = {h: c.strip() for h, c in zip(header, cells)}
+                if not row.get("value", "").lstrip("@").strip():
+                    return Suppression([], f"{SUPPRESSION_FILE} line {reader.line_num} has no value")
+                kind = row.get("type", "").lower()
+                if kind and kind not in SUPPRESSION_TYPES:
+                    return Suppression([], f"{SUPPRESSION_FILE} line {reader.line_num} has unknown type "
+                                           f"`{row.get('type')}` (use email or domain)")
+                rows.append(row)
+    except FileNotFoundError:
+        return Suppression([], f"{SUPPRESSION_FILE} is missing")
+    except (OSError, UnicodeDecodeError, csv.Error) as exc:  # permissions, a directory, bad bytes, bad quoting
+        return Suppression([], f"{SUPPRESSION_FILE} is unreadable ({type(exc).__name__}: {exc})")
+    return Suppression(rows)
+
+
 def append_csv(path: Path, row: dict[str, Any], fieldnames: Iterable[str]) -> None:
     """Append one row; writes the header first if the file is new or empty."""
     fieldnames = list(fieldnames)

@@ -1126,6 +1126,33 @@ def t_send(r: Runner) -> None:
             fh.write("harbourlightfoods.example,domain,unsubscribe,grace,2026-11-01\n")
         r.record("send: suppressed domain -> suppression blocks", "suppression" in problems(preview()))
         mc.write_text(root / "wiki" / "suppression.csv", orig[root / "wiki" / "suppression.csv"])
+        # Rule 2 at dispatch: an OK preview, then a late opt-out of the actual recipient, or the list
+        # disappears -> --send refuses that item and the (fake) transport is never called.
+        sup_file = root / "wiki" / "suppression.csv"
+        fake_log = root.parent / "fake-send.log"
+        for label, breakit, reason in (
+                ("late opt-out of the recipient",
+                 lambda: sup_file.write_text(orig[sup_file] + "rachel@harbourlightfoods.example,email,unsubscribe,mei,"
+                                             "2026-11-03\n", encoding="utf-8"), "suppressed_email"),
+                ("list removed", lambda: sup_file.unlink(), "suppression_state_unavailable")):
+            mc.write_text(sup_file, orig[sup_file])
+            p0 = preview()
+            sent_before = sum(1 for t in mc.load_touches(root) if t.get("status") == "sent")
+            breakit()
+            if label == "list removed":
+                miss = problems(preview())
+                r.record("send: suppression list missing -> preview refuses with suppression_state_unavailable",
+                         "suppression_state_unavailable" in miss, miss)
+            fake_log.unlink(missing_ok=True)
+            code, d = send(p0.get("id", "x"), MAMA_FAKE_SEND_LOG=str(fake_log))
+            res0 = (d.get("results") or [{}])[0]
+            sent_after = sum(1 for t in mc.load_touches(root) if t.get("status") == "sent")
+            calls = fake_log.read_text(encoding="utf-8").splitlines() if fake_log.exists() else []
+            r.record(f"send: {label} after an OK preview -> --send refuses at dispatch, transport not called",
+                     bool(p0.get("items")) and p0["items"][0].get("ok") and res0.get("status") == "refused"
+                     and any(reason in x for x in res0.get("detail", [])) and sent_after == sent_before
+                     and not calls, f"{res0} sent {sent_before}->{sent_after} calls={calls}")
+        mc.write_text(sup_file, orig[sup_file])
         mc.update_frontmatter(root / "reps" / "mei.md", {"daily_quota": 0})
         p = preview()
         code, d = send(p["id"])
@@ -1141,7 +1168,12 @@ def t_send(r: Runner) -> None:
         mc.write_text(saved, before)
 
         p = preview()
-        code, d = send(p["id"], "1")
+        fake_log = root.parent / "fake-send.log"
+        fake_log.unlink(missing_ok=True)
+        code, d = send(p["id"], "1", MAMA_FAKE_SEND_LOG=str(fake_log))
+        calls = fake_log.read_text(encoding="utf-8").splitlines() if fake_log.exists() else []
+        r.record("send: the fake transport log records exactly one call for one approved email (control)",
+                 len(calls) == 1, str(calls))
         res = (d.get("results") or [{}])[0]
         appr = mc.read_csv(root / "log" / "approvals.csv")
         sent = [t for t in mc.load_touches(root) if t.get("status") == "sent" and t.get("ref", "").startswith("gmail:")]
@@ -1474,6 +1506,223 @@ def _team_repo(r: Runner) -> tuple[Runner, Runner, Path]:
 def _owner(rr: Runner, acc: str) -> dict:
     page = mc.read_page(rr.root / "wiki" / "accounts" / f"{acc}.md", rr.root)
     return (page.meta if page else None) or {}
+
+
+def t_suppression_spec(r: Runner) -> None:
+    """Rule 2: one strict reader and one matcher everywhere. Subdomains blocked, look-alikes allowed,
+    old row semantics kept, and every check refuses when wiki/suppression.csv is unavailable."""
+    import importlib
+    root = r.root
+    sup = root / "wiki" / "suppression.csv"
+    hl = root / "wiki" / "accounts" / "harbourlight-foods.md"
+    pattern = root / "wiki" / "responses" / "patterns" / "first-test.md"
+    draft = root.parent / "suppression-spec-draft.txt"  # outside the repo: cannot collide with fixtures
+    touches, wlog = root / "log" / "touches.csv", root / "wiki" / "log.md"
+    saved = {p: (p.read_bytes() if p.exists() else None) for p in (sup, hl, pattern, draft, touches, wlog)}
+    header = "value,type,reason,added_by,added_on\n"
+    base = ["--account", "harbourlight-foods", "--contact", "rachel-goh-harbourlight-foods", "--step", "first",
+            "--pattern", "first-test", "--products", "it-care", "--subject", "Your Tampines kitchen",
+            "--file", str(draft)]
+    dc, cl = importlib.import_module("draft_check"), importlib.import_module("claim")
+    ap, ev, li = importlib.import_module("appointments"), importlib.import_module("eval"), importlib.import_module("lint")
+
+    def write_list(text: str) -> None:
+        sup.write_bytes(text.encode("utf-8"))
+
+    def draft_sup() -> tuple[int, dict]:
+        code, out, _ = r.py("draft_check.py", *base, email=MEI)
+        c = [x for x in _json(out).get("checks", []) if x["check"] == "suppression"]
+        return code, (c[0] if c else {})
+
+    def claim_block(domain: str) -> str:
+        return cl.blocked({"stage": "new", "domain": domain}, cl.Ctx(root))
+
+    def appt_refusal() -> str:
+        try:
+            ap.check_contact(root, "", "harbourlight-foods", {"domain": "harbourlightfoods.example"})
+        except ap.Refused as exc:
+            return str(exc)
+        return ""
+
+    def lint_errors() -> list:
+        rep = li.Report()
+        li.check_suppression(root, [], [], rep)
+        return [i for i in rep.errors if i["check"] == "suppression"]
+
+    def hit(email: str = "", domain: str = "") -> str:
+        m = mc.load_suppression(root).match(email, domain)
+        return m[0] if m else ""
+
+    try:
+        mc.write_text(pattern, PATTERN_OK)
+        mc.write_text(draft, DRAFT_OK)
+        mc.update_frontmatter(hl, {"stage": "researched", "recommended": ["it-care"]})
+        # Matching: subdomains, look-alikes, www., leading "@", typed rows, blank type, case and spaces.
+        write_list(header + "acme.example,domain,unsubscribe,grace,2026-11-01\n"
+                   "@atdomain.example,domain,unsubscribe,grace,2026-11-01\n"
+                   " Jane@Corp.Example ,email,unsubscribe,mei,2026-11-01\n"
+                   "@weird.example,email,unsubscribe,mei,2026-11-01\n"
+                   "www.wwwco.example,domain,unsubscribe,grace,2026-11-01\n"
+                   "blank@type.example,,unsubscribe,mei,2026-11-01\n"
+                   "plaindomain.example,,unsubscribe,mei,2026-11-01\n")
+        r.record("suppression: domain row blocks a subdomain", hit("x@sales.acme.example") == "domain")
+        r.record("suppression: look-alike domain is not blocked", hit("y@notacme.example") == "")
+        r.record("suppression: leading @ on a domain row is ignored", hit("a@atdomain.example") == "domain")
+        r.record("suppression: email rows match exactly, case and spaces ignored",
+                 hit(" JANE@corp.example ") == "email" and hit("john@corp.example") == "")
+        r.record("suppression: an email row keeps its value as written (no @ stripping)",
+                 hit("x@weird.example") == "" and hit(domain="weird.example") == "")
+        r.record("suppression: account domain checked with and without www.",
+                 hit(domain="www.wwwco.example") == "domain" and hit(domain="www.acme.example") == "domain")
+        r.record("suppression: blank type -> email if it has @, else domain",
+                 hit("blank@type.example") == "email" and hit("z@plaindomain.example") == "domain")
+        r.record("suppression: draft_check blocks a subdomain via the email domain",
+                 dc.suppression_hit(root, "x@sales.acme.example") == "acme.example")
+        r.record("suppression: claim.py blocks a www. account whose row is written with www.",
+                 "suppress" in claim_block("www.wwwco.example"), claim_block("www.wwwco.example"))
+        # The account domain alone (contact email unrelated) blocks a draft and fails the draft eval.
+        mc.update_frontmatter(hl, {"domain": "www.wwwco.example"})
+        code, c = draft_sup()
+        r.record("suppression: draft_check blocks via the account domain (www. row, unrelated email)",
+                 code == 1 and "suppressed_domain" in c.get("detail", ""), str(c))
+        touches = root / "log" / "touches.csv"
+        with open(touches, "a", encoding="utf-8", newline="") as fh:
+            fh.write("2026-11-03 10:00,mei,harbourlight-foods,rachel-goh-harbourlight-foods,email,first,"
+                     "first-test,it-care,drafted,,\n")
+        st = ev.check_suppression(root)
+        r.record("suppression: eval flags a draft blocked only by the www. account domain", st.status == "FAIL",
+                 f"{st.status} {st.value} {st.details}")
+        touches.write_bytes(saved[touches])
+        hl.write_bytes(saved[hl])
+        mc.update_frontmatter(hl, {"stage": "researched", "recommended": ["it-care"]})
+        # Historical send audit: the logged destination is authoritative; dates and duplicates respected.
+        d1103 = mc.to_date("2026-11-03")
+        S = mc.Suppression([{"value": "old@x.example", "type": "email", "added_on": "2026-11-01"},
+                            {"value": "late@x.example", "type": "email", "added_on": "2026-11-05"},
+                            {"value": "dup@x.example", "type": "email", "added_on": "2026-11-01"},
+                            {"value": "dup@x.example", "type": "email", "added_on": "2026-11-10"},
+                            {"value": "blocked.example", "type": "domain", "added_on": "2026-11-01"}])
+        sh = ev.send_suppression_hits
+        r.record("suppression audit: a send before the opt-out is not a violation",
+                 sh(S, "email", "late@x.example", "late@x.example", "", d1103) == [])
+        r.record("suppression audit: a send after the opt-out is a violation",
+                 len(sh(S, "email", "old@x.example", "old@x.example", "", d1103)) == 1)
+        r.record("suppression audit: an earlier duplicate row is not hidden by a later one",
+                 len(sh(S, "email", "dup@x.example", "", "", d1103)) == 1)
+        r.record("suppression audit: an unusable logged destination falls back to the (suppressed) contact email",
+                 len(sh(S, "email", "@", "old@x.example", "", d1103)) == 1
+                 and len(sh(S, "email", "not-an-address", "old@x.example", "", d1103)) == 1)
+        r.record("suppression audit: logged destination wins over a later address change (both directions)",
+                 sh(S, "email", "new@x.example", "old@x.example", "", d1103) == []
+                 and len(sh(S, "email", "old@x.example", "new@x.example", "", d1103)) == 1)
+        r.record("suppression audit: WhatsApp uses the contact email; the account domain counts for both",
+                 len(sh(S, "whatsapp", "+6591234567", "old@x.example", "", d1103)) == 1
+                 and len(sh(S, "whatsapp", "+6591234567", "", "blocked.example", d1103)) == 1
+                 and len(sh(S, "email", "a@ok.example", "", "www.blocked.example", d1103)) == 1)
+        r.record("suppression: claim.py blocks a lead on a suppressed subdomain",
+                 "suppress" in claim_block("sales.acme.example"), claim_block("sales.acme.example"))
+        # A valid list with no rows is fine (a new team has no opt-outs yet); lint stays quiet.
+        write_list(header)
+        code, c = draft_sup()
+        r.record("suppression: a header-only list lets a clean draft pass", code == 0 and c.get("ok"), str(c))
+        r.record("suppression: lint accepts a header-only list", not lint_errors(), str(lint_errors()))
+        # Unavailable or malformed list -> every check refuses with suppression_state_unavailable.
+        cases = (("missing", None),
+                 ("a directory instead of a file", "dir"),
+                 ("empty value", (header + ",email,unsubscribe,mei,2026-11-01\n").encode()),
+                 ("domain value is only @", (header + "@,domain,unsubscribe,mei,2026-11-01\n").encode()),
+                 ("unnamed column", b"value,,type\nx@y.example,z,email\n"),
+                 ("undecodable", b"\xff\xfe\x00\x81\x9dnot,a,csv"),
+                 ("no value column", b"email;reason\nx@y.example;z\n"),
+                 ("truncated row", (header + "alice\n").encode()),
+                 ("unknown type", (header + "x@y.example,domian,unsubscribe,mei,2026-11-01\n").encode()),
+                 ("duplicate column", b"value,type,value,reason\nx@y.example,email,z@y.example,u\n"),
+                 ("broken quotes", (header + '"x@y.example,email,unsubscribe,mei,2026-11-01\n').encode()))
+        for label, content in cases:
+            if sup.is_dir():
+                sup.rmdir()
+            elif sup.exists():
+                sup.unlink()
+            if content == "dir":
+                sup.mkdir()
+            elif content is not None:
+                sup.write_bytes(content)
+            code, c = draft_sup()
+            r.record(f"suppression ({label}): draft_check refuses with suppression_state_unavailable",
+                     code == 1 and not c.get("ok") and "suppression_state_unavailable" in c.get("detail", ""), str(c))
+        if sup.is_dir():
+            sup.rmdir()
+        # Valid encodings still parse: CRLF line endings and a UTF-8 BOM.
+        write_list("\ufeff" + header.replace("\n", "\r\n") + "acme.example,domain,u,grace,2026-11-01\r\n")
+        r.record("suppression: CRLF + UTF-8 BOM list still parses", hit("x@acme.example") == "domain",
+                 mc.load_suppression(root).error)
+        # Still broken: the other rule-2 checks refuse too, and the commands say why.
+        sup.write_bytes(b"email;reason\nx@y.example;z\n")
+        r.record("suppression: claim.py blocked() refuses while the list is unavailable",
+                 "unavailable" in claim_block("pool.example"), claim_block("pool.example"))
+        code, out, err = r.py("claim.py", "--suggest", email=MEI)
+        r.record("suppression: claim.py command exits 1 with suppression_state_unavailable",
+                 code == 1 and "suppression_state_unavailable" in out, f"exit {code}: {out[-200:]}")
+        code, out, err = r.py("allocate.py", "--dry-run", email=GRACE)
+        r.record("suppression: allocate.py refuses to propose while the list is unavailable",
+                 code == 1 and "suppression_state_unavailable" in out, f"exit {code}: {out[-200:]}")
+        # claim.py commits pending work and pulls even with --dry-run, so run it in a throwaway copy
+        # (no push) to keep this test from changing the shared selftest repo.
+        iso = root.parent / "suppression-release-copy"
+        shutil.rmtree(iso, ignore_errors=True)
+        shutil.copytree(root, iso)
+        proc = subprocess.run([sys.executable, str(iso / "scripts" / "claim.py"), "--release", "harbourlight-foods",
+                               "--dry-run", "--no-push", "--json"], cwd=str(iso), capture_output=True, text=True,
+                              encoding="utf-8", errors="replace", env=r.env(MEI, MAMA_ROOT=str(iso)), timeout=300)
+        out = proc.stdout + proc.stderr
+        r.record("suppression: releasing an account still works while the list is unavailable",
+                 "suppression_state_unavailable" not in out and proc.returncode == 0 and '"release"' in out,
+                 f"exit {proc.returncode}: {out[-300:]}")
+        _rmtree(iso)
+        # A proposal made while the list was valid cannot be approved once it is unavailable. Run in an
+        # isolated copy so the shared selftest repo (and its allocation folder) is never touched.
+        iso = root.parent / "suppression-allocate-copy"
+        shutil.rmtree(iso, ignore_errors=True)
+        shutil.copytree(root, iso)
+        (iso / "wiki" / "suppression.csv").write_bytes(header.encode("utf-8"))
+
+        def alloc_cli(*args: str) -> tuple[int, str]:
+            proc = subprocess.run([sys.executable, str(iso / "scripts" / "allocate.py"), *args], cwd=str(iso),
+                                  capture_output=True, text=True, encoding="utf-8", errors="replace",
+                                  env=r.env(GRACE, MAMA_ROOT=str(iso)), timeout=300)
+            return proc.returncode, proc.stdout + proc.stderr
+
+        code_p, out_p = alloc_cli("--json")
+        prop = _json(out_p).get("path") or ""
+        md = iso / prop if prop else iso / "missing.md"
+        files = [md, md.with_suffix(".csv"), md.with_suffix(".json")]
+        pending = md.is_file() and mc.norm((mc.read_page(md, iso).meta or {}).get("status")) == "proposed"
+        before_bytes = [f.read_bytes() if f.is_file() else None for f in files]
+        owners_before = {p.id: mc.norm(p.meta.get("owner")) for p in mc.iter_pages("account", iso)}
+        (iso / "wiki" / "suppression.csv").write_bytes(b"email;reason\nx@y.example;z\n")
+        code, out = alloc_cli("--approve", "all", "--date", md.stem[:10])
+        owners_after = {p.id: mc.norm(p.meta.get("owner")) for p in mc.iter_pages("account", iso)}
+        after_bytes = [f.read_bytes() if f.is_file() else None for f in files]
+        r.record("suppression: allocate.py --approve refuses once the list is unavailable; proposal and owners intact",
+                 code_p == 0 and pending and code == 1 and "suppression_state_unavailable" in out
+                 and before_bytes == after_bytes and None not in before_bytes and owners_after == owners_before,
+                 f"propose exit {code_p} path={prop} pending={pending}; approve exit {code}: {out[-200:]}")
+        _rmtree(iso)
+        r.record("suppression: appointments.py refuses while the list is unavailable",
+                 "suppression_state_unavailable" in appt_refusal(), appt_refusal())
+        st = ev.check_suppression(root)
+        r.record("suppression: eval suppression check FAILs instead of passing", st.status == "FAIL",
+                 f"{st.status} {st.value}")
+        r.record("suppression: lint reports the unreadable list", bool(lint_errors()), str(lint_errors()))
+    finally:
+        if sup.is_dir():
+            sup.rmdir()
+        for p, data in saved.items():
+            if data is None:
+                if p.exists():
+                    p.unlink()
+            else:
+                p.write_bytes(data)
 
 
 def t_claim(r: Runner) -> None:
@@ -1913,7 +2162,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.path.insert(0, str(root / "scripts"))
         for test in (t_help, t_no_presentation, t_frontmatter, t_guard, t_lint, t_lint_secrets, t_find, t_index, t_books, t_session,
                      t_sync, t_skills, t_ingest, t_fetch, t_resolve, t_score, t_recommend, t_eval,
-                     t_draft_check, t_send, t_company_check, t_company_analytics, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
+                     t_draft_check, t_send, t_company_check, t_company_analytics, t_classify, t_suppress, t_suppression_spec, t_claim, t_claim_race, t_allocate,
                      t_weekly, t_crm_update, t_appointments, t_busy):
             try:
                 test(runner)

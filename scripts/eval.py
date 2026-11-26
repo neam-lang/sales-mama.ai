@@ -153,15 +153,34 @@ def check_catalog(root: Path, accounts: list[mc.Page]) -> Check:
     return c.done(not bad, str(len(bad)), bad)
 
 
+def send_suppression_hits(sup: mc.Suppression, channel: str, logged_to: str, contact_email: str,
+                          account_domain: str, when: dt_.date) -> list[str]:
+    """Rule-2 violations for one historical send. Email: the logged destination is what was sent to, so it is
+    authoritative; the contact's current email is used only when the log has no usable address. WhatsApp:
+    the contact's email. Both channels: the account domain. A row counts only if added on or before the
+    send date (unknown date: counts); duplicate rows are all considered, so an earlier opt-out is never hidden."""
+    to = mc.norm(logged_to).lower()
+    usable = bool(re.fullmatch(r"[^@\s<>,;]+@[^@\s<>,;]+\.[^@\s<>,;]+", to))  # one plain mailbox
+    addr = to if mc.norm(channel).lower() == "email" and usable else mc.norm(contact_email).lower()
+    out, seen = [], set()
+    for _kind, value, row in sup.match_all(addr, account_domain):
+        key = (value, row.get("added_on"))
+        if key in seen:
+            continue
+        seen.add(key)
+        added = mc.to_date(row.get("added_on"))
+        if added is None or added <= when:
+            out.append(f"{addr or to or '(no address)'} suppressed ({value}, {added})")
+    return out
+
+
 def check_suppression(root: Path) -> Check:
     c = Check("suppression", "Suppressed contact drafted", "0")
-    sup = mc.read_csv(root / "wiki" / "suppression.csv")
-    emails = {mc.norm(r.get("value")).lower(): mc.to_date(r.get("added_on")) for r in sup
-              if mc.norm(r.get("type")).lower() == "email"}
-    domains = {mc.norm(r.get("value")).lower().lstrip("@"): mc.to_date(r.get("added_on")) for r in sup
-               if mc.norm(r.get("type")).lower() == "domain"}
+    sup = mc.load_suppression(root)  # rule 2: the same matcher as draft_check/send
+    if sup.error:
+        return c.done(False, "suppression list unavailable", [sup.error])
     contact_email = {p.id: mc.norm(p.meta.get("email")).lower() for p in mc.iter_pages("contact", root)}
-    account_domain = {p.id: mc.norm(p.meta.get("domain")).lower().removeprefix("www.")
+    account_domain = {p.id: mc.norm(p.meta.get("domain")).lower()  # matcher checks it with and without www.
                       for p in mc.iter_pages("account", root)}
     drafted = [t for t in mc.load_touches(root) if mc.norm(t.get("status")) == "drafted"]
     bad = []
@@ -169,13 +188,8 @@ def check_suppression(root: Path) -> Check:
         when = mc.to_date(t.get("ts"))
         contact = mc.link_id(t.get("contact"), "contacts")
         email = contact.lower() if "@" in contact else contact_email.get(contact, "")
-        hits = []
-        if email in emails:
-            hits.append((email, emails[email]))
-        dom = email.split("@")[-1] if "@" in email else ""
-        for d in {dom, account_domain.get(mc.link_id(t.get("account")), "")} - {""}:
-            if d in domains:
-                hits.append((d, domains[d]))
+        hits = [(value, mc.to_date(row.get("added_on")))
+                for _kind, value, row in sup.match_all(email, account_domain.get(mc.link_id(t.get("account")), ""))]
         for value, added in hits:
             if added is None or when is None or when >= added:
                 bad.append(f"log/touches.csv {t.get('ts')} {t.get('account')}: draft to suppressed {value}")
@@ -441,7 +455,9 @@ def send_checks(root: Path) -> list[Check]:
     bad: dict[str, list[str]] = {c.key: [] for c in checks}
     by_ref = {mc.norm(a.get("ref")): a for a in sent_rows}
     reps = {r["id"]: r for r in mc.load_reps(root)}
-    sup = mc.read_csv(root / "wiki" / "suppression.csv")
+    sup = mc.load_suppression(root)  # rule 2: same matcher; an unreadable list is itself a failure
+    if sup.error:
+        bad["send_suppressed"].append(f"suppression list unavailable: {sup.error}")
     for t in script_touches:
         a = by_ref.get(mc.norm(t.get("ref")))
         if not a:
@@ -475,12 +491,10 @@ def send_checks(root: Path) -> list[Check]:
         con = mc.read_page(root / "wiki" / "contacts" / f"{a.get('contact')}.md", root)
         cmeta = (con.meta if con and con.meta else {}) or {}
         email = mc.norm(cmeta.get("email")).lower()
-        for row in sup:
-            value = mc.norm(row.get("value")).lower().lstrip("@")
-            added = mc.to_date(row.get("added_on"))
-            hit = value and (value == email or (email.endswith("@" + value)))
-            if hit and (added is None or added <= when.date()):
-                bad["send_suppressed"].append(f"{ref}: {email or a.get('to')} suppressed ({value}, {added})")
+        adom = mc.norm((acc.meta if acc and acc.meta else {}).get("domain"))
+        for hit in send_suppression_hits(sup, mc.norm(a.get("channel")), mc.norm(a.get("to")), email, adom,
+                                         when.date()):
+            bad["send_suppressed"].append(f"{ref}: {hit}")
         if mc.norm(a.get("channel")) == "whatsapp":
             odate = mc.to_date(cmeta.get("whatsapp_opt_in_date"))
             src = mc.norm(cmeta.get("whatsapp_opt_in_source"))
@@ -598,6 +612,9 @@ def check_appointments(root: Path) -> Check:
         return c.done(True, "0 (no appointments yet)", [])
     import draft_check as dc
     bad = []
+    sup = mc.load_suppression(root)
+    if sup.error:
+        bad.append(f"suppression list unavailable: {sup.error}")
     for aid, row in current.items():
         if mc.norm(row.get("status")) not in mc.LIVE_APPOINTMENT:
             continue
@@ -613,13 +630,13 @@ def check_appointments(root: Path) -> Check:
         if not mc.is_active(page.meta):
             bad.append(f"{aid}: {acc} is {mc.norm(page.meta.get('stage'))}")
         domain = mc.norm(page.meta.get("domain"))
-        if domain and dc.suppression_hit(root, f"x@{domain}"):
+        if domain and sup.match(domain=domain):
             bad.append(f"{aid}: {acc}'s domain is suppressed")
         contact = mc.norm(row.get("contact"))
         cp = root / "wiki" / "contacts" / f"{contact}.md"
         cpage = mc.read_page(cp, root) if contact and cp.is_file() else None
         email = mc.norm((cpage.meta or {}).get("email")) if cpage else ""
-        if email and dc.suppression_hit(root, email):
+        if email and sup.match(email):
             bad.append(f"{aid}: contact {contact} is suppressed")
     live = sum(1 for r in current.values() if mc.norm(r.get("status")) in mc.LIVE_APPOINTMENT)
     return c.done(not bad, f"{len(bad)} of {live} live", bad)

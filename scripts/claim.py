@@ -53,8 +53,7 @@ class Ctx:
 
     def reload(self) -> None:
         self.reps = {r["id"]: r for r in mc.load_reps(self.root)}
-        self.suppressed = {mc.norm(r.get("value")).lower(): mc.norm(r.get("type")).lower()
-                           for r in mc.read_csv(self.root / "wiki" / "suppression.csv")}
+        self.suppression = mc.load_suppression(self.root)  # rule 2: shared matcher; refuses when unreadable
         self.accounts = {p.id: p for p in mc.iter_pages("account", self.root)}
 
     def active_count(self, rep_id: str) -> int:
@@ -101,8 +100,10 @@ def blocked(meta: dict, ctx: Ctx) -> str:
     """Why nobody may own this lead now ('' if fine): DNC, suppressed domain, closed."""
     if mc.norm(meta.get("stage")) == "do_not_contact":
         return "stage do_not_contact"
-    dom = mc.norm(meta.get("domain")).lower().removeprefix("www.")
-    if dom and ctx.suppressed.get(dom) == "domain":
+    dom = mc.norm(meta.get("domain")).lower()  # the matcher checks it with and without www.
+    if ctx.suppression.error:
+        return f"suppression list unavailable ({ctx.suppression.error})"
+    if dom and ctx.suppression.match(domain=dom):
         return f"domain {dom} is suppressed"
     if not mc.is_active(meta):
         return f"stage {mc.norm(meta.get('stage'))}"
@@ -383,6 +384,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.reassign is not None and len(args.reassign) < 2:
         ap.error("--reassign needs <from> <to> [<id>...]")
     ctx = Ctx(root)
+    if ctx.suppression.error and args.release is None:  # rule 2; releasing an account stays possible
+        print(f"suppression_state_unavailable: {ctx.suppression.error}. Fix wiki/suppression.csv "
+              f"(header {mc.SUPPRESSION_HEADER}) before claiming or assigning leads.")
+        return 1
     if args.suggest is not None:
         rows = suggest(user, ctx, args.suggest)
         if args.json:

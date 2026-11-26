@@ -221,9 +221,18 @@ def gmail_create_draft(root: Path, *, sender: str, to: str, subject: str, body: 
     return res.get("id", "")
 
 
+def _fake_call(kind: str, to: str) -> None:
+    """Fake transport only: append one line per send to $MAMA_FAKE_SEND_LOG (selftest counts them)."""
+    path = os.environ.get("MAMA_FAKE_SEND_LOG", "").strip()
+    if path:
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(f"{kind} {to}\n")
+
+
 def gmail_send_draft(draft: dict, *, unsubscribe_to: str, token: str = "") -> str:
     """Add a List-Unsubscribe header, then send that exact draft. Returns the Gmail message id."""
     if fake():
+        _fake_call("gmail", str(draft.get("to") or draft.get("id") or ""))
         return "fake-" + hashlib.sha1((draft.get("id") or "").encode()).hexdigest()[:12]
     if draft.get("raw") and unsubscribe_to:
         msg = email.message_from_bytes(_b64d(draft["raw"]), policy=email.policy.default)
@@ -267,6 +276,7 @@ def whatsapp_send(*, to: str, template: str = "", lang: str = "en", params: list
     if not E164_RE.match(to or ""):
         raise ChannelError(f"WhatsApp number {to!r} is not in +E.164 form")
     if fake():
+        _fake_call("whatsapp", to)
         return "wamid.fake-" + hashlib.sha1(f"{to}{template}{text}".encode()).hexdigest()[:12]
     cfg = read_secret("whatsapp.json")
     if not (cfg.get("phone_number_id") and cfg.get("token")):

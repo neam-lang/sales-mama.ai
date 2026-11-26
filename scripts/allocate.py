@@ -629,6 +629,11 @@ def main(argv: list[str] | None = None) -> int:
     if not user or mc.norm(user.get("role")) != "manager":
         print("allocate.py is for the manager (role: manager in reps/<id>.md).")
         return 1
+    sup_error = mc.load_suppression(root).error
+    if sup_error and not args.reject:  # rule 2: an unreadable opt-out list must not look like an empty pool
+        print(f"suppression_state_unavailable: {sup_error}. Fix wiki/suppression.csv "
+              f"(header {mc.SUPPRESSION_HEADER}) before proposing or approving an allocation.")
+        return 1
     if args.approve or args.reject:
         res = approve(root, user, args.approve or "", args.exclude, args.date, args.reject)
         if args.json:

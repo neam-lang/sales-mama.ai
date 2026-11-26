@@ -170,20 +170,24 @@ def consent_problems(root: Path, cmeta: dict) -> list[str]:
     return out
 
 
+SUPPRESSION_UNAVAILABLE = "suppression_state_unavailable"
+
+
+def suppression_decision(root: Path, email: str, domain: str = "") -> str:
+    """Rule 2 decision with a stable reason code: '' (allowed), 'suppressed_email: <value>',
+    'suppressed_domain: <value>' or 'suppression_state_unavailable: <why>' (the list cannot be read: refuse)."""
+    sup = mc.load_suppression(root)
+    if sup.error:
+        return f"{SUPPRESSION_UNAVAILABLE}: {sup.error}; fix the file before drafting or sending"
+    m = sup.match(email, domain)
+    return f"suppressed_{m[0]}: {m[1]}" if m else ""
+
+
 def suppression_hit(root: Path, email: str) -> str:
-    """The suppression row value that blocks `email` (email or its domain), else ''."""
-    email = email.strip().lower()
-    domain = email.split("@", 1)[1] if "@" in email else ""
-    for row in mc.read_csv(root / "wiki" / "suppression.csv"):
-        value = mc.norm(row.get("value")).lower()
-        kind = mc.norm(row.get("type")).lower() or ("domain" if "@" not in value else "email")
-        if not value:
-            continue
-        if kind == "email" and value == email:
-            return value
-        if kind == "domain" and domain and (domain == value.lstrip("@") or domain.endswith("." + value.lstrip("@"))):
-            return value
-    return ""
+    """What blocks `email` (the email or domain value), '' if nothing, or the
+    'suppression_state_unavailable: …' reason when the list cannot be read. Truthy = blocked."""
+    hit = suppression_decision(root, email)
+    return hit if hit.startswith(SUPPRESSION_UNAVAILABLE) else hit.split(": ", 1)[-1]
 
 
 # ----------------------------------------------------------------------------
@@ -370,11 +374,9 @@ def run_checks(root: Path, *, account_id: str, contact_id: str, step: str, chann
     info.update(email=email, lang=lang)
 
     # Suppression (rule 2) and status.
-    hit = suppression_hit(root, email) if email else ""
     acc_domain = mc.norm(meta.get("domain")).lower()
-    if not hit and acc_domain:
-        hit = suppression_hit(root, f"x@{acc_domain}")
-    r.add("suppression", not hit, f"suppressed: {hit}" if hit else f"{email or '(no email)'} and domain clear")
+    hit = suppression_decision(root, email, acc_domain)  # rule 2: email, its domain, the account's domain
+    r.add("suppression", not hit, hit or f"{email or '(no email)'} and domain clear")
     cst, ast = mc.norm(cmeta.get("status")) or "active", mc.norm(meta.get("stage"))
     r.add("status", cst == "active" and ast != "do_not_contact",
           f"contact status `{cst}`, account stage `{ast}`")

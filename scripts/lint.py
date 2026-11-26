@@ -447,17 +447,16 @@ def check_retention(root: Path, on: dt.date, rep: Report) -> None:
 
 
 def check_suppression(root: Path, contacts, touches, rep: Report) -> None:
-    rows = mc.read_csv(root / "wiki" / "suppression.csv")
-    emails = {r["value"].lower() for r in rows
-              if r.get("value") and (r.get("type", "").lower() == "email" or "@" in r["value"])}
-    domains = {r["value"].lower().lstrip("@") for r in rows
-               if r.get("value") and r.get("type", "").lower() == "domain"}
-    if not emails and not domains:
+    sup = mc.load_suppression(root)  # rule 2: the same matcher as draft_check/send
+    if sup.error:
+        rep.err("suppression", mc.SUPPRESSION_FILE,
+                f"{sup.error}: every draft, send, claim and booking is refused until it is fixed (rule 2)")
+        return
+    if not sup.emails and not sup.domains:
         return
 
     def suppressed(email: str) -> bool:
-        e = email.lower().strip()
-        return bool(e) and (e in emails or e.split("@")[-1] in domains)
+        return bool(email.strip()) and sup.match(email) is not None
 
     contact_email = {}
     for page in contacts:

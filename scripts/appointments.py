@@ -73,9 +73,11 @@ def check_owner(user: dict, meta: dict, acc: str) -> str:
 
 
 def check_contact(root: Path, contact: str, acc: str, meta: dict) -> None:
-    import draft_check as dc
+    sup = mc.load_suppression(root)  # read once for this booking
+    if sup.error:
+        raise Refused(f"suppression_state_unavailable: {sup.error}; fix wiki/suppression.csv first (rule 2)")
     domain = mc.norm(meta.get("domain"))
-    if domain and dc.suppression_hit(root, f"x@{domain}"):
+    if domain and sup.match(domain=domain):
         raise Refused(f"{acc}'s domain {domain} is suppressed (rule 2)")
     if not contact:
         return
@@ -86,7 +88,7 @@ def check_contact(root: Path, contact: str, acc: str, meta: dict) -> None:
     if mc.norm(page.meta.get("status")) == "do_not_contact":
         raise Refused(f"contact {contact} is do_not_contact (rule 2)")
     email = mc.norm(page.meta.get("email"))
-    if email and dc.suppression_hit(root, email):
+    if email and sup.match(email):
         raise Refused(f"contact {contact} ({email}) is suppressed (rule 2)")
 
 
