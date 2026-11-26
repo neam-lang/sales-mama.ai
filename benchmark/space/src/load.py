@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .scoring import LIVE, TRACKS, ci95, competition_ranks, shs
+from .scoring import BENCH_VERSION, LIVE, RANKED_PROFILE, TRACKS, ci95, competition_ranks, shs
 
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "results"
 REQUIRED = ("schema", "id", "harness", "model", "benchmark", "tracks")
@@ -54,6 +54,28 @@ def load_submissions(folder: Path = RESULTS_DIR) -> list[dict]:
     return subs
 
 
+LEGACY_VERSION = "SHB-SEA v0.1"
+
+
+def unranked_reason(sub: dict) -> str:
+    """Why a full row is shown but not ranked ('' if rankable): another protocol version, or a dev
+    diagnostic run that showed the real task IDs to the harness."""
+    b = sub.get("benchmark") or {}
+    if b.get("task_ids_exposed"):
+        return "task IDs exposed to the harness (diagnostic)"
+    if b.get("version") != BENCH_VERSION:
+        return f"{b.get('version') or 'unknown version'} (this board ranks {BENCH_VERSION})"
+    if b.get("version") == LEGACY_VERSION:  # v0.1 rows predate these fields: missing means v0.1 defaults
+        if b.get("prompt_profile") not in (None, RANKED_PROFILE):
+            return f"prompt profile {b.get('prompt_profile')} (this board ranks {RANKED_PROFILE})"
+        return ""
+    if b.get("task_ids_exposed") is not False:
+        return "task_ids_exposed not stated"
+    if b.get("prompt_profile") != RANKED_PROFILE:
+        return f"prompt profile {b.get('prompt_profile') or 'not stated'} (this board ranks {RANKED_PROFILE})"
+    return ""
+
+
 def _pct(x):
     return None if x is None else round(100 * x, 1)
 
@@ -65,6 +87,9 @@ def row(sub: dict) -> dict:
     status = "verified" if sub.get("verified") else "self-reported"
     if not r["full"]:
         status += " · partial"
+    why_unranked = unranked_reason(sub)
+    if why_unranked:
+        status += f" · not ranked: {why_unranked}"
     out = {
         "Harness": f"[{h['name']}]({h['url']})" if h.get("url") else h["name"],
         "Runtime": h.get("runtime", ""),
@@ -88,6 +113,7 @@ def row(sub: dict) -> dict:
         "Date": sub.get("date", ""),
         "Flags": "; ".join(sub.get("flags", [])),
         "_full": r["full"],
+        "_rankable": bool(r["full"]) and not why_unranked,
         "_shs": r["shs"] if r["shs"] is not None else -1,
         "_id": sub["id"],
     }
@@ -102,12 +128,12 @@ def leaderboard_df(subs: list[dict]) -> pd.DataFrame:
     if not subs:
         return pd.DataFrame()
     df = pd.DataFrame([row(s) for s in subs])
-    df = df.sort_values(["_full", "_shs"], ascending=[False, False]).reset_index(drop=True)
-    full = df[df["_full"]]
+    df = df.sort_values(["_rankable", "_full", "_shs"], ascending=[False, False, False]).reset_index(drop=True)
+    full = df[df["_rankable"]]
     ranks = competition_ranks(list(full["_sub"])) if len(full) else []
     rank_of = dict(zip(full.index, ranks))
     best = full["_shs"].max() if len(full) else None
     df.insert(0, "#", [str(rank_of[i]) if i in rank_of else "—" for i in df.index])
     df.insert(df.columns.get_loc("SHS") + 1, "vs leader",
-              [round(v - best, 1) if (best is not None and f) else None for v, f in zip(df["_shs"], df["_full"])])
+              [round(v - best, 1) if (best is not None and f) else None for v, f in zip(df["_shs"], df["_rankable"])])
     return df

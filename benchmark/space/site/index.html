@@ -462,7 +462,7 @@ footer .mono { font-size: 12px; }
         + tcols.map((t) => `<th>${esc(t.name)}</th>`).join("") + xcols.map((c) => `<th>${esc(c)}</th>`).join("") + `<th>Status</th></tr></thead><tbody>`;
       for (const r of rows) {
         const rank = r["#"] === "—" ? `<span class="rank na">—</span>` : `<span class="rank ${r["#"] === "1" ? "r1" : ""}">${esc(r["#"])}</span>`;
-        h += `<tr class="${r._full ? "" : "partial"}"><td>${rank}</td>`
+        h += `<tr class="${r._rankable ? "" : "partial"}"><td>${rank}</td>`
           + `<td><span class="hname">${link(r.Harness)}</span><span class="sub">${esc(r.Model)} · ${esc(r.Runtime)}</span></td>`
           + `<td><span class="shs num">${fmt(r.SHS)}</span></td><td class="num">${fmt(r["95% CI"])}</td><td class="num">${fmt(r["vs leader"])}</td>`
           + `<td class="num">${fmt(r.Capability)}</td><td class="num">${fmt(r.Trust)}</td>`
@@ -474,7 +474,7 @@ footer .mono { font-size: 12px; }
       }
       if (!rows.length) h += `<tr><td colspan="40" style="color:var(--muted)">No rows match these filters.</td></tr>`;
       $("#lb").innerHTML = h + "</tbody>";
-      const ranked = D.rows.some((r) => r._full);
+      const ranked = D.rows.some((r) => r._rankable);
       $("#emptynote").innerHTML = ranked ? "" : `<div class="empty"><div class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/></svg></div>`
         + `<div><h3>Rank 1 is open</h3><p>No harness covers every live track yet. The reference row runs sales-mama.ai's rule-based tools on two tracks and is not ranked. Run vanilla Claude Code and Claude Code with the sales-mama.ai kit on the same model, and the gap between them is what the kit adds. <a href="#submit" data-go2="submit">How to submit</a></p></div></div>`;
       const g = $("[data-go2]"); if (g) g.addEventListener("click", (e) => { e.preventDefault(); history.replaceState(null, "", "#submit"); show("submit"); });
@@ -487,7 +487,7 @@ footer .mono { font-size: 12px; }
       + `</tbody>`;
 
     // cost: Pareto + index
-    const full = D.rows.filter((r) => r._full && r["$/task"] !== null && r.SHS !== null);
+    const full = D.rows.filter((r) => r._rankable && r["$/task"] !== null && r.SHS !== null);
     function replot() {
       const el = $("#pareto"); if (!window.Plotly || !el.offsetParent) return;
       const ink = css("--ink"), muted = css("--muted"), line = css("--line"), mama = css("--mama"), lime = css("--lime");

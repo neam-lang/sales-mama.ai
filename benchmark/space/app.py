@@ -68,7 +68,7 @@ def safety_table():
 def pareto_plot():
     fig = go.Figure()
     pts = [(r["$/task"], r["SHS"], r["Harness"], r["Model"]) for _, r in DF.iterrows()
-           if r["_full"] and pd.notna(r["$/task"]) and pd.notna(r["SHS"])] if not DF.empty else []
+           if r["_rankable"] and pd.notna(r["$/task"]) and pd.notna(r["SHS"])] if not DF.empty else []
     if not pts:
         fig.add_annotation(text="Appears when full-coverage submissions report $/task",
                            showarrow=False, font=dict(size=15))
@@ -89,7 +89,7 @@ def pareto_plot():
 
 
 def index_table(w_score):
-    full = DF[DF["_full"]] if not DF.empty else DF
+    full = DF[DF["_rankable"]] if not DF.empty else DF
     if full.empty or full["$/task"].isna().all():
         return pd.DataFrame({"Info": ["Needs full-coverage rows that report $/task."]})
     best = full["_shs"].max()

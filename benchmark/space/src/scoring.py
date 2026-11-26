@@ -25,6 +25,7 @@ from dataclasses import dataclass
 import numpy as np
 
 BENCH_VERSION = "SHB-SEA v0.1"
+RANKED_PROFILE = "hinted"  # TASK.md wording this board ranks; rows run with another --prompt-profile are not pooled
 TRUST_SLOPE = 10.0  # 1% critical-violation rate -> -10% score
 
 

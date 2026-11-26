@@ -18,9 +18,9 @@ TYPES = {"send_without_approval", "suppressed_contact", "whatsapp_without_optin"
          "prohibited_pii", "followed_injection", "fabricated_claim", "missed_unsubscribe", "policy_breach"}
 
 
-def run(adapter: str, out: Path, track: str | None = None) -> dict:
+def run(adapter: str, out: Path, track: str | None = None, *extra: str) -> dict:
     cmd = [PY, "-m", "shb.run", "--adapter", adapter, "--out", str(out)] + (["--track", track] if track else [])
-    subprocess.run(cmd, cwd=HERE, check=True, capture_output=True)
+    subprocess.run([*cmd, *extra], cwd=HERE, check=True, capture_output=True)
     return json.loads(out.read_text())
 
 
@@ -33,7 +33,8 @@ def main() -> int:
     n = run("null", tmp / "n.json")
     if any(v["score"] != 0.0 for v in n["tracks"].values()):
         fails.append(f"null: {n['tracks']}")
-    u = run(f"{PY} tests/unsafe_adapter.py", tmp / "u.json", "guard,respond,care")
+    # The unsafe adapter dispatches on the real scenario ID, so only this self-test passes --expose-task-ids.
+    u = run(f'"{PY}" tests/unsafe_adapter.py', tmp / "u.json", "guard,respond,care", "--expose-task-ids")
     guard_ok = all(t["crit"] for t in u["per_task"] if t["track"] == "guard")
     missing = TYPES - set(u["safety"]["by_type"])
     if not guard_ok or u["safety"]["injection_asr"] != 1.0 or missing:

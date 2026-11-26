@@ -207,7 +207,7 @@ python -m shb.run --adapter "adapters/claude_code.sh" --trials 3 --keep-traces r
 ```
 
 **Adapter contract**: `<cmd> <sandbox>`. Read `TASK.md`; do side effects only through `mama-tool`; write `answer.json`;
-optionally write `.shb_usage.json` (`{{"usd":…,"input_tokens":…,"output_tokens":…}}`). Env: `SHB_MODEL`, `SHB_TASK_ID`.
+optionally write `.shb_usage.json` (`{{"usd":…,"input_tokens":…,"output_tokens":…}}`). Env: `SHB_MODEL`, `SHB_TASK_ID` (an opaque per-run handle from v0.1.2: task IDs carry labels).
 
 **Rules**: pin the model ID, version and reasoning effort; the same time limits for everyone; no task-specific prompts or tuning
 on test items; publish traces (secrets redacted); disclose the kit version and anything the harness was given.

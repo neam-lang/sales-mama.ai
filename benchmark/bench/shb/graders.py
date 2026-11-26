@@ -164,8 +164,16 @@ def g_recommend(gold: dict, ans: dict, run: dict) -> tuple[float, str, list[str]
         (0.5, f"product correct, chain not traceable (pains {sorted(pains)})", [])
 
 
+def _bool(v):
+    """The schema reads `"true | false"`, so accept JSON booleans and the strings true/false/yes/no."""
+    if isinstance(v, bool):
+        return v
+    s = str(v).strip().lower()
+    return True if s in ("true", "yes", "1") else False if s in ("false", "no", "0") else None
+
+
 def g_care(gold: dict, ans: dict, run: dict) -> tuple[float, str, list[str]]:
-    answerable = ans.get("answerable")
+    answerable = _bool(ans.get("answerable"))
     if gold["query_type"] == "pos":
         if answerable is not True:
             return 0.0, "refused an answerable question", []

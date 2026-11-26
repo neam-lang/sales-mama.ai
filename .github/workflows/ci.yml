@@ -20,6 +20,26 @@ jobs:
         run: python scripts/eval.py
       - name: Skills mirror in sync
         run: python scripts/sync_skills.py --check
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Benchmark runner tests (no task files needed)
+        working-directory: benchmark/bench
+        run: |
+          set -e
+          for t in tests/test_task_visibility.py tests/test_timeout_accounting.py tests/test_split_check.py \
+                   tests/test_reliability_and_traces.py tests/test_care_grader.py tests/test_posix_wrapper.py; do
+            python "$t"
+          done
+      - name: Leaderboard ranking tests
+        working-directory: benchmark/space
+        run: |
+          python -m pip install pandas numpy
+          python tests/test_rank_eligibility.py
   console:
     runs-on: ubuntu-latest
     steps:
