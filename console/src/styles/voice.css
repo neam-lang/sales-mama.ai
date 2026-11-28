@@ -125,3 +125,6 @@
 .live-panel .captions { margin: 0; max-width: none; border: 0; padding: 0; background: transparent; animation: none; }
 .live-panel .lp-err { margin: 0; font-size: 13px; color: var(--risk); }
 @media (prefers-reduced-motion: reduce) { .live-panel { animation: none; } }
+
+/* Owner's opt-in to skip permissions: always visible while on. */
+.unsafe-chip { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--r-pill); background: var(--risk); color: #fff; font: 700 10.5px var(--mono); letter-spacing: .05em; }

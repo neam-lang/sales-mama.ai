@@ -30,6 +30,14 @@ describe('engine args (ADR-0006)', () => {
     expect(buildArgs('hi')).not.toContain('--resume');
   });
 
+  it('skipping permissions is off by default and only the owner\'s opt-in turns it on', () => {
+    expect(buildArgs('hi', undefined, false, false)).not.toContain('--dangerously-skip-permissions');
+    const on = buildArgs('hi', undefined, false, true);
+    expect(on).toContain('--dangerously-skip-permissions');
+    expect(on.indexOf('--dangerously-skip-permissions')).toBeLessThan(on.indexOf('--'));
+    expect(on.at(-1)).toBe('hi');
+  });
+
   it('voice adds only guidance to the system prompt, never a flag', () => {
     const args = buildArgs('brief me', undefined, true);
     const i = args.indexOf('--append-system-prompt');

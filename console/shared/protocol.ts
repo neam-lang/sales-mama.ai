@@ -12,6 +12,8 @@ export interface Me {
 }
 
 export interface Rail {
+  /** The console was started with MAMA_SKIP_PERMISSIONS=1 (owner's opt-in). */
+  unsafe?: boolean;
   me: Me | null;
   book: Book | null;
   team: TeamBook | null;

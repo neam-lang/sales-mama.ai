@@ -17,7 +17,12 @@ export const FORBIDDEN_FLAGS = [
  *  Guidance in the system prompt only; it changes no permission or setting. */
 export const VOICE_NOTE = 'MAMA_VOICE=on. This request was spoken in a live voice conversation. Begin your reply with the answer itself in one or two short sentences, under 25 words, with no lists, paths or markdown: only that part is read aloud, and the rest stays on screen. Do not narrate what you are about to do. Take the quickest route to the answer (the book and the index before running scripts), and keep anything long for the screen.';
 
-export function buildArgs(prompt: string, sessionId?: string, voice = false): string[] {
+/** The owner's opt-in: start the console with MAMA_SKIP_PERMISSIONS=1 to run Claude Code with
+ *  --dangerously-skip-permissions (every tool call runs without approval). Off by default (ADR-0006);
+ *  the header shows a red "PERMISSIONS SKIPPED" chip while it is on. */
+export const skipPermissions = () => process.env.MAMA_SKIP_PERMISSIONS === '1';
+
+export function buildArgs(prompt: string, sessionId?: string, voice = false, skip = skipPermissions()): string[] {
   const args = [
     '-p',
     '--output-format', 'stream-json',
@@ -25,6 +30,7 @@ export function buildArgs(prompt: string, sessionId?: string, voice = false): st
     '--include-partial-messages',
     '--append-system-prompt', voice ? `MAMA_CARDS=on\n${VOICE_NOTE}` : 'MAMA_CARDS=on',
   ];
+  if (skip) args.push('--dangerously-skip-permissions');
   if (sessionId && SESSION_ID.test(sessionId)) args.push('--resume', sessionId);
   // "--" ends option parsing, so a prompt starting with "-" can never become a flag.
   args.push('--', prompt);

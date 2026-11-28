@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto';
 import { WebSocketServer, type WebSocket } from 'ws';
 import { createServer as createVite } from 'vite';
 import { buildViewer } from './viewer';
-import { Run } from './engine';
+import { Run, skipPermissions } from './engine';
 import { findRepoRoot, listAccounts, listReports, listSkills, readData, readRail, readSource } from './repo';
 import type { ClientMsg, ServerMsg } from '../shared/protocol';
 import { voiceSession } from './voice/bridge';
@@ -17,6 +17,7 @@ const HOST = '127.0.0.1';
 const PORT = Number(process.env.MAMA_CONSOLE_PORT ?? 4173);
 const consoleDir = join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = findRepoRoot(consoleDir);
+const rail = () => ({ ...readRail(root), ...(skipPermissions() ? { unsafe: true } : {}) });
 const allowedHosts = new Set([`localhost:${PORT}`, `127.0.0.1:${PORT}`]);
 
 // Blocks DNS rebinding and other sites' pages from reaching the bridge.
@@ -71,7 +72,7 @@ const http = createServer((req, res) => {
     return;
   }
   if (url.pathname === '/api/rail') {
-    res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }).end(JSON.stringify(readRail(root)));
+    res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }).end(JSON.stringify(rail()));
     return;
   }
   vite.middlewares(req, res);
@@ -81,7 +82,7 @@ const http = createServer((req, res) => {
 let active: { run: Run; turnId: string } | null = null;
 const clients = new Set<WebSocket>();
 const broadcast = (msg: ServerMsg) => { const s = JSON.stringify(msg); for (const c of clients) c.send(s); };
-const sendRail = () => broadcast({ type: 'rail', rail: readRail(root) });
+const sendRail = () => broadcast({ type: 'rail', rail: rail() });
 
 const wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });
 // Voice (Sales-Mama-Voice-design-spec.md): its own socket, so audio never touches the /mama contract.
@@ -97,7 +98,7 @@ http.on('upgrade', (req, socket, head) => {
 wss.on('connection', ws => {
   clients.add(ws);
   ws.on('close', () => clients.delete(ws));
-  ws.send(JSON.stringify({ type: 'rail', rail: readRail(root) } satisfies ServerMsg));
+  ws.send(JSON.stringify({ type: 'rail', rail: rail() } satisfies ServerMsg));
   if (active) ws.send(JSON.stringify({ type: 'busy' } satisfies ServerMsg));
   ws.on('message', data => {
     let msg: ClientMsg;
@@ -127,6 +128,7 @@ try {
 
 http.listen(PORT, HOST, () => {
   console.log(`\n  Sales Mama Console → http://localhost:${PORT}\n  repo: ${root}\n  Ctrl+C to stop.\n`);
+  if (skipPermissions()) console.log('  WARNING: MAMA_SKIP_PERMISSIONS=1, so Claude Code runs with --dangerously-skip-permissions (no approvals).\n');
 });
 
 const shutdown = () => { active?.run.stop(); http.close(); void vite.close(); process.exit(0); };

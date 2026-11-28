@@ -54,6 +54,7 @@ export function Header({ rail, status, live, theme, onTheme, onNewChat, newChatD
         {nextUp}
         <div className="hdr-right">
           <span className={`run-status${live ? ' is-live' : ''}`} role="status"><i aria-hidden="true" />{status}</span>
+          {rail?.unsafe && <span className="unsafe-chip" title="Started with MAMA_SKIP_PERMISSIONS=1: Claude Code runs every step without approval">PERMISSIONS SKIPPED</span>}
           {extra}
           <button type="button" className="icon-btn" onClick={onTheme} aria-label={`Theme: ${theme}. Switch theme`} title={`Theme: ${theme}`}><ThemeIcon size={18} /></button>
           <button type="button" className="hdr-btn" onClick={onNewChat} disabled={newChatDisabled}><IconPlus size={16} /><span>New chat</span></button>
