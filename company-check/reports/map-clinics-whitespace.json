@@ -1,0 +1,1356 @@
+{
+  "title": "Singapore market: clinic companies by whitespace",
+  "summary": [
+    "Novena leads on whitespace: 736, from 804 clinic companies.",
+    "Next: Downtown Core (607) and Geylang (530)."
+  ],
+  "order": [
+    "map",
+    "ranking"
+  ],
+  "sections": {
+    "map": {
+      "kind": "map3d",
+      "title": "Singapore market: clinic companies",
+      "segment": "clinics",
+      "height": {
+        "key": "whitespace",
+        "label": "Whitespace",
+        "unit": "companies"
+      },
+      "colour": {
+        "key": "whitespace",
+        "label": "Whitespace",
+        "unit": "companies",
+        "breaks": [
+          0,
+          48,
+          140,
+          300
+        ],
+        "scheme": "mama-seq"
+      },
+      "areas": [
+        {
+          "id": "ang-mo-kio",
+          "name": "Ang Mo Kio",
+          "region": "north-east",
+          "area_km2": 13.94,
+          "values": {
+            "base": 249,
+            "addressable": 211,
+            "density": 17.9,
+            "growth": null,
+            "age": 9.2,
+            "ontime": 94.7,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 211,
+            "hubs": 14.7
+          },
+          "approx": true
+        },
+        {
+          "id": "bedok",
+          "name": "Bedok",
+          "region": "east",
+          "area_km2": 21.73,
+          "values": {
+            "base": 391,
+            "addressable": 329,
+            "density": 18.0,
+            "growth": 38.5,
+            "age": 9.5,
+            "ontime": 94.2,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 329,
+            "hubs": 6.5
+          },
+          "approx": true
+        },
+        {
+          "id": "bishan",
+          "name": "Bishan",
+          "region": "central",
+          "area_km2": 7.61,
+          "values": {
+            "base": 266,
+            "addressable": 224,
+            "density": 35.0,
+            "growth": null,
+            "age": 7.0,
+            "ontime": 94.4,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 224,
+            "hubs": 34.6
+          },
+          "approx": true
+        },
+        {
+          "id": "boon-lay",
+          "name": "Boon Lay",
+          "region": "west",
+          "area_km2": 8.28,
+          "values": {
+            "base": 1,
+            "addressable": 1,
+            "density": 0.1,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 1,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "bukit-batok",
+          "name": "Bukit Batok",
+          "region": "west",
+          "area_km2": 11.14,
+          "values": {
+            "base": 154,
+            "addressable": 127,
+            "density": 13.8,
+            "growth": null,
+            "age": 10.6,
+            "ontime": 95.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 127,
+            "hubs": 4.6
+          },
+          "approx": true
+        },
+        {
+          "id": "bukit-merah",
+          "name": "Bukit Merah",
+          "region": "central",
+          "area_km2": 14.46,
+          "values": {
+            "base": 407,
+            "addressable": 324,
+            "density": 28.1,
+            "growth": 38.4,
+            "age": 7.3,
+            "ontime": 94.0,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 324,
+            "hubs": 10.7
+          },
+          "approx": true
+        },
+        {
+          "id": "bukit-panjang",
+          "name": "Bukit Panjang",
+          "region": "west",
+          "area_km2": 9.01,
+          "values": {
+            "base": 78,
+            "addressable": 58,
+            "density": 8.7,
+            "growth": null,
+            "age": 9.9,
+            "ontime": 96.5,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 58,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "bukit-timah",
+          "name": "Bukit Timah",
+          "region": "central",
+          "area_km2": 17.52,
+          "values": {
+            "base": 338,
+            "addressable": 294,
+            "density": 19.3,
+            "growth": 1.9,
+            "age": 10.0,
+            "ontime": 94.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 294,
+            "hubs": 1.7
+          },
+          "approx": true
+        },
+        {
+          "id": "central-water-catchment",
+          "name": "Central Water Catchment",
+          "region": "north",
+          "area_km2": 37.16,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "changi",
+          "name": "Changi",
+          "region": "east",
+          "area_km2": 43.36,
+          "values": {
+            "base": 14,
+            "addressable": 14,
+            "density": 0.3,
+            "growth": null,
+            "age": 7.1,
+            "ontime": 100.0,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 14,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "changi-bay",
+          "name": "Changi Bay",
+          "region": "east",
+          "area_km2": 11.63,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "choa-chu-kang",
+          "name": "Choa Chu Kang",
+          "region": "west",
+          "area_km2": 6.12,
+          "values": {
+            "base": 81,
+            "addressable": 53,
+            "density": 13.2,
+            "growth": null,
+            "age": 10.7,
+            "ontime": 97.4,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 53,
+            "hubs": 0.0
+          },
+          "approx": false
+        },
+        {
+          "id": "clementi",
+          "name": "Clementi",
+          "region": "west",
+          "area_km2": 9.52,
+          "values": {
+            "base": 188,
+            "addressable": 148,
+            "density": 19.7,
+            "growth": null,
+            "age": 8.7,
+            "ontime": 92.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 148,
+            "hubs": 2.0
+          },
+          "approx": true
+        },
+        {
+          "id": "downtown-core",
+          "name": "Downtown Core",
+          "region": "central",
+          "area_km2": 5.09,
+          "values": {
+            "base": 724,
+            "addressable": 607,
+            "density": 142.2,
+            "growth": -12.5,
+            "age": 6.5,
+            "ontime": 90.5,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 607,
+            "hubs": 77.5
+          },
+          "approx": true
+        },
+        {
+          "id": "geylang",
+          "name": "Geylang",
+          "region": "central",
+          "area_km2": 9.64,
+          "values": {
+            "base": 659,
+            "addressable": 530,
+            "density": 68.4,
+            "growth": -1.3,
+            "age": 5.4,
+            "ontime": 92.2,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 530,
+            "hubs": 43.6
+          },
+          "approx": true
+        },
+        {
+          "id": "hougang",
+          "name": "Hougang",
+          "region": "north-east",
+          "area_km2": 13.93,
+          "values": {
+            "base": 259,
+            "addressable": 217,
+            "density": 18.6,
+            "growth": -16.4,
+            "age": 9.3,
+            "ontime": 92.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 217,
+            "hubs": 4.6
+          },
+          "approx": true
+        },
+        {
+          "id": "jurong-east",
+          "name": "Jurong East",
+          "region": "west",
+          "area_km2": 17.87,
+          "values": {
+            "base": 232,
+            "addressable": 200,
+            "density": 13.0,
+            "growth": null,
+            "age": 10.2,
+            "ontime": 92.4,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 200,
+            "hubs": 54.2
+          },
+          "approx": true
+        },
+        {
+          "id": "jurong-west",
+          "name": "Jurong West",
+          "region": "west",
+          "area_km2": 14.68,
+          "values": {
+            "base": 133,
+            "addressable": 98,
+            "density": 9.1,
+            "growth": null,
+            "age": 9.8,
+            "ontime": 87.5,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 98,
+            "hubs": 4.5
+          },
+          "approx": false
+        },
+        {
+          "id": "kallang",
+          "name": "Kallang",
+          "region": "central",
+          "area_km2": 8.58,
+          "values": {
+            "base": 381,
+            "addressable": 303,
+            "density": 44.4,
+            "growth": 2.0,
+            "age": 6.6,
+            "ontime": 88.9,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 303,
+            "hubs": 25.6
+          },
+          "approx": true
+        },
+        {
+          "id": "lim-chu-kang",
+          "name": "Lim Chu Kang",
+          "region": "north",
+          "area_km2": 17.58,
+          "values": {
+            "base": 1,
+            "addressable": 0,
+            "density": 0.1,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "mandai",
+          "name": "Mandai",
+          "region": "north",
+          "area_km2": 11.77,
+          "values": {
+            "base": 6,
+            "addressable": 5,
+            "density": 0.5,
+            "growth": null,
+            "age": 8.2,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 5,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "marina-east",
+          "name": "Marina East",
+          "region": "central",
+          "area_km2": 1.84,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "marina-south",
+          "name": "Marina South",
+          "region": "central",
+          "area_km2": 1.63,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "marine-parade",
+          "name": "Marine Parade",
+          "region": "central",
+          "area_km2": 6.13,
+          "values": {
+            "base": 165,
+            "addressable": 146,
+            "density": 26.9,
+            "growth": null,
+            "age": 5.5,
+            "ontime": 93.5,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 146,
+            "hubs": 17.6
+          },
+          "approx": true
+        },
+        {
+          "id": "museum",
+          "name": "Museum",
+          "region": "central",
+          "area_km2": 0.84,
+          "values": {
+            "base": 82,
+            "addressable": 70,
+            "density": 97.6,
+            "growth": null,
+            "age": 8.2,
+            "ontime": 87.4,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 70,
+            "hubs": 60.3
+          },
+          "approx": true
+        },
+        {
+          "id": "newton",
+          "name": "Newton",
+          "region": "central",
+          "area_km2": 2.06,
+          "values": {
+            "base": 364,
+            "addressable": 350,
+            "density": 176.7,
+            "growth": null,
+            "age": 16.0,
+            "ontime": 97.8,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 350,
+            "hubs": 92.6
+          },
+          "approx": false
+        },
+        {
+          "id": "north-eastern-islands",
+          "name": "North-Eastern Islands",
+          "region": "north-east",
+          "area_km2": 67.26,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "novena",
+          "name": "Novena",
+          "region": "central",
+          "area_km2": 8.97,
+          "values": {
+            "base": 804,
+            "addressable": 736,
+            "density": 89.6,
+            "growth": -29.0,
+            "age": 9.8,
+            "ontime": 96.3,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 736,
+            "hubs": 46.7
+          },
+          "approx": true
+        },
+        {
+          "id": "orchard",
+          "name": "Orchard",
+          "region": "central",
+          "area_km2": 0.96,
+          "values": {
+            "base": 540,
+            "addressable": 481,
+            "density": 562.5,
+            "growth": -15.8,
+            "age": 10.5,
+            "ontime": 92.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 481,
+            "hubs": 51.5
+          },
+          "approx": true
+        },
+        {
+          "id": "outram",
+          "name": "Outram",
+          "region": "central",
+          "area_km2": 1.37,
+          "values": {
+            "base": 341,
+            "addressable": 280,
+            "density": 248.9,
+            "growth": -6.4,
+            "age": 5.5,
+            "ontime": 89.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 280,
+            "hubs": 53.2
+          },
+          "approx": true
+        },
+        {
+          "id": "pasir-ris",
+          "name": "Pasir Ris",
+          "region": "east",
+          "area_km2": 15.97,
+          "values": {
+            "base": 79,
+            "addressable": 48,
+            "density": 4.9,
+            "growth": null,
+            "age": 6.8,
+            "ontime": 89.5,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 48,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "paya-lebar",
+          "name": "Paya Lebar",
+          "region": "east",
+          "area_km2": 11.69,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "pioneer",
+          "name": "Pioneer",
+          "region": "west",
+          "area_km2": 12.22,
+          "values": {
+            "base": 1,
+            "addressable": 1,
+            "density": 0.1,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 1,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "punggol",
+          "name": "Punggol",
+          "region": "north-east",
+          "area_km2": 9.37,
+          "values": {
+            "base": 83,
+            "addressable": 35,
+            "density": 8.9,
+            "growth": null,
+            "age": 8.0,
+            "ontime": 80.0,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 35,
+            "hubs": 0.0
+          },
+          "approx": false
+        },
+        {
+          "id": "queenstown",
+          "name": "Queenstown",
+          "region": "central",
+          "area_km2": 21.68,
+          "values": {
+            "base": 335,
+            "addressable": 283,
+            "density": 15.5,
+            "growth": -4.3,
+            "age": 8.7,
+            "ontime": 93.8,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 283,
+            "hubs": 4.2
+          },
+          "approx": true
+        },
+        {
+          "id": "river-valley",
+          "name": "River Valley",
+          "region": "central",
+          "area_km2": 1.48,
+          "values": {
+            "base": 82,
+            "addressable": 70,
+            "density": 55.4,
+            "growth": null,
+            "age": 7.4,
+            "ontime": 88.4,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 70,
+            "hubs": 19.5
+          },
+          "approx": true
+        },
+        {
+          "id": "rochor",
+          "name": "Rochor",
+          "region": "central",
+          "area_km2": 1.59,
+          "values": {
+            "base": 352,
+            "addressable": 312,
+            "density": 221.4,
+            "growth": 5.0,
+            "age": 8.3,
+            "ontime": 95.2,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 312,
+            "hubs": 38.0
+          },
+          "approx": true
+        },
+        {
+          "id": "seletar",
+          "name": "Seletar",
+          "region": "north-east",
+          "area_km2": 10.85,
+          "values": {
+            "base": 10,
+            "addressable": 9,
+            "density": 0.9,
+            "growth": null,
+            "age": 9.3,
+            "ontime": 94.1,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 9,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "sembawang",
+          "name": "Sembawang",
+          "region": "north",
+          "area_km2": 12.64,
+          "values": {
+            "base": 59,
+            "addressable": 34,
+            "density": 4.7,
+            "growth": null,
+            "age": 5.8,
+            "ontime": 87.6,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 34,
+            "hubs": 12.6
+          },
+          "approx": true
+        },
+        {
+          "id": "sengkang",
+          "name": "Sengkang",
+          "region": "north-east",
+          "area_km2": 10.6,
+          "values": {
+            "base": 129,
+            "addressable": 86,
+            "density": 12.2,
+            "growth": null,
+            "age": 5.8,
+            "ontime": 96.5,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 86,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "serangoon",
+          "name": "Serangoon",
+          "region": "north-east",
+          "area_km2": 10.1,
+          "values": {
+            "base": 137,
+            "addressable": 114,
+            "density": 13.6,
+            "growth": null,
+            "age": 9.1,
+            "ontime": 93.3,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 114,
+            "hubs": 3.7
+          },
+          "approx": true
+        },
+        {
+          "id": "simpang",
+          "name": "Simpang",
+          "region": "north",
+          "area_km2": 8.28,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "singapore-river",
+          "name": "Singapore River",
+          "region": "central",
+          "area_km2": 0.96,
+          "values": {
+            "base": 117,
+            "addressable": 97,
+            "density": 121.9,
+            "growth": null,
+            "age": 5.7,
+            "ontime": 89.7,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 97,
+            "hubs": 64.7
+          },
+          "approx": true
+        },
+        {
+          "id": "southern-islands",
+          "name": "Southern Islands",
+          "region": "central",
+          "area_km2": 7.14,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "straits-view",
+          "name": "Straits View",
+          "region": "central",
+          "area_km2": 1.13,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "sungei-kadut",
+          "name": "Sungei Kadut",
+          "region": "north",
+          "area_km2": 17.51,
+          "values": {
+            "base": 3,
+            "addressable": 1,
+            "density": 0.2,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 1,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "tampines",
+          "name": "Tampines",
+          "region": "east",
+          "area_km2": 20.79,
+          "values": {
+            "base": 224,
+            "addressable": 171,
+            "density": 10.8,
+            "growth": -16.4,
+            "age": 7.2,
+            "ontime": 93.7,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 171,
+            "hubs": 1.0
+          },
+          "approx": true
+        },
+        {
+          "id": "tanglin",
+          "name": "Tanglin",
+          "region": "central",
+          "area_km2": 7.55,
+          "values": {
+            "base": 416,
+            "addressable": 365,
+            "density": 55.1,
+            "growth": -34.6,
+            "age": 12.2,
+            "ontime": 88.9,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 365,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "tengah",
+          "name": "Tengah",
+          "region": "west",
+          "area_km2": 7.36,
+          "values": {
+            "base": 7,
+            "addressable": 3,
+            "density": 1.0,
+            "growth": null,
+            "age": 0.8,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 3,
+            "hubs": 0.0
+          },
+          "approx": true
+        },
+        {
+          "id": "toa-payoh",
+          "name": "Toa Payoh",
+          "region": "central",
+          "area_km2": 8.18,
+          "values": {
+            "base": 393,
+            "addressable": 319,
+            "density": 48.0,
+            "growth": 22.5,
+            "age": 8.5,
+            "ontime": 92.6,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 319,
+            "hubs": 10.3
+          },
+          "approx": true
+        },
+        {
+          "id": "tuas",
+          "name": "Tuas",
+          "region": "west",
+          "area_km2": 47.7,
+          "values": {
+            "base": 1,
+            "addressable": 1,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 1,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "western-islands",
+          "name": "Western Islands",
+          "region": "west",
+          "area_km2": 46.18,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": true
+        },
+        {
+          "id": "western-water-catchment",
+          "name": "Western Water Catchment",
+          "region": "west",
+          "area_km2": 69.75,
+          "values": {
+            "base": 0,
+            "addressable": 0,
+            "density": 0.0,
+            "growth": null,
+            "age": null,
+            "ontime": null,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": null,
+            "coverage": null,
+            "whitespace": 0,
+            "hubs": null
+          },
+          "approx": false
+        },
+        {
+          "id": "woodlands",
+          "name": "Woodlands",
+          "region": "north",
+          "area_km2": 13.61,
+          "values": {
+            "base": 131,
+            "addressable": 93,
+            "density": 9.6,
+            "growth": null,
+            "age": 6.1,
+            "ontime": 93.0,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 93,
+            "hubs": 18.6
+          },
+          "approx": true
+        },
+        {
+          "id": "yishun",
+          "name": "Yishun",
+          "region": "north",
+          "area_km2": 20.87,
+          "values": {
+            "base": 201,
+            "addressable": 145,
+            "density": 9.6,
+            "growth": null,
+            "age": 10.0,
+            "ontime": 88.7,
+            "accounts": 0,
+            "customers": 0,
+            "penetration": 0.0,
+            "coverage": 0.0,
+            "whitespace": 145,
+            "hubs": 8.3
+          },
+          "approx": true
+        }
+      ],
+      "regions": [
+        {
+          "id": "north-east",
+          "name": "North-East"
+        },
+        {
+          "id": "east",
+          "name": "East"
+        },
+        {
+          "id": "central",
+          "name": "Central"
+        },
+        {
+          "id": "west",
+          "name": "West"
+        },
+        {
+          "id": "north",
+          "name": "North"
+        }
+      ],
+      "focus": [
+        "novena",
+        "downtown-core",
+        "geylang",
+        "orchard",
+        "tanglin"
+      ],
+      "camera": "frame-focus",
+      "halos": [
+        "novena",
+        "downtown-core",
+        "geylang",
+        "orchard",
+        "tanglin"
+      ],
+      "accounts": [],
+      "method": {
+        "placement": {
+          "exact": 5015,
+          "prefix": 82,
+          "sector": 4521,
+          "none": 0
+        },
+        "approx_pct": 47.9,
+        "excluded_hubs": 0,
+        "definitions": {
+          "whitespace": "Addressable minus our accounts.",
+          "base": "Live companies whose primary SSIC matches the segment, placed by registered postal code.",
+          "addressable": "Base minus home-based (HDB residential), SSIC 70 head offices, companies under 1 year old and late annual-return filers. ACRA has no headcount, so the ICP's 10-200 employees is not applied.",
+          "penetration": "Customers divided by addressable. Not market share: there is no competitor data."
+        },
+        "note": "Registered address, not where a company operates. ≈ marks area counts estimated from the postal sector; totals are exact."
+      },
+      "refs": [
+        "knowledge/geo/sg_geo.meta.yaml",
+        "docs/Sales-Mama-3D-Insights-design-spec.md"
+      ]
+    },
+    "ranking": {
+      "kind": "rows",
+      "title": "Top 10 planning areas by whitespace",
+      "columns": [
+        {
+          "key": "area",
+          "label": "Area"
+        },
+        {
+          "key": "region",
+          "label": "Region"
+        },
+        {
+          "key": "base",
+          "label": "Live companies",
+          "numeric": true
+        },
+        {
+          "key": "whitespace",
+          "label": "Whitespace",
+          "numeric": true
+        }
+      ],
+      "rows": [
+        {
+          "area": "Novena ≈",
+          "region": "Central",
+          "base": 804,
+          "whitespace": 736
+        },
+        {
+          "area": "Downtown Core ≈",
+          "region": "Central",
+          "base": 724,
+          "whitespace": 607
+        },
+        {
+          "area": "Geylang ≈",
+          "region": "Central",
+          "base": 659,
+          "whitespace": 530
+        },
+        {
+          "area": "Orchard ≈",
+          "region": "Central",
+          "base": 540,
+          "whitespace": 481
+        },
+        {
+          "area": "Tanglin ≈",
+          "region": "Central",
+          "base": 416,
+          "whitespace": 365
+        },
+        {
+          "area": "Newton",
+          "region": "Central",
+          "base": 364,
+          "whitespace": 350
+        },
+        {
+          "area": "Bedok ≈",
+          "region": "East",
+          "base": 391,
+          "whitespace": 329
+        },
+        {
+          "area": "Bukit Merah ≈",
+          "region": "Central",
+          "base": 407,
+          "whitespace": 324
+        },
+        {
+          "area": "Toa Payoh ≈",
+          "region": "Central",
+          "base": 393,
+          "whitespace": 319
+        },
+        {
+          "area": "Rochor ≈",
+          "region": "Central",
+          "base": 352,
+          "whitespace": 312
+        }
+      ],
+      "next": [
+        {
+          "label": "Biggest areas",
+          "prompt": "Which planning areas have the most clinic companies?"
+        },
+        {
+          "label": "Where is the whitespace?",
+          "prompt": "Where is the whitespace for clinic companies on the map?"
+        },
+        {
+          "label": "Fastest growing areas",
+          "prompt": "Which areas are growing fastest for clinic companies?"
+        }
+      ],
+      "refs": [
+        "company-check/README.md"
+      ]
+    }
+  },
+  "as_of": "2026-10-14",
+  "licence": "Contains information from ACRA, BCA, GeBIZ and HDB datasets accessed on 2026-10-14 from data.gov.sg, made available under the terms of the Singapore Open Data Licence version 1.0 (https://data.gov.sg/open-data-licence). Contains information from URA Master Plan 2025 Planning Area Boundary, HDB Existing Building, CHAS Clinics and Hawker Centres accessed on 2026-11-28 from data.gov.sg, made available under the terms of the Singapore Open Data Licence version 1.0 (https://data.gov.sg/open-data-licence)."
+}
