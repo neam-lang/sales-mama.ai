@@ -8,8 +8,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import WebSocket, { WebSocketServer } from 'ws';
 import type { VoiceServerMsg } from '../shared/voice';
 
-interface Seen { tts: any[]; stt: any[]; sttAudioBytes: number; auth: string[] }
-const seen: Seen = { tts: [], stt: [], sttAudioBytes: 0, auth: [] };
+interface Seen { tts: any[]; stt: any[]; sttAudioBytes: number; auth: string[]; sttConns: number }
+const seen: Seen = { tts: [], stt: [], sttAudioBytes: 0, auth: [], sttConns: 0 };
 let mock: Server, bridge: Server, bridgePort = 0;
 const cache = mkdtempSync(join(tmpdir(), 'mama-voice-cache-'));
 
@@ -40,12 +40,15 @@ beforeAll(async () => {
         if (m.cancelContext) ws.send(JSON.stringify({ result: { contextId: id, contextClosed: {} } }));
       });
     } else {
+      seen.sttConns++;
       ws.on('message', (d, bin) => {
         if (bin) { seen.sttAudioBytes += (d as Buffer).length; return; }
         const m = JSON.parse(String(d));
         seen.stt.push(m);
         if (m.closeStream) setTimeout(() => ws.send(JSON.stringify({ result: { transcription: { transcript: 'Brief me on Kestrel Physio.', isFinal: true } } })), 20);
         if (m.transcribeConfig) ws.send(JSON.stringify({ result: { speechStarted: { startTimeMs: 0 } } }));
+        // A live (conversation) stream that the provider ends by itself, once.
+        if (m.transcribeConfig?.endOfTurnConfidenceThreshold === 0.6 && !(globalThis as any).__closedOnce) { (globalThis as any).__closedOnce = true; setTimeout(() => ws.close(), 30); }
       });
     }
   });
@@ -167,6 +170,20 @@ describe('voice bridge (mock Inworld)', () => {
     expect(msgs.filter(m => m.sendText).map(m => m.sendText.text)).toEqual(['Let me check your book. ', 'You have 3 meetings. ']);
     expect(msgs.some(m => m.closeContext)).toBe(true);
     expect((c.msgs.filter(m => m.type === 'speech_text').pop() as any).text).toBe('Let me check your book. You have 3 meetings.');
+    c.ws.close();
+  });
+
+  it('live mode: patient turn ending, and the stream reopens by itself if the provider closes it', async () => {
+    const c = client(); await c.open;
+    const before = seen.sttConns;
+    c.send({ type: 'listen', mode: 'conversation' });
+    for (let i = 0; i < 40 && seen.sttConns < before + 2; i++) await new Promise(r => setTimeout(r, 25));
+    expect(seen.sttConns).toBe(before + 2);                              // closed once, reopened
+    const cfg = seen.stt.filter(m => m.transcribeConfig).pop().transcribeConfig;
+    expect(cfg.endOfTurnConfidenceThreshold).toBe(0.6);
+    expect(cfg.inworldSttV1Config.maxTurnSilence).toBe(1400);
+    expect(c.msgs.some(m => m.type === 'heard_nothing')).toBe(false);
+    c.send({ type: 'listen_cancel' });
     c.ws.close();
   });
 

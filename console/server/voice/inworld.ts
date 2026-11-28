@@ -155,7 +155,9 @@ export class SttSession implements SttStream {
           modelId: MODELS.stt, audioEncoding: 'LINEAR16', sampleRateHertz: MIC_RATE, numberOfChannels: 1,
           ...(opts.lang && opts.lang !== 'auto' ? { language: opts.lang } : {}),
           ...(opts.prompts?.length ? { prompts: opts.prompts } : {}),
-          inworldSttV1Config: manual ? { vadThreshold: 0 } : { maxTurnSilence: mode === 'tap' ? 900 : 768 },
+          // Live conversation: wait for a real end of turn, not the pause at a comma (found in the live test).
+          ...(mode === 'conversation' ? { endOfTurnConfidenceThreshold: 0.6 } : {}),
+          inworldSttV1Config: manual ? { vadThreshold: 0 } : mode === 'tap' ? { maxTurnSilence: 900 } : { minEndOfTurnSilenceWhenConfident: 700, maxTurnSilence: 1400 },
         },
         audioProtocol: 'BINARY',
       }));
@@ -211,7 +213,7 @@ export class SttSession implements SttStream {
     if (this.done) return;
     this.done = true;
     clearTimeout(this.silenceTimer); clearTimeout(this.finishTimer);
-    if (this.mode === 'conversation') return;
+    if (this.mode === 'conversation') { this.h.nothing(); return; }   // the stream ended: the bridge reopens it
     const text = this.finals.join(' ').trim();
     if (text) this.h.final(text); else this.h.nothing();
   }

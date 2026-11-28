@@ -278,14 +278,26 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
         if (mode === 'conversation' && settings.engine === 'realtime') { openLive(); break; }
         const factory = sttFor(settings.stt);
         if (!factory) { json({ type: 'voice_error', ...noKey(settings.stt) }); break; }
-        const session: SttStream = factory(mode, { lang: settings.lang, prompts: vocabulary(deps.accounts(), ['Sales Mama']) }, {
-          started: () => json({ type: 'speech_started' }),
-          partial: text => json({ type: 'partial', text }),
-          final: text => { json({ type: 'final', text }); if (mode !== 'conversation' && stt === session) stt = null; },
-          nothing: () => { json({ type: 'heard_nothing' }); if (stt === session) stt = null; },
-          error: message => { json({ type: 'voice_error', message }); if (stt === session) stt = null; },
-        });
-        stt = session;
+        const reopened: number[] = [];
+        const open = (): SttStream => {
+          const session: SttStream = factory(mode, { lang: settings.lang, prompts: vocabulary(deps.accounts(), ['Sales Mama']) }, {
+            started: () => json({ type: 'speech_started' }),
+            partial: text => json({ type: 'partial', text }),
+            final: text => { json({ type: 'final', text }); if (mode !== 'conversation' && stt === session) stt = null; },
+            nothing: () => {
+              if (stt !== session) return;
+              // Live conversation: a provider stream can end on its own (idle, limits). Keep listening.
+              const now = Date.now();
+              while (reopened.length && now - reopened[0] > 60_000) reopened.shift();
+              if (mode === 'conversation' && reopened.length < 10) { reopened.push(now); stt = open(); return; }
+              json({ type: 'heard_nothing' });
+              stt = null;
+            },
+            error: message => { json({ type: 'voice_error', message }); if (stt === session) stt = null; },
+          });
+          return session;
+        };
+        stt = open();
         break;
       }
       case 'listen_end': stt?.finish(); break;
