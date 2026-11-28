@@ -56,6 +56,7 @@ beforeAll(async () => {
   process.env.INWORLD_API_KEY = 'test-key';
   process.env.MAMA_VOICE_CACHE = cache;
   process.env.MAMA_VOICE_DAILY_CHARS = '400';
+  process.env.MAMA_VOICE_PREWARM = 'off';
   process.env.MAMA_CONFIG_DIR = mkdtempSync(join(tmpdir(), 'mama-voice-config-'));   // never the real ~/.config
   delete process.env.OPENAI_API_KEY; delete process.env.ELEVENLABS_API_KEY;
 

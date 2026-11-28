@@ -10,7 +10,7 @@ import { findMentions, SURE, withMentions, type Mention } from '../../shared/men
 import { answerText, leadOf, speakable, spokenAnswer } from '../../shared/speakable';
 import { describeTool, type ToolItem } from '../../shared/stream';
 import {
-  ackFor, APPROVAL_REPLY, isApproval, LIVE_BYE, LIVE_GREETING, LIVE_QUEUED, parseCommand, toolCommand, VOICE_HELP,
+  ackFor, APPROVAL_REPLY, isApproval, LIVE_BYE, LIVE_GREETING, LIVE_QUEUED, NAV_PHRASES, parseCommand, toolCommand, VOICE_HELP,
   type Route, type VoiceCommand, type VoiceMode,
 } from '../../shared/voice';
 import { calendarKey, clearFocus, closeTop, focusTurn, openCanvas, openSource, scrollChat } from './navigate';
@@ -61,15 +61,16 @@ export function useVoiceController(d: Deps) {
     const current = () => (focus.current ?? x.turns.length - 1);
     switch (c.kind) {
       case 'stop': v?.stopSpeaking(); if (x.live) x.stop(); break;
-      case 'new_chat': focus.current = null; x.newChat(); break;
+      case 'new_chat': focus.current = null; x.newChat(); say(NAV_PHRASES.newChat); break;
       case 'repeat': v?.repeat(); break;
       case 'end_conversation': endLive(); break;
       case 'help': x.showHelp(); say(VOICE_HELP); break;
       case 'speak_answers': v?.setSpeakAnswers(c.on); if (c.on) say('Okay, I will read answers aloud.'); break;
       case 'go':
         // "Go to today" while on the calendar means the calendar's today.
-        if (c.route === 'today' && x.route === 'calendar') { calendarKey('t'); break; }
+        if (c.route === 'today' && x.route === 'calendar') { calendarKey('t'); say(NAV_PHRASES.calToday); break; }
         x.go(c.route);
+        say(NAV_PHRASES[c.route]);
         break;
       case 'pick': {
         const f = c.index < 0 ? x.followUps[x.followUps.length - 1] : x.followUps[c.index];
@@ -93,24 +94,27 @@ export function useVoiceController(d: Deps) {
         readTurn(current(), false);
         break;
       }
-      case 'scroll': inChat(); if (c.to === 'bottom') { focus.current = null; clearFocus(); } scrollChat(c.to); break;
+      case 'scroll': inChat(); if (c.to === 'bottom') { focus.current = null; clearFocus(); } scrollChat(c.to); if (c.to === 'top' || c.to === 'bottom') say(NAV_PHRASES[c.to]); break;
       case 'source': {
         inChat();
         const name = openSource(current(), c.index);
         if (!name) say(`This answer has no source ${c.index + 1}.`);
+        else if (c.index < 6) say(NAV_PHRASES[`source${c.index + 1}` as keyof typeof NAV_PHRASES]);
         break;
       }
-      case 'canvas': inChat(); if (!openCanvas(current())) say('There is no view to open in this answer.'); break;
-      case 'close': setSettingsOpen(false); closeTop(); break;
-      case 'recent': if (!x.openRecent()) say('There are no saved chats yet.'); else focus.current = null; break;
-      case 'search': x.openPalette(); break;
+      case 'canvas': inChat(); say(openCanvas(current()) ? NAV_PHRASES.canvas : 'There is no view to open in this answer.'); break;
+      case 'close': setSettingsOpen(false); closeTop(); say(NAV_PHRASES.close); break;
+      case 'recent': if (!x.openRecent()) say('There are no saved chats yet.'); else { focus.current = null; say(NAV_PHRASES.recent); } break;
+      case 'search': x.openPalette(); say(NAV_PHRASES.search); break;
       case 'period':
         if (x.route !== 'calendar') x.go('calendar');
         requestAnimationFrame(() => calendarKey(c.to === 'next' ? 'ArrowRight' : c.to === 'prev' ? 'ArrowLeft' : 't'));
+        say(c.to === 'next' ? NAV_PHRASES.next : c.to === 'prev' ? NAV_PHRASES.prev : NAV_PHRASES.calToday);
         break;
       case 'calview':
         if (x.route !== 'calendar') x.go('calendar');
         requestAnimationFrame(() => calendarKey(c.view === 'day' ? 'd' : c.view === 'week' ? 'w' : 'm'));
+        say(NAV_PHRASES[c.view]);
         break;
     }
   }, []);

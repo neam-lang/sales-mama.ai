@@ -145,6 +145,16 @@ export const LIVE_BYE = 'Okay. Talk soon.';
 export const LIVE_MORE = 'The rest is on screen.';
 export const LIVE_QUEUED = 'Got it, that is next.';
 
+/** Spoken confirmations for moving around (spec §16): short, friendly, fixed, so they are cached and instant. */
+export const NAV_PHRASES = {
+  today: 'Here is your day.', chat: 'Back to the chat.', calendar: 'Here is your calendar.', book: 'Here is your book.', reports: 'Here are your reports.',
+  next: 'Moving ahead.', prev: 'Going back.', calToday: 'Back to today.', day: 'Day view.', week: 'Week view.', month: 'Month view.',
+  canvas: 'Opening it wide.', close: 'Closed.', recent: 'Here is your last chat.', search: 'Search is open. What are you looking for?',
+  newChat: 'New chat. What shall we work on?', top: 'Top of the chat.', bottom: 'Back to the latest.',
+  source1: 'Opening source one.', source2: 'Opening source two.', source3: 'Opening source three.',
+  source4: 'Opening source four.', source5: 'Opening source five.', source6: 'Opening source six.',
+} as const;
+
 /** Principle 12: the voice never holds the pen. A bare spoken approval is answered, not sent. */
 export const APPROVAL_REPLY = 'Sending needs your click in Claude Code. I can prepare the preview.';
 export function isApproval(text: string): boolean {

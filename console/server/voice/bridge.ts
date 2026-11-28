@@ -13,7 +13,7 @@ import type { WebSocket } from 'ws';
 import { speakable } from '../../shared/speakable';
 import { vocabulary } from '../../shared/mentions';
 import {
-  ACKS, APPROVAL_REPLY, LIVE_BYE, LIVE_GREETING, LIVE_MORE, LIVE_QUEUED, MALE_VOICES, PROVIDERS, SPEAKER_RATE, ungroundedNumbers,
+  ACKS, APPROVAL_REPLY, LIVE_BYE, LIVE_GREETING, LIVE_MORE, LIVE_QUEUED, NAV_PHRASES, MALE_VOICES, PROVIDERS, SPEAKER_RATE, ungroundedNumbers,
   type Provider, type ProviderStatus, type VoiceClientMsg, type VoiceOption, type VoiceServerMsg, type VoiceSettings,
 } from '../../shared/voice';
 import { BatchStt } from './batch';
@@ -28,7 +28,7 @@ const CACHE = () => process.env.MAMA_VOICE_CACHE ?? join(homedir(), '.cache', 's
 /** Cost guards (spec §9): characters synthesised and Realtime minutes per day, for this console. */
 const DAILY_CHARS = () => Number(process.env.MAMA_VOICE_DAILY_CHARS ?? 20_000);
 const DAILY_LIVE_MIN = () => Number(process.env.MAMA_VOICE_REALTIME_MINUTES ?? 30);
-const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY, LIVE_GREETING, LIVE_BYE, LIVE_MORE, LIVE_QUEUED]);
+const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY, LIVE_GREETING, LIVE_BYE, LIVE_MORE, LIVE_QUEUED, ...Object.values(NAV_PHRASES)]);
 
 const today = () => new Date().toISOString().slice(0, 10);
 let usage = { day: '', chars: 0, liveMs: 0 };
@@ -105,9 +105,31 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
   const json = (m: VoiceServerMsg) => { if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(m)); };
   const bin = (b: Buffer) => { if (ws.readyState === ws.OPEN && b.length) ws.send(b, { binary: true }); };
 
+  /** Render every fixed phrase once in the chosen voice (in the background), so each one plays instantly. */
+  let warming = false;
+  async function prewarm() {
+    if (warming || process.env.MAMA_VOICE_PREWARM === 'off') return;
+    warming = true;
+    try {
+      for (const text of FIXED) {
+        const provider = settings.tts;
+        const tts = ttsFor(provider);
+        if (!tts || ws.readyState !== ws.OPEN) break;
+        const file = cachePath(provider, text, settings);
+        if (existsSync(file)) continue;
+        try {
+          const pcm = await synthesise(tts, text, { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang, fast: true });
+          mkdirSync(CACHE(), { recursive: true, mode: 0o700 });
+          writeFileSync(file, pcm, { mode: 0o600 });
+        } catch { break; }                                // no key, rate limit: try again next session
+      }
+    } finally { warming = false; }
+  }
+
   void status().then(providers => {
     const any = PROVIDERS.some(p => providers[p].available);
     json({ type: 'ready', available: any, providers, defaults, problem: any ? undefined : noKey(defaults.tts) });
+    setTimeout(() => void prewarm(), 1500);
   });
 
   const stopSpeaking = (interrupted: boolean) => {
@@ -249,7 +271,7 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
     let msg: VoiceClientMsg;
     try { msg = JSON.parse(String(data)); } catch { return; }
     switch (msg.type) {
-      case 'settings': settings = cleanSettings(settings, msg.settings); break;
+      case 'settings': settings = cleanSettings(settings, msg.settings); setTimeout(() => void prewarm(), 1500); break;
       case 'listen': {
         stt?.cancel(); stt = null;
         const mode = msg.mode === 'tap' || msg.mode === 'conversation' ? msg.mode : 'push';

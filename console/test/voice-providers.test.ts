@@ -139,7 +139,7 @@ beforeAll(async () => {
   const mp = (mock.address() as { port: number }).port;
   Object.assign(process.env, {
     MAMA_OPENAI_HTTP: `http://127.0.0.1:${mp}`, MAMA_OPENAI_WS: `ws://127.0.0.1:${mp}`, MAMA_ELEVENLABS_HTTP: `http://127.0.0.1:${mp}`,
-    OPENAI_API_KEY: 'sk-test', ELEVENLABS_API_KEY: 'xi-test',
+    OPENAI_API_KEY: 'sk-test', ELEVENLABS_API_KEY: 'xi-test', MAMA_VOICE_PREWARM: 'off',
     MAMA_CONFIG_DIR: mkdtempSync(join(tmpdir(), 'mama-voice-config-')), MAMA_VOICE_CACHE: mkdtempSync(join(tmpdir(), 'mama-voice-cache-')),
   });
   delete process.env.INWORLD_API_KEY;
