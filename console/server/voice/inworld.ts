@@ -20,7 +20,7 @@ function explainStatus(code: number | undefined, message?: string): string {
 // ---------------------------------------------------------------------------------------------
 // Text to speech: one persistent socket, one context per speech, cancelContext on barge-in.
 // ---------------------------------------------------------------------------------------------
-interface Ctx { h: SpeakHandlers; samples: number; flushBase: number; ended: boolean }
+interface Ctx { h: SpeakHandlers; samples: number; flushBase: number; ended: boolean; steering: boolean }
 
 export class Tts implements TtsEngine {
   private ws: WebSocket | null = null;
@@ -61,6 +61,8 @@ export class Tts implements TtsEngine {
         wa.words.forEach((w: string, i: number) => {
           const t = w.trim();
           if (!t) return;
+          // A steering instruction ("[speak with a light American accent]") is not speech: never caption it.
+          if (t.startsWith('[') || c.steering) { c.steering = !t.includes(']'); return; }
           const end = c.flushBase + (wa.wordEndTimeSeconds?.[i] ?? 0);
           // Punctuation arrives as its own token ("day", "."); attach it to the word before.
           if (/^[.,!?;:…)"'’]+$/.test(t) && words.length) { words[words.length - 1].w += t; words[words.length - 1].end = end; return; }
@@ -90,7 +92,7 @@ export class Tts implements TtsEngine {
 
   /** One context per answer; text is pushed as it streams and Inworld finds the sentence boundaries. */
   stream(id: string, o: SpeakOpts, h: SpeakHandlers) {
-    this.ctxs.set(id, { h, samples: 0, flushBase: 0, ended: false });
+    this.ctxs.set(id, { h, samples: 0, flushBase: 0, ended: false, steering: false });
     const pending: object[] = [];
     let ws: WebSocket | null = null;
     const send = (msg: object) => { const m = { contextId: id, ...msg }; if (ws) ws.send(JSON.stringify(m)); else pending.push(m); };

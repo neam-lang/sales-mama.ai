@@ -31,7 +31,8 @@ beforeAll(async () => {
           const audio = Buffer.alloc(4800, 1).toString('base64');         // 0.1 s at 24 kHz
           const send = (o: object) => ws.send(JSON.stringify({ result: { contextId: id, ...o } }));
           setTimeout(() => {
-            send({ audioChunk: { audioContent: audio, timestampInfo: { wordAlignment: { words: ['You', ' ', 'have'], wordStartTimeSeconds: [0, 0.05, 0.06], wordEndTimeSeconds: [0.05, 0.06, 0.1] } } } });
+            const steer = m.contextId?.startsWith('acc~') ? ['[speak', 'with', 'an', 'accent]'] : [];
+            send({ audioChunk: { audioContent: audio, timestampInfo: { wordAlignment: { words: [...steer, 'You', ' ', 'have'], wordStartTimeSeconds: [...steer.map(() => 0), 0, 0.05, 0.06], wordEndTimeSeconds: [...steer.map(() => 0), 0.05, 0.06, 0.1] } } } });
             send({ flushCompleted: {} });
             send({ audioChunk: { audioContent: audio, timestampInfo: { wordAlignment: { words: ['three.'], wordStartTimeSeconds: [0.01], wordEndTimeSeconds: [0.09] } } } });
             setTimeout(() => send({ contextClosed: {} }), 60);
@@ -209,6 +210,8 @@ describe('voice bridge (mock Inworld)', () => {
     await c.until(() => c.msgs.some(m => m.type === 'speech_end' && (m as any).id === 'acc'));
     const sent = seen.tts.filter(m => String(m.contextId).startsWith('acc~') && m.sendText).map(m => m.sendText.text);
     expect(sent).toEqual(['[speak with a light American English accent x] You have three meetings.']);   // brackets in the setting are stripped
+    const capWords = c.msgs.filter(m => m.type === 'words' && (m as any).id === 'acc').flatMap((m: any) => m.words.map((w: any) => w.w));
+    expect(capWords).toEqual(['You', 'have', 'three.']);                                   // the instruction is never captioned
     c.send({ type: 'speak', id: 'ack2', text: 'On it.', kind: 'ack' });
     await c.until(() => c.msgs.some(m => m.type === 'speech_end' && (m as any).id === 'ack2'));
     const create = seen.tts.filter(m => m.create).pop();
