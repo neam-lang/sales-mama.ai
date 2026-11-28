@@ -168,7 +168,8 @@ describe('voice bridge (mock Inworld)', () => {
     const cfg = seen.stt.find(m => m.transcribeConfig);
     expect(cfg.audioProtocol).toBe('BINARY');
     expect(cfg.transcribeConfig).toMatchObject({ audioEncoding: 'LINEAR16', sampleRateHertz: 16000, inworldSttV1Config: { vadThreshold: 0 } });
-    expect(cfg.transcribeConfig.prompts).toEqual(['Sales Mama', 'Kestrel Physio']);
+    expect(cfg.transcribeConfig.prompts).toContain('tier A');
+    expect(cfg.transcribeConfig.prompts).toContain('Kestrel Physio');
     expect(seen.stt.some(m => m.closeStream)).toBe(true);
     c.ws.close();
   });

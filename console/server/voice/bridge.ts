@@ -28,6 +28,8 @@ const CACHE = () => process.env.MAMA_VOICE_CACHE ?? join(homedir(), '.cache', 's
 /** Cost guards (spec §9): characters synthesised and Realtime minutes per day, for this console. */
 const DAILY_CHARS = () => Number(process.env.MAMA_VOICE_DAILY_CHARS ?? 20_000);
 const DAILY_LIVE_MIN = () => Number(process.env.MAMA_VOICE_REALTIME_MINUTES ?? 30);
+/** Sales Mama words the speech recognizer should expect ("tier A" was heard as "PRA" in a live test). */
+const STT_TERMS = ['Sales Mama', 'tier A', 'tier B', 'tier C', 'follow-up', 'send window', 'allocation', 'VAM', 'nightly', 'company insights', 'company check'];
 const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY, LIVE_GREETING, LIVE_BYE, LIVE_MORE, LIVE_QUEUED, ...Object.values(NAV_PHRASES)]);
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -284,7 +286,7 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
         if (!factory) { json({ type: 'voice_error', ...noKey(settings.stt) }); break; }
         const reopened: number[] = [];
         const open = (): SttStream => {
-          const session: SttStream = factory(mode, { lang: settings.lang, prompts: vocabulary(deps.accounts(), ['Sales Mama']) }, {
+          const session: SttStream = factory(mode, { lang: settings.lang, prompts: vocabulary(deps.accounts(), STT_TERMS) }, {
             started: () => json({ type: 'speech_started' }),
             partial: text => json({ type: 'partial', text }),
             final: text => { json({ type: 'final', text }); if (mode !== 'conversation' && stt === session) stt = null; },
