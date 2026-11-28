@@ -55,7 +55,8 @@ export function jaroWinkler(a: string, b: string): number {
 const STOP = new Set(('a an the me my i you your we our us on in at of for to from with and or but is are was be it this that these those ' +
   'brief draft check research show open find tell what who how when where which new about before after today tomorrow ' +
   'meeting meetings call calls follow up email emails reply replies please can could would give get send account accounts ' +
-  'company companies lead leads deal deals next last first second third day week book do does did have has had any some all').split(' '));
+  'company companies lead leads deal deals next last first second third day week book do does did have has had any some all ' +
+  'tier tiers stage stages many much how which ones one score scores pipeline status').split(' '));
 
 function tokenScore(a: string, b: string): number {
   return Math.max(jaroWinkler(a, b), jaroWinkler(phonetic(a), phonetic(b)) * 0.97);
@@ -70,6 +71,12 @@ function similarity(said: string, name: string): number {
   if (a === b) return 1;
   const at = a.split(' '), bt = b.split(' ');
   if (STOP.has(at[0]) || STOP.has(at[at.length - 1])) return 0;
+  // One spoken word is easy to mishear as a name ("Tier" ~ "Petros"): demand the same first letter and a close spelling.
+  if (at.length === 1) {
+    if (bt.length !== 1 || a[0] !== b[0] || a.length < 4) return 0;
+    const j = jaroWinkler(a, b);
+    return j >= 0.9 ? j : 0;
+  }
   if (at.length === bt.length) {
     const scores = at.map((w, i) => tokenScore(w, bt[i]));
     if (Math.min(...scores) < 0.8) return 0;

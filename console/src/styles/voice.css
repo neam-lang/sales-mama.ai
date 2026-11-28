@@ -105,3 +105,9 @@
 .turn2.voice-focus { outline: 2px solid var(--mama); outline-offset: 8px; border-radius: var(--r-card); }
 .sheet dl.say dt { font-weight: 600; color: var(--ink); }
 .captions .cap-hint { color: var(--muted); font-style: normal; }
+
+/* Compact orb in the header on Today, Calendar, Book and Reports, so voice works on every page. */
+.hdr-orb { display: inline-grid; }
+.hdr-orb .orb { width: 40px; height: 40px; }
+.hdr-orb .orb .disc { width: 32px; height: 32px; }
+.hdr-orb .orb .disc svg { width: 16px; height: 16px; }

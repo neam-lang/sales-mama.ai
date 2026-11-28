@@ -228,6 +228,13 @@ export function useVoiceController(d: Deps) {
 
   const headerExtra: ReactNode = (
     <>
+      {d.route !== 'chat' && (
+        <span className="hdr-orb">
+          <Orb state={orbState} level={voice.level} conversation={voice.mode === 'conversation'}
+            onHold={() => void voice.listen('push')} onRelease={() => void voice.release()} onTap={() => (voice.mic === 'idle' ? void voice.listen('tap') : voice.cancelListen())}
+            onStop={voice.stopSpeaking} />
+        </span>
+      )}
       {voice.mode === 'conversation' && (
         <button type="button" className="mic-on" onClick={voice.cancelListen} title="End hands-free mode">
           <i aria-hidden="true" />{voice.live ? 'GPT LIVE' : 'MIC ON'}

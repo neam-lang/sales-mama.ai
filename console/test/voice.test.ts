@@ -217,6 +217,12 @@ describe('spoken account names (rule 16: own accounts only)', () => {
     expect(findMentions('check best a for me', all).map(x => x.id)).toEqual(['best-a']);   // exact names may contain common words
   });
 
+  it('real transcript: "Tier A" is not the account Petros', () => {
+    const all = [...mine, { id: 'petros', name: 'PETROS PTE. LTD.' }, { id: 'best-a', name: 'BEST A PTE. LTD.' }];
+    expect(findMentions('How many accounts do I have, and which ones are Tier A?', all)).toEqual([]);
+    expect(findMentions('brief me on Petros', all).map(m => [m.id, m.conf])).toEqual([['petros', 1]]);
+  });
+
   it('does not invent mentions in ordinary words', () => {
     expect(findMentions('what changed overnight in my book', mine)).toHaveLength(0);
     expect(findMentions('brief me on my next meeting', mine)).toHaveLength(0);
