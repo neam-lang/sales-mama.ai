@@ -93,6 +93,7 @@ export class Player {
   private startAt = 0;
   private sources = new Set<AudioBufferSourceNode>();
   private gain: GainNode | null = null;
+  private volume = 1;
   private analyser: AnalyserNode | null = null;
   private data = new Float32Array(512);
   private serverDone = true;
@@ -103,14 +104,21 @@ export class Player {
     const ac = audioContext();
     if (!this.gain) {
       this.gain = ac.createGain();
+      this.gain.gain.value = this.volume;
       this.analyser = ac.createAnalyser();
       this.analyser.fftSize = 512;
-      this.gain.connect(this.analyser).connect(ac.destination);
+      // A gentle limiter after the gain: louder speech without clipping.
+      const limit = ac.createDynamicsCompressor();
+      limit.threshold.value = -6; limit.knee.value = 6; limit.ratio.value = 12; limit.attack.value = 0.003; limit.release.value = 0.12;
+      this.gain.connect(limit).connect(this.analyser).connect(ac.destination);
     }
     return { ac, gain: this.gain };
   }
 
   begin() { this.stop(); this.serverDone = false; }
+
+  /** Playback volume, 0.5 to 2 (1 = as synthesised). */
+  setVolume(v: number) { this.volume = Math.min(2, Math.max(0.5, v)); if (this.gain) this.gain.gain.value = this.volume; }
 
   push(pcm: ArrayBuffer) {
     const { ac, gain } = this.out();

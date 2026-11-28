@@ -29,11 +29,14 @@ export interface VoiceSettings {
   strict: boolean;
   /** Delivery or accent in plain English (Inworld TTS-2 steering, OpenAI instructions). Empty = the voice as it is. */
   style: string;
+  /** Playback volume in the browser, 0.5 to 2 (1 = as synthesised). */
+  volume: number;
 }
 
 export const STYLE_PRESETS: [string, string][] = [
   ['', 'As recorded'],
   ['speak with a light American English accent', 'Light American'],
+  ['speak with a light American English accent, in a strong, confident, projected voice', 'Light American, strong and confident'],
   ['speak with a clear, friendly General American English accent', 'American'],
   ['speak with a light British English accent', 'Light British'],
   ['speak warmly and clearly at a brisk pace', 'Warm and brisk'],
@@ -43,7 +46,7 @@ export const STYLE_PRESETS: [string, string][] = [
 export const DEFAULT_SETTINGS: VoiceSettings = {
   engine: 'cascade', stt: 'inworld', tts: 'inworld',
   voices: { inworld: 'Junhao', openai: 'onyx', elevenlabs: 'JBFqnCBsd6RMkjVDRZzb', realtime: 'cedar' },
-  rate: 1, lang: 'en', strict: true, style: '',
+  rate: 1, lang: 'en', strict: true, style: '', volume: 1,
 };
 
 export interface VoiceOption { id: string; name: string; langs?: string[]; gender?: 'male' | 'female' | ''; note?: string }

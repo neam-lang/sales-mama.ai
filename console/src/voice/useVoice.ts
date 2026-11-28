@@ -48,6 +48,7 @@ export function useVoice(handlers: VoiceHandlers) {
   const [error, setError] = useState<string | null>(null);
 
   const settings = useMemo(() => mergeSettings(defaults, prefs.overrides), [defaults, prefs.overrides]);
+  useEffect(() => { player.current.setVolume(settings.volume ?? 1); }, [settings.volume]);
   const ws = useRef<WebSocket | null>(null);
   const player = useRef(new Player());
   const micRef = useRef<Mic | null>(null);

@@ -82,6 +82,9 @@ export function VoiceSettingsPanel({ voice, onClose }: { voice: Voice; onClose: 
           {STYLE_PRESETS.map(([v, n]) => <option key={n} value={v}>{n}</option>)}
         </select>
       </label>
+      <label>Volume {(s.volume ?? 1).toFixed(1)}×
+        <input type="range" min={0.5} max={2} step={0.1} value={s.volume ?? 1} onChange={e => voice.setSettings({ volume: Number(e.target.value) })} />
+      </label>
       <label>Speed {s.rate.toFixed(2)}×
         <input type="range" min={0.8} max={1.3} step={0.05} value={s.rate} onChange={e => voice.setSettings({ rate: Number(e.target.value) })} />
       </label>
