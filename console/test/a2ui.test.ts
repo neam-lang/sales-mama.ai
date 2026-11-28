@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { MessageProcessor, Catalog } from '@a2ui/web_core/v0_9';
 import { basicCatalog } from '@a2ui/web_core/v0_9/basic_catalog';
@@ -63,7 +65,8 @@ describe('a2ui blocks', () => {
     const p = ok(b);
     const bar = p.block.components.find(c => c.id === 'go')!;
     expect((bar.actions as any[]).map(a => a.label)).toEqual(['A1', 'A2', 'A3', 'A4']);
-    expect(p.block.components.find(c => c.id === 'btn')!.action).toBeUndefined();
+    // the send action is removed; an empty button is then left out altogether
+    expect(p.block.components.find(c => c.id === 'btn')?.action).toBeUndefined();
   });
 
   it('keeps dataRef inside the read-only data folders', () => {
@@ -121,5 +124,41 @@ describe('a2ui blocks', () => {
   it('resolves paths in plain data', () => {
     expect(at({ a: { b: [10, 20] } }, '/a/b/1')).toBe(20);
     expect(at({ a: 1 }, '/x/y')).toBeUndefined();
+  });
+});
+
+describe('generated views are best-effort, never blank (live run 2026-11-28)', () => {
+  const raw = readFileSync(join(__dirname, 'fixtures', 'a2ui', 'clinics-live-2026-11-28.json'), 'utf8');
+  it('repairs an ActionBar written with "items" and keeps every part', () => {
+    const p = parseBlock(raw);
+    expect(p.kind).toBe('surface');
+    if (p.kind !== 'surface') return;
+    expect(p.issues.filter(i => !/read "items" as "actions"/.test(i))).toEqual([]);
+    expect(p.block.components.find(c => c.id === 'actions')?.actions).toBeTruthy();
+    expect(p.block.components.find(c => c.id === 'root')?.children).toContain('actions');
+  });
+  it('fills a bound ActionBar from the report data, still without send and capped', () => {
+    const p = parseBlock(raw);
+    if (p.kind !== 'surface') throw new Error('not a surface');
+    const data = { sections: { leads: { next: [{ label: 'Save these leads', prompt: '/company-check leads --industries clinics' },
+      { label: 'Send them all', prompt: '/mama-send' }, ...[1, 2, 3, 4].map(i => ({ label: `More ${i}`, prompt: `/mama-book ${i}` }))] } } };
+    const comps = (toMessages(p.block, data).at(-1) as any).updateComponents.components;
+    const bar = comps.find((c: any) => c.id === 'actions');
+    expect(bar.actions.map((a: any) => a.label)).toEqual(['Save these leads', 'More 1', 'More 2', 'More 3']);
+  });
+  it('leaves out a part it cannot draw, and the references to it, so the rest renders', () => {
+    const v = JSON.parse(raw);
+    v.components.push({ id: 'weird', component: 'NoSuchChart', data: { path: '/x' } });
+    v.components.find((c: any) => c.id === 'grid').children.push('weird');
+    v.components.find((c: any) => c.id === 'tiles').bogus = 1;
+    const p = parseBlock(JSON.stringify(v));
+    if (p.kind !== 'surface') throw new Error('not a surface');
+    const ids = p.block.components.map(c => c.id);
+    expect(ids).not.toContain('weird');
+    expect(ids).not.toContain('tiles');
+    expect(ids).toContain('root');
+    expect(p.block.components.find(c => c.id === 'grid')?.children).not.toContain('weird');
+    expect(p.block.components.find(c => c.id === 'root')?.children).not.toContain('tiles');
+    expect(p.issues.some(i => /left out so the rest of the view shows/.test(i))).toBe(true);
   });
 });

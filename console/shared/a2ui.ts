@@ -112,8 +112,59 @@ export function parseBlock(raw: string): Part {
   const issues: string[] = [];
   const block = normalise(value, issues);
   if (!block) return { kind: 'bad', raw, issues };
+  issues.push(...repairAliases(block));
   issues.push(...validateBlock(block));
+  issues.push(...pruneInvalid(block));
   return { kind: 'surface', block, issues };
+}
+
+/** Field names models often use for a component's list (seen in live runs): fixed before validation. */
+const ALIASES: Record<string, Record<string, string>> = {
+  ActionBar: { items: 'actions', buttons: 'actions', prompts: 'actions' },
+};
+function repairAliases(b: SurfaceBlock): string[] {
+  const out: string[] = [];
+  for (const c of b.components) {
+    const map = c && ALIASES[c.component as string];
+    if (!map) continue;
+    for (const [from, to] of Object.entries(map)) {
+      if (c[from] !== undefined && c[to] === undefined) { c[to] = c[from]; delete c[from]; out.push(`${c.id} (${c.component}): read "${from}" as "${to}"`); }
+    }
+  }
+  return out;
+}
+
+/** Props to check against the catalog. An ActionBar may bind its list to the report data
+ *  ({"path": "/sections/leads/next"}): it is resolved, filtered and capped in toMessages. */
+function propsForSchema(c: A2uiComponent): Record<string, unknown> {
+  const props = Object.fromEntries(Object.entries(c).filter(([k]) => !COMMON_KEYS.has(k)));
+  if (c.component === 'ActionBar' && isBinding(props.actions)) props.actions = [];
+  return props;
+}
+
+function schemaOk(c: A2uiComponent): boolean {
+  const ours = (API as Record<string, { schema: any }>)[c.component];
+  const basic = basicCatalog.components.get(c.component) as { schema: any } | undefined;
+  if (!ours && !basic) return false;
+  const schema = ours ? (typeof ours.schema.strict === 'function' ? ours.schema.strict() : ours.schema) : basic!.schema;
+  return schema.safeParse(propsForSchema(c)).success;
+}
+
+/**
+ * Best effort for generated views: a component the catalog rejects is left out (with every reference
+ * to it), so one slip never blanks the whole report ("[Loading root...]"). The root is always kept.
+ */
+export function pruneInvalid(b: SurfaceBlock): string[] {
+  const valid = b.components.filter(c => c && typeof c.id === 'string' && typeof c.component === 'string');
+  const bad = new Set(valid.filter(c => c.id !== 'root' && !schemaOk(c)).map(c => c.id));
+  const ids = new Set(valid.map(c => c.id).filter(id => !bad.has(id)));
+  if (!bad.size && valid.every(c => childRefs(c).every(r => ids.has(r)))) return [];
+  b.components = valid.filter(c => !bad.has(c.id));
+  for (const c of b.components) {
+    if (Array.isArray(c.children)) c.children = c.children.filter((x: unknown) => typeof x !== 'string' || ids.has(x));
+    if (typeof c.child === 'string' && !ids.has(c.child)) delete c.child;
+  }
+  return [...bad].map(id => `${id}: left out so the rest of the view shows`);
 }
 
 function normalise(v: any, issues: string[]): SurfaceBlock | null {
@@ -165,7 +216,7 @@ export function validateBlock(b: SurfaceBlock): string[] {
     const ours = (API as Record<string, { schema: any }>)[c.component];
     const basic = basicCatalog.components.get(c.component) as { schema: any } | undefined;
     if (!ours && !basic) { issues.push(`${where}: not in the Sales Mama catalog`); continue; }
-    const props = Object.fromEntries(Object.entries(c).filter(([k]) => !COMMON_KEYS.has(k)));
+    const props = propsForSchema(c);
     const schema = ours ? (typeof ours.schema.strict === 'function' ? ours.schema.strict() : ours.schema) : basic!.schema;
     const res = schema.safeParse(props);
     if (!res.success) {
@@ -229,8 +280,18 @@ export function toMessages(b: SurfaceBlock, refData?: unknown): Record<string, u
     { version: v, createSurface: { surfaceId: b.surfaceId, catalogId: CATALOG_ID } },
     { version: v, updateDataModel: { surfaceId: b.surfaceId, path: '/', value: model } },
     ...b.extra.map(m => ({ version: v, ...m, ...(m.updateDataModel ? { updateDataModel: { ...(m.updateDataModel as object), surfaceId: b.surfaceId } } : {}) })),
-    { version: v, updateComponents: { surfaceId: b.surfaceId, components: b.components } },
+    { version: v, updateComponents: { surfaceId: b.surfaceId, components: b.components.map(c => resolveActions(c, model)) } },
   ];
+}
+
+/** A bound ActionBar list from the report data: label + prompt only, never send, at most MAX_ACTIONS. */
+function resolveActions(c: A2uiComponent, model: unknown): A2uiComponent {
+  if (c.component !== 'ActionBar' || !isBinding(c.actions)) return c;
+  const list = at(model, String((c.actions as { path?: string }).path ?? ''));
+  const actions = (Array.isArray(list) ? list : [])
+    .filter((a: any) => a && typeof a.label === 'string' && typeof a.prompt === 'string' && !SEND.test(a.label) && !SEND.test(a.prompt))
+    .slice(0, MAX_ACTIONS).map((a: any) => ({ label: a.label, prompt: a.prompt }));
+  return { ...c, actions };
 }
 
 /** Resolve a JSON-pointer-ish path ("/a/b/0") in plain data. Used by tests and the exporter. */
