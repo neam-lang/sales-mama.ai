@@ -1,0 +1,18 @@
+# Geography for 3D Insights (docs/Sales-Mama-3D-Insights-design-spec.md §4). Manager-owned.
+# Every source is a data.gov.sg open dataset under the Singapore Open Data Licence v1.0.
+# scripts/build_geo.py fetch downloads them into company-check/data/geo/ (git-ignored);
+# scripts/build_geo.py build writes sg_planning_areas.geojson and sg_postal_geo.json next to this file.
+market: SG
+datasets:                                   # data.gov.sg ids (verified 2026-11-28)
+  planning_areas: {id: d_2cc750190544007400b2cfd5d7f53209, name: "Master Plan 2025 Planning Area Boundary (No Sea)", by: URA}
+  hdb_buildings:  {id: d_16b157c52ed637edd6ba1232e026258d, name: "HDB Existing Building", by: HDB}
+  chas_clinics:   {id: d_548c33ea2d99e29ec63a7cc9edcccedc, name: "CHAS Clinics", by: MOH}
+  hawker_centres: {id: d_4a086da0a5553be1d89383cd90d07ecd, name: "Hawker Centres (GEOJSON)", by: NEA}
+licence: >-
+  Contains information from URA Master Plan 2025 Planning Area Boundary, HDB Existing Building, CHAS Clinics and
+  Hawker Centres accessed on {date} from data.gov.sg, made available under the terms of the Singapore Open Data
+  Licence version 1.0 (https://data.gov.sg/open-data-licence).
+build:
+  simplify_m: 15            # Douglas-Peucker tolerance for the map outlines
+  min_sector_points: 20     # fewer known postal points than this in a 2-digit sector -> sg_sectors.yaml decides
+  min_prefix_points: 10     # 3-digit prefix weights need at least this many points

@@ -1,0 +1,36 @@
+# Postal sectors (first 2 digits) the open point data covers thinly: weights over planning areas.
+# Used only for companies whose exact postal code is not in the point data (spec §4.1). Values are
+# ESTIMATES from the public URA postal-district list and local knowledge: check them against OneMap
+# when a token is available (build_geo.py check --onemap) and correct here. Weights per sector sum to 1.
+# Area ids are the slugs in sg_planning_areas.geojson. Sectors 00 and 91 are invalid codes: left unplaced.
+sectors:
+  "01": {downtown-core: 1.0}                                   # Marina Bay, Raffles Quay
+  "03": {downtown-core: 1.0}                                   # Marina Centre, Suntec
+  "04": {downtown-core: 0.8, singapore-river: 0.2}             # Raffles Place, Boat Quay
+  "06": {downtown-core: 0.6, outram: 0.2, singapore-river: 0.2}  # Cecil, Chinatown edge
+  "07": {downtown-core: 0.7, outram: 0.3}                      # Anson, Tanjong Pagar
+  "11": {queenstown: 1.0}                                      # Pasir Panjang, Kent Ridge
+  "17": {downtown-core: 0.5, museum: 0.3, rochor: 0.2}         # City Hall, Bras Basah, Beach Road
+  "22": {orchard: 0.5, newton: 0.3, river-valley: 0.2}         # Orchard, Cairnhill
+  "23": {orchard: 0.6, river-valley: 0.2, museum: 0.1, singapore-river: 0.1}  # Orchard, Somerset, Killiney
+  "24": {tanglin: 1.0}                                         # Tanglin, Holland Road
+  "25": {tanglin: 0.6, bukit-timah: 0.4}                       # Ardmore, Bukit Timah Road
+  "26": {bukit-timah: 0.8, tanglin: 0.2}                       # Holland, Bukit Timah
+  "28": {bukit-timah: 0.7, novena: 0.3}                        # Watten, Dunearn
+  "29": {novena: 0.6, bukit-timah: 0.4}                        # Novena, Thomson
+  "30": {novena: 1.0}                                          # Novena, Thomson
+  "42": {marine-parade: 0.4, geylang: 0.4, bedok: 0.2}         # Katong, Joo Chiat
+  "45": {bedok: 1.0}                                           # Siglap, Upper East Coast
+  "48": {tampines: 0.6, bedok: 0.4}                            # Upper Changi, Simei edge
+  "49": {changi: 1.0}                                          # Changi, Loyang
+  "50": {changi: 0.5, pasir-ris: 0.5}                          # Changi Village, Loyang industrial
+  "58": {bukit-timah: 0.7, clementi: 0.3}                      # Upper Bukit Timah, Clementi Park
+  "62": {pioneer: 0.5, boon-lay: 0.2, western-islands: 0.15, tuas: 0.15}  # Jurong industrial, Jurong Island
+  "63": {tuas: 0.75, jurong-west: 0.25}                        # Tuas
+  "66": {bukit-batok: 0.5, bukit-panjang: 0.5}                 # Hillview, Dairy Farm
+  "71": {lim-chu-kang: 0.5, tengah: 0.3, choa-chu-kang: 0.2}   # Lim Chu Kang, Tengah
+  "72": {sungei-kadut: 0.6, woodlands: 0.2, lim-chu-kang: 0.2} # Kranji
+  "77": {ang-mo-kio: 0.5, bishan: 0.25, yishun: 0.25}          # Upper Thomson
+  "78": {ang-mo-kio: 0.4, yishun: 0.4, mandai: 0.2}            # Springleaf, Yio Chu Kang
+  "80": {serangoon: 0.5, seletar: 0.3, sengkang: 0.2}          # Seletar Hills
+  "81": {changi: 1.0}                                          # Changi Airport

@@ -242,7 +242,8 @@ def window_ok(market_cfg: dict, override, date_str: str) -> bool:
 def source_corpus(root: Path, account: mc.Page, contacts: list[mc.Page], rep: dict | None) -> str:
     parts = [account.text] + [c.text for c in contacts]
     for p in sorted((root / "knowledge").rglob("*")):
-        if p.is_file() and p.suffix in (".md", ".yaml", ".yml"):
+        # knowledge/geo/ is map data for 3D Insights: place names there say nothing about this account.
+        if p.is_file() and p.suffix in (".md", ".yaml", ".yml") and "geo" not in p.relative_to(root / "knowledge").parts[:1]:
             parts.append(mc.read_text(p))
     if rep and rep.get("_path") and (root / rep["_path"]).is_file():
         parts.append(mc.read_text(root / rep["_path"]))
