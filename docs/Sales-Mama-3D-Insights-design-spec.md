@@ -1,6 +1,6 @@
 # Sales Mama 3D Insights: Design Spec and Implementation Plan v1
 
-> **Status:** proposed (2026-11-28). Spec only; nothing is built yet. Owner: manager.
+> **Status:** in progress (2026-11-28). Phases 3D-0 and 3D-1 are built and tested on branch `feature/sales-mama-3d-insights` (see §11 Status). Owner: manager.
 > **Feature:** a panoramic 3D map of the Singapore market. Reps and the manager can orbit it, fly through it and question it by voice. Every answer becomes a 3D graph on the map, plus an insight card that explains it.
 > **Applies to:**
 > - `console/`: a new Insights route, the 3D scene, voice commands and a new A2UI component
@@ -126,22 +126,28 @@ A chat answer that produces a map scene opens it **in the canvas** (Frontend spe
 | Level | Count | Source | Used for |
 |---|---|---|---|
 | Singapore | 1 | — | The headline |
-| Region | 5 (Central, East, North, North-East, West) | URA Master Plan 2019 (each planning area carries its region) | Region tours, region comparison |
-| **Planning area** | 55 | **URA Master Plan 2019 Planning Area Boundary (No Sea)**, GeoJSON, data.gov.sg, Singapore Open Data Licence | **The main towers** (polygons) |
+| Region | 5 (Central, East, North, North-East, West) | URA Master Plan 2025 (each planning area carries its region) | Region tours, region comparison |
+| **Planning area** | 55 | **URA Master Plan 2025 Planning Area Boundary (No Sea)**, GeoJSON, data.gov.sg, Singapore Open Data Licence | **The main towers** (polygons) |
 | Postal district / sector | 28 / ~80 | Public URA district-to-sector table; the 2-digit sector is already used by `company_analytics.py` | Phase 1 join key (sector → planning area) |
 | Building (postal code) | thousands per segment | OneMap Search API (postal → lat/lon), opt-in, cached | Phase 3D-6 hexbins and own-account pins |
 
 **The join problem, stated honestly.** The registry gives a 6-digit postal code. A postal **sector** (2 digits) does not map exactly onto a planning area: about a fifth of sectors straddle two or more. So there are two methods:
 
-- **Phase 1 (no geocoding).** `knowledge/geo/sg_sectors.yaml` maps each sector to **weights over planning areas**. The weights are built once, offline, by geocoding one sample of postal codes per sector and counting point-in-polygon hits; the build script is checked in. Area counts from this method are **estimates**. They are labelled `≈`, and the totals always add up to the segment total exactly (largest-remainder rounding).
+- **Phase 1 (no geocoding, as built).** Three open point datasets carry postal codes and coordinates: HDB Existing Building, CHAS Clinics and Hawker Centres (13,838 postal codes). `build_geo.py` places each one in a planning area by point-in-polygon. A company is then placed by:
+  1. **exact**: its postal code is one of those points (35.5% of live companies, 52% of clinics)
+  2. **prefix**: weights of the points that share its first 3 digits (at least 10 points)
+  3. **sector**: weights over its 2-digit sector, from the points, or from the hand-made `knowledge/geo/sg_sectors.yaml` where the points are thin (30 sectors, mostly CBD and industrial; to be checked against OneMap)
+
+  Methods 2 and 3 are **estimates**. An area is labelled `≈` when more than 10% of its count is estimated, and the totals always add up to the segment total exactly (largest-remainder rounding). Only 7 of 624,271 live companies have no usable postal code.
 - **Phase 3D-6 (geocoded).** Each distinct postal code in a segment is geocoded once via OneMap and cached in `company-check/data/geo.sqlite`, which is git-ignored. Each code is then placed in an area by point-in-polygon. Counts become exact, and the `≈` disappears.
 
 ### 4.2 Files
 
 ```
 knowledge/geo/
-  sg_planning_areas.geojson      55 polygons, simplified to ~250 KB (Douglas-Peucker, 15 m), id/name/region
-  sg_sectors.yaml                sector -> district, region, {planning_area: weight}
+  sg_planning_areas.geojson      55 polygons, simplified to 98 KB (Douglas-Peucker, 15 m), id/name/region/area_km2
+  sg_postal_geo.json             built: exact postal -> area, 3-digit prefix and 2-digit sector weights (172 KB)
+  sg_sectors.yaml                hand-made weights for thinly covered sectors (estimates, to verify)
   sg_geo.meta.yaml               dataset ids, versions, licence lines, build date
 scripts/
   market_map.py                  questions -> scene data (JSON); stdlib only
@@ -440,7 +446,7 @@ console/shared/
 console/server/
   index.ts    + GET /api/geo (serves knowledge/geo/*.geojson, cached, read-only)
 scripts/      market_map.py · build_geo.py
-knowledge/geo/  sg_planning_areas.geojson · sg_sectors.yaml · sg_geo.meta.yaml
+knowledge/geo/  sg_planning_areas.geojson · sg_postal_geo.json · sg_sectors.yaml · sg_geo.meta.yaml
 ```
 
 - **State:** the scene file is the truth. `useInsights` holds only view state (camera, selection, toggles) and mirrors it to the URL.
@@ -459,7 +465,7 @@ knowledge/geo/  sg_planning_areas.geojson · sg_sectors.yaml · sg_geo.meta.yaml
 | Question → scene | Brain time, as chat today. The ack lands in under 400 ms |
 | Accessibility | Table view for every scene. Every tower is reachable by keyboard (`[` `]` cycles areas by rank) and announced via `aria-live` ("Tampines, 412 clinics, rank 3 of 55"). Contrast ≥ 4.5:1 on labels. Captions for all speech |
 | Privacy | Aggregates only for market layers (cells under 5 merged or hidden). Company pins only for the viewer's book. No person names. Geocoding (Phase 3D-6) sends **postal codes only** to OneMap, is opt-in, is cached, and has a manager switch |
-| Licences | Footer line from `sg_geo.meta.yaml`: URA Master Plan 2019 and ACRA via data.gov.sg (Singapore Open Data Licence v1.0); OneMap attribution when geocodes are used; OSM/ODbL only if the Streets layer is enabled |
+| Licences | Footer line from `sg_geo.meta.yaml`: URA Master Plan 2025, HDB, MOH (CHAS), NEA and ACRA via data.gov.sg (Singapore Open Data Licence v1.0); OneMap attribution when geocodes are used; OSM/ODbL only if the Streets layer is enabled |
 
 ---
 
@@ -471,13 +477,15 @@ Each phase ships alone, ends with green tests and leaves the console usable. The
 
 | Phase | Status |
 |---|---|
-| 3D-0 to 3D-7 | Not started: spec only |
+| 3D-0 · Geo data | **Done.** `build_geo.py` (fetch, build, check) and `knowledge/geo/`. 55 areas in 5 regions. Postal placement: 35.5% exact, 0.9% prefix, 63.6% sector, 6 codes unplaced. The OneMap token supplied on 2026-11-28 had expired (2026-10-05), so the open-data method is used |
+| 3D-1 · Market data engine | **Done.** `market_map.py` overview, area (planning area or region) and rank. All §4.3 measures, `map3d` section, scope (rule 16), registration hubs (300+ per postal code), 11 selftest checks (224/224 pass). Clinics: 9,618 on the map, the same as `company_analytics.py` |
+| 3D-2 to 3D-7 | Not started |
 
 ### Phases
 
 | Phase | Scope | Key files | Done when | Size |
 |---|---|---|---|---|
-| **3D-0 · Geo data spike** | Fetch and simplify the URA planning-area GeoJSON. Build `sg_sectors.yaml` (sector → area weights) from one cached sample per sector. Write `sg_geo.meta.yaml` with licence lines. Decide D2 (geocoding) | `scripts/build_geo.py`, `knowledge/geo/*` | 55 areas, each with a region. All ~80 sectors have weights summing to 1. Rendered to an SVG check image. Selftest: GeoJSON valid, ids unique | S |
+| **3D-0 · Geo data spike** | Fetch and simplify the URA planning-area GeoJSON. Build `sg_sectors.yaml` (sector → area weights) from one cached sample per sector. Write `sg_geo.meta.yaml` with licence lines. Decide D2 (geocoding) | `scripts/build_geo.py`, `knowledge/geo/*` | 55 areas, each with a region. All ~80 sectors have weights summing to 1. Selftest: GeoJSON valid, ids unique | S |
 | **3D-1 · Market data engine** | `market_map.py overview / area / rank` with all §4.3 measures. Largest-remainder allocation. Scope by owner. `map3d` section kind. Tests | `scripts/market_map.py`, `scripts/selftest.py`, `console/shared/a2ui.ts` (section schema) | **Invariant:** areas sum exactly to the `company_analytics.py segment` total. Measures match hand-computed fixtures. A rep sees only their own accounts | M |
 | **3D-2 · Insights route, static 3D** | Route and nav item, lazy `Stage` with Island + Towers + labels, legend, Top SVG and Table views, insight stack, URL state, WebGL fallback | `console/src/insights/*`, `Nav.tsx`, `router.ts`, `insights.css`, `/api/geo` | Clinics overview renders in 3D, Top and Table with identical numbers. Chunk ≤ 450 KB gz. Works with WebGL off (SVG). Light and dark | L |
 | **3D-3 · Questions → scenes** (plan mode) | `compare`, `size`, `stats` commands. The `mama-market` skill. AGENTS.md rule. `Map3D` A2UI component in chat and the canvas. Compare arcs, halos, graph cards. "How computed" | `scripts/market_map.py`, `.agents/skills/mama-market/*`, `AGENTS.md`, `a2ui/catalog.ts`, `insights/GraphCard.tsx` | The 11 questions in §7.2 each produce the right command and scene. Evals pass (§12): no invented numbers, "penetration" wording, refusals | L |
@@ -490,7 +498,7 @@ Each phase ships alone, ends with green tests and leaves the console usable. The
 
 ### Phase prompts (paste into Claude Code, one per phase)
 
-- **3D-0:** "Read `Sales-Mama-3D-Insights-design-spec.md` §4. Write `scripts/build_geo.py` and build `knowledge/geo/` from the URA Master Plan 2019 planning-area dataset on data.gov.sg. Verify the dataset id first. Add selftest checks. Show me an SVG of the 55 areas."
+- **3D-0:** "Read `Sales-Mama-3D-Insights-design-spec.md` §4. Write `scripts/build_geo.py` and build `knowledge/geo/` from the URA Master Plan 2025 planning-area dataset on data.gov.sg. Verify the dataset id first. Add selftest checks."
 - **3D-1:** "Implement `scripts/market_map.py` overview/area/rank per §4.3 and §5.1. Write failing tests first, including the sum invariant against `company_analytics.py segment --industry clinics`."
 - **3D-2:** "Build the Insights route per §3, §6 and §9 with deck.gl as a lazy chunk. Include the Top SVG and Table views and the WebGL fallback. Screenshot light and dark."
 - **3D-3 (plan mode):** "Add compare/size/stats to `market_map.py`, then the `mama-market` skill, the AGENTS.md rule, the `Map3D` A2UI component and the eval cases in §12."
@@ -530,7 +538,7 @@ Each phase ships alone, ends with green tests and leaves the console usable. The
 
 | Risk | Mitigation |
 |---|---|
-| **Registered address ≠ operating location** (many firms register at a corporate secretary's address in the CBD, inflating Downtown Core) | A "registered address" note in the footer. Phase 3D-1 flags postal codes with more than 50 registrations as "registration hubs", with a toggle to exclude them; the excluded count is shown |
+| **Registered address ≠ operating location** (many firms register at a corporate secretary's address in the CBD, inflating Downtown Core) | A "registered address" note in the footer. Phase 3D-1 flags postal codes with 300 or more live registrations as "registration hubs" (273 codes held 45% of live companies in the 2026-10 index), with a toggle to exclude them; the excluded count is shown |
 | Sector → area estimates mislead | `≈` on every estimated value, the method explained in "How computed", exact counts in 3D-6 |
 | 3D perception bias (far towers look short, occlusion) | Value labels on the top 5 and the selection, the Table view one key away, sqrt height scale stated in the legend, the Top view |
 | The model invents sizes or statistics by voice | Scripts compute everything. The grounding guard checks spoken numbers against the scene file (as voice does today). Evals |
@@ -544,7 +552,7 @@ Each phase ships alone, ends with green tests and leaves the console usable. The
 
 ## Appendix A: Facts to verify before each phase
 
-- **URA planning areas.** The URA Master Plan 2019 Planning Area Boundary (No Sea) is published on data.gov.sg as GeoJSON with 55 planning areas and region names, under the Singapore Open Data Licence v1.0. **Verify the current dataset id** with `fetch_dataset.py`.
+- **URA planning areas.** The URA Master Plan 2025 Planning Area Boundary (No Sea) (`d_2cc750190544007400b2cfd5d7f53209`, verified 2026-11-28) is published on data.gov.sg as GeoJSON with 55 planning areas and region names, under the Singapore Open Data Licence v1.0. **Verify the current dataset id** with `fetch_dataset.py`.
 - **Postal sectors.** These are the first two digits of the postal code, grouped into 28 postal districts (URA public list). `company_analytics.py` already uses 2-digit sectors.
 - **OneMap.** The OneMap Search API (`/api/common/elastic/search`, `returnGeom=Y`) returns latitude and longitude for a postal code. **Verify** the current rate limits, any token requirement and the terms of use before Phase 3D-6.
 - **Licences.** deck.gl is MIT. MapLibre GL JS is BSD-3 (only if D3 changes). OSM data is ODbL.

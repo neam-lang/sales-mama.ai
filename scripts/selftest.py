@@ -1356,6 +1356,55 @@ def t_company_analytics(r: Runner) -> None:
     r.record("analytics: --html and --cards are gone (views live in the console)", code == 2, f"exit {code}")
 
 
+def t_market_map(r: Runner) -> None:
+    """build_geo.py + market_map.py on the fixture index built by t_company_check (3D Insights spec §4-5)."""
+    code, out, err = r.py("build_geo.py", "check", "--json", email=MEI)
+    chk = _json(out)
+    r.record("market_map: geo files valid (55 areas, 5 regions, sector weights sum to 1)",
+             code == 0 and chk.get("areas") == 55 and len(chk.get("regions", {})) == 5 and not chk.get("errors"), out + err)
+
+    def spec(*args: str, email: str = MEI) -> tuple[int, dict, str]:
+        c, o, e = r.py("market_map.py", *args, email=email)
+        return c, (_json(o) if c == 0 else {}), o + e
+
+    c, sp, raw = spec("overview")
+    seg = _json(r.py("company_analytics.py", "segment", email=MEI)[1])
+    live = {t["label"]: t["value"] for t in seg["sections"]["overview"]["items"]}.get("Live companies")
+    head = {t["key"]: t["value"] for t in (sp.get("sections") or {}).get("overview", {}).get("items", [])}
+    m = (sp.get("sections") or {}).get("map") or {}
+    on_map = sum(a["values"]["base"] for a in m.get("areas", []))
+    unplaced = (m.get("method") or {}).get("placement", {}).get("none", -1)
+    r.record("market_map: headline equals the analytics segment total; areas + unplaced add up exactly",
+             c == 0 and head.get("base") == live and on_map + unplaced == live and len(m.get("areas", [])) == 55,
+             f"live {live} head {head.get('base')} map {on_map} unplaced {unplaced}", raw[-300:])
+    r.record("market_map: map3d binds measures, never chart types or coordinates",
+             m.get("kind") == "map3d" and m.get("height", {}).get("key") == "base" and m.get("camera") == "island"
+             and "coordinates" not in json.dumps(m) and '"type"' not in json.dumps(m), str(m)[:200])
+    dc = next((a for a in m.get("areas", []) if a["id"] == "downtown-core"), {})
+    r.record("market_map: the CBD fixtures (postal 04, 07) land in Downtown Core",
+             dc.get("values", {}).get("base", 0) >= 20, str(dc)[:200])
+    c, sp, raw = spec("area", "--area", "east")
+    r.record("market_map: a region resolves to its planning areas", c == 0 and "East region" in sp.get("title", "")
+             and len((sp.get("sections") or {}).get("map", {}).get("focus", [])) == 6, raw[-300:])
+    c, sp, raw = spec("area", "--area", "nowhere-town")
+    r.record("market_map: unknown area is refused with examples", c != 0 and "no planning area" in raw, raw[-200:])
+    c, sp, raw = spec("rank", "--by", "whitespace", "--top", "3")
+    rows = (sp.get("sections") or {}).get("ranking", {}).get("rows", [])
+    r.record("market_map: rank by whitespace lists areas, halos on the top ones",
+             c == 0 and 1 <= len(rows) <= 3 and (sp.get("sections") or {}).get("map", {}).get("halos"), raw[-300:])
+    c, sp, raw = spec("overview", "--owner", "team", email=MEI)
+    r.record("market_map: a rep cannot see the team's accounts (rule 16)", c != 0 and "manager" in raw, raw[-200:])
+    c, sp, raw = spec("overview", "--owner", "team", email=GRACE)
+    r.record("market_map: the manager can", c == 0, raw[-200:])
+    c, sp, raw = spec("overview", "--segment", "clinics")
+    txt = json.dumps(sp)
+    r.record("market_map: says penetration, never market share", c == 0 and "Penetration" in txt
+             and "market share" not in txt.replace("not market share", "").replace("Not market share", ""), txt[:200])
+    import market_map as mm
+    r.record("market_map: largest remainder keeps the total", mm.largest_remainder([1.4, 2.4, 3.2], 7) == [2, 2, 3]
+             and sum(mm.largest_remainder([0.33] * 3, 1)) == 1, str(mm.largest_remainder([1.4, 2.4, 3.2], 7)))
+
+
 def t_classify(r: Runner) -> None:
     cases = {"Please remove me from your mailing list.": "unsubscribe",
              "Delivery Status Notification (Failure): address not found": "bounce",
@@ -1913,7 +1962,7 @@ def main(argv: list[str] | None = None) -> int:
         sys.path.insert(0, str(root / "scripts"))
         for test in (t_help, t_no_presentation, t_frontmatter, t_guard, t_lint, t_lint_secrets, t_find, t_index, t_books, t_session,
                      t_sync, t_skills, t_ingest, t_fetch, t_resolve, t_score, t_recommend, t_eval,
-                     t_draft_check, t_send, t_company_check, t_company_analytics, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
+                     t_draft_check, t_send, t_company_check, t_company_analytics, t_market_map, t_classify, t_suppress, t_claim, t_claim_race, t_allocate,
                      t_weekly, t_crm_update, t_appointments, t_busy):
             try:
                 test(runner)
