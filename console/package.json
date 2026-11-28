@@ -13,7 +13,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "record": "tsx bin/record.ts",
-    "catalog": "tsx bin/catalog.ts"
+    "catalog": "tsx bin/catalog.ts",
+    "voice:check": "tsx bin/voice-check.ts"
   },
   "dependencies": {
     "@a2ui/react": "0.14.0",

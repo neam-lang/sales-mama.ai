@@ -11,6 +11,7 @@ import { buildViewer } from './viewer';
 import { Run } from './engine';
 import { findRepoRoot, listAccounts, listReports, listSkills, readData, readRail, readSource } from './repo';
 import type { ClientMsg, ServerMsg } from '../shared/protocol';
+import { voiceSession } from './voice/bridge';
 
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.MAMA_CONSOLE_PORT ?? 4173);
@@ -83,8 +84,13 @@ const broadcast = (msg: ServerMsg) => { const s = JSON.stringify(msg); for (cons
 const sendRail = () => broadcast({ type: 'rail', rail: readRail(root) });
 
 const wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });
+// Voice (Sales-Mama-Voice-design-spec.md): its own socket, so audio never touches the /mama contract.
+const voiceWss = new WebSocketServer({ noServer: true, maxPayload: 256 * 1024 });
+voiceWss.on('connection', ws => voiceSession(ws, { accounts: () => listAccounts(root) }));
 http.on('upgrade', (req, socket, head) => {
-  if (req.url !== '/mama' || !sameOrigin(req)) { socket.destroy(); return; }
+  if (!sameOrigin(req)) { socket.destroy(); return; }
+  if (req.url === '/mama/voice') { voiceWss.handleUpgrade(req, socket, head, ws => voiceWss.emit('connection', ws, req)); return; }
+  if (req.url !== '/mama') { socket.destroy(); return; }
   wss.handleUpgrade(req, socket, head, ws => wss.emit('connection', ws, req));
 });
 

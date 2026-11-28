@@ -35,9 +35,9 @@ export function MarketClocks({ rail }: { rail: Rail | null }) {
   );
 }
 
-export function Header({ rail, status, live, theme, onTheme, onNewChat, newChatDisabled, lanes, onSearch, nextUp }: {
+export function Header({ rail, status, live, theme, onTheme, onNewChat, newChatDisabled, lanes, onSearch, nextUp, extra }: {
   rail: Rail | null; status: string; live: boolean; theme: Theme; onTheme: () => void;
-  onNewChat: () => void; newChatDisabled: boolean; lanes: PulseLane[]; onSearch: () => void; nextUp?: ReactNode;
+  onNewChat: () => void; newChatDisabled: boolean; lanes: PulseLane[]; onSearch: () => void; nextUp?: ReactNode; extra?: ReactNode;
 }) {
   const me = rail?.me;
   const initials = (me?.name || me?.id || '?').split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -54,6 +54,7 @@ export function Header({ rail, status, live, theme, onTheme, onNewChat, newChatD
         {nextUp}
         <div className="hdr-right">
           <span className={`run-status${live ? ' is-live' : ''}`} role="status"><i aria-hidden="true" />{status}</span>
+          {extra}
           <button type="button" className="icon-btn" onClick={onTheme} aria-label={`Theme: ${theme}. Switch theme`} title={`Theme: ${theme}`}><ThemeIcon size={18} /></button>
           <button type="button" className="hdr-btn" onClick={onNewChat} disabled={newChatDisabled}><IconPlus size={16} /><span>New chat</span></button>
           {me && <span className="avatar" title={`${me.name} · ${me.role}`} aria-label={`${me.name}, ${me.role}`}>{initials}</span>}

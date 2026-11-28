@@ -1,0 +1,107 @@
+/* Voice (Sales-Mama-Voice-design-spec.md §7): the Mama orb, captions and the read-back chip.
+   Tokens only, no new colours. The "glow" is solid concentric rings with opacity steps (no gradient).
+   Only transform and opacity animate. */
+
+/* ---- Orb -------------------------------------------------------------------------------- */
+.orb { --lv: 0; position: relative; flex: 0 0 auto; width: 48px; height: 48px; border: 0; padding: 0; border-radius: 50%;
+  background: transparent; cursor: pointer; display: grid; place-items: center; touch-action: none; -webkit-user-select: none; user-select: none; }
+.orb:disabled { opacity: .45; cursor: not-allowed; }
+.orb .disc { position: relative; z-index: 2; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--mama); color: #fff; box-shadow: 0 0 0 2px var(--mama-t);
+  transition: transform var(--t-fast) var(--ease-out), background var(--t-fast); }
+.orb:not(:disabled):hover .disc { transform: scale(1.05); }
+.orb:not(:disabled):active .disc { transform: scale(.94); }
+.orb .ring { position: absolute; inset: 4px; border-radius: 50%; background: var(--mama); opacity: 0; pointer-events: none;
+  transform: scale(1); transition: opacity var(--t-base) var(--ease-out); }
+.orb .r1 { --o: .24; } .orb .r2 { --o: .12; } .orb .r3 { --o: .06; }
+.orb .arc { position: absolute; inset: 1px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--lime); opacity: 0; pointer-events: none; }
+
+/* listening / hearing: rings breathe with the input level; speaking: they ripple with the output */
+.orb.s-listening .ring, .orb.s-hearing .ring, .orb.s-speaking .ring { opacity: var(--o); }
+.orb.s-listening .r1, .orb.s-hearing .r1, .orb.s-speaking .r1 { transform: scale(calc(1.10 + var(--lv) * .25)); }
+.orb.s-listening .r2, .orb.s-hearing .r2, .orb.s-speaking .r2 { transform: scale(calc(1.22 + var(--lv) * .45)); }
+.orb.s-listening .r3, .orb.s-hearing .r3, .orb.s-speaking .r3 { transform: scale(calc(1.34 + var(--lv) * .70)); }
+.orb.s-listening .disc, .orb.s-hearing .disc { background: var(--ink); color: var(--lime); box-shadow: 0 0 0 2px var(--lime); }
+.orb.s-speaking .disc { background: var(--mama); }
+/* thinking: a lime arc orbits, the same lime as the pulse bar */
+.orb.s-thinking .arc, .orb.s-confirming .arc { opacity: 1; animation: orb-orbit 1.6s linear infinite; }
+.orb.s-error .disc { background: var(--surface); color: var(--risk); box-shadow: 0 0 0 2px var(--risk); animation: orb-shake 120ms 1; }
+.orb.convo::after { content: ''; position: absolute; right: 1px; top: 1px; z-index: 3; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--lime); box-shadow: 0 0 0 2px var(--surface); }
+@keyframes orb-orbit { to { transform: rotate(360deg); } }
+@keyframes orb-shake { 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+
+@media (pointer: coarse) { .orb { width: 56px; height: 56px; } .orb .disc { width: 46px; height: 46px; } }
+
+/* hands-free toggle next to the orb */
+.convo-btn { flex: 0 0 auto; min-height: 32px; padding: 0 10px; border-radius: var(--r-pill); border: 1.5px solid var(--line-2);
+  background: transparent; color: var(--muted); font: 600 11px var(--mono); letter-spacing: .04em; cursor: pointer; }
+.convo-btn[aria-pressed="true"] { background: var(--ink); color: var(--lime); border-color: var(--ink); }
+
+/* ---- Header: speaker toggle and the MIC ON chip ------------------------------------------ */
+.icon-btn.speak-on { color: var(--lime); }
+.mic-on { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: var(--r-pill);
+  background: var(--lime); color: var(--ink); font: 700 10.5px var(--mono); letter-spacing: .06em; border: 0; cursor: pointer; }
+.mic-on i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); animation: mic-pulse 2s ease-in-out infinite; }
+@keyframes mic-pulse { 50% { opacity: .35; } }
+
+/* ---- Captions --------------------------------------------------------------------------- */
+.captions { --c: var(--mama); max-width: var(--read-w); margin: 0 auto 8px; display: flex; gap: 10px; align-items: baseline;
+  padding: 10px 14px; border-radius: var(--r-tile); background: var(--surface); border: 1px solid var(--line);
+  animation: cap-in var(--t-base) var(--ease-out); }
+.captions .cap-tag { flex: 0 0 auto; font: 600 11px var(--mono); color: var(--c); text-transform: uppercase; letter-spacing: .05em; }
+.captions .cap-text { font-size: 15px; line-height: 1.5; color: var(--muted); }
+.captions.hearing .cap-text { color: var(--muted); font-style: italic; }
+.captions .cap-text .said { color: var(--ink); }
+.captions .cap-text .on { color: var(--ink); text-decoration: underline 2px var(--lime); text-underline-offset: 4px; }
+@keyframes cap-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---- Read-back chip --------------------------------------------------------------------- */
+.readback { max-width: var(--read-w); margin: 0 auto 8px; padding: 10px 12px 10px 16px; border-radius: var(--r-tile);
+  background: var(--mama-t); color: var(--ink); animation: cap-in var(--t-base) var(--ease-out); }
+.rb-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.rb-heard { flex: 1 1 240px; font-size: 15px; font-weight: 600; quotes: '“' '”'; }
+.rb-ring { display: inline-flex; align-items: center; gap: 6px; font: 600 11px var(--mono); color: var(--mama-d); }
+.rb-ring svg { transform: rotate(-90deg); }
+.rb-ring circle { fill: none; stroke: var(--mama); stroke-width: 2.5; stroke-dasharray: 50.3; stroke-dashoffset: 50.3; animation: rb-fill var(--d) linear forwards; }
+@keyframes rb-fill { to { stroke-dashoffset: 0; } }
+.rb-wait { font: 600 11px var(--mono); color: var(--warn); }
+.rb-btn { min-height: 32px; padding: 0 12px; border-radius: var(--r-pill); border: 1.5px solid var(--mama); background: var(--surface); color: var(--mama-d); font-weight: 600; font-size: 13px; cursor: pointer; }
+.rb-btn:disabled { opacity: .5; cursor: not-allowed; }
+.rb-x { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; color: var(--muted); font-size: 18px; cursor: pointer; }
+.rb-pick { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--muted); }
+.rb-chip { min-height: 30px; padding: 0 12px; border-radius: var(--r-pill); border: 1.5px dashed var(--mama); background: var(--surface); color: var(--mama-d); font-size: 13px; font-weight: 600; cursor: pointer; }
+.rb-chip.plain { border-style: solid; border-color: var(--line-2); color: var(--muted); }
+.rb-prompt { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+.rb-prompt code { font: 12px var(--mono); color: var(--ink); }
+
+.voice-toast { max-width: var(--read-w); margin: 0 auto 8px; padding: 8px 14px; border-radius: var(--r-tile); background: var(--risk-t); color: var(--ink); font-size: 13px; }
+
+/* ---- Settings popover ------------------------------------------------------------------- */
+.voice-settings { position: fixed; right: 12px; top: calc(var(--header-h) + 8px); z-index: 30; width: min(340px, calc(100vw - 24px)); max-height: calc(100dvh - var(--header-h) - 24px); overflow-y: auto; padding: 14px; border-radius: var(--r-card);
+  background: var(--surface); color: var(--ink); box-shadow: var(--shadow-2); border: 1px solid var(--line); display: grid; gap: 10px; }
+.voice-settings > * { min-width: 0; }
+.voice-settings label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); min-width: 0; }
+.voice-settings label.vs-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink); }
+.voice-settings select, .voice-settings input[type="range"] { font: inherit; font-size: 14px; color: var(--ink); }
+.voice-settings select { width: 100%; min-width: 0; text-overflow: ellipsis; min-height: 36px; border-radius: 10px; border: 1.5px solid var(--line-2); background: var(--surface); padding: 0 8px; }
+.voice-settings .vs-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
+.voice-settings .vs-note { margin: 0; font-size: 11.5px; color: var(--muted); overflow-wrap: anywhere; }
+.voice-settings .vs-row .rb-btn { flex: 1 1 0; }
+.voice-settings .vs-problem { margin: 0; font-size: 12.5px; color: var(--risk); }
+
+@media (prefers-reduced-motion: reduce) {
+  .orb .ring { transition: none; }
+  .orb.s-listening .r1, .orb.s-hearing .r1, .orb.s-speaking .r1 { transform: scale(1.12); }
+  .orb.s-listening .r2, .orb.s-hearing .r2, .orb.s-speaking .r2 { transform: scale(1.26); }
+  .orb.s-listening .r3, .orb.s-hearing .r3, .orb.s-speaking .r3 { transform: scale(1.40); }
+  .orb.s-thinking .arc, .orb.s-confirming .arc { animation: none; }
+  .orb.s-error .disc, .captions, .readback { animation: none; }
+  .rb-ring circle { animation: none; stroke-dashoffset: 25; }
+  .mic-on i { animation: none; }
+}
+
+/* ---- Voice navigation: the answer in focus ----------------------------------------------- */
+.turn2.voice-focus { outline: 2px solid var(--mama); outline-offset: 8px; border-radius: var(--r-card); }
+.sheet dl.say dt { font-weight: 600; color: var(--ink); }
+.captions .cap-hint { color: var(--muted); font-style: normal; }

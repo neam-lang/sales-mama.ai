@@ -25,6 +25,8 @@ import type { CalItem } from './calendar/time';
 import { useNow } from './hooks/useNow';
 import { Canvas, useCanvasWidth, type CanvasContent } from './canvas/Canvas';
 import { ReportsView } from './reports/ReportsView';
+import { followUpsFor } from './chat/followups';
+import { useVoiceController } from './voice/useVoiceController';
 
 function useCatalog(connected: boolean) {
   const [skills, setSkills] = useState<SkillInfo[]>([]);
@@ -86,6 +88,11 @@ export function App() {
   const prefill = useCallback((text: string) => { go('chat'); setSeed(text); }, [go]);
   const openChat = useCallback((c: SavedChat) => { if (!busy) { loadChat(c); go('chat'); } }, [busy, loadChat, go]);
   const openEvent = useCallback((i: CalItem) => { setFocus(i.id); go('calendar'); }, [go]);
+  // Voice (Sales-Mama-Voice-design-spec.md): speech becomes the same prompts as typed text.
+  const followUps = useMemo(() => followUpsFor(turns[turns.length - 1]), [turns]);
+  const openRecent = useCallback(() => { const c = loadChats()[0]; if (!c || busy) return false; openChat(c); return true; }, [busy, openChat]);
+  const vc = useVoiceController({ turns, accounts, canAsk, live, followUps, route, ask, stop, go, newChat: onNewChat, queue: setQueued, edit: prefill,
+    openRecent, openPalette: () => setPalette(true), showHelp: () => setHelp(true) });
 
   useHotkeys({
     palette: () => setPalette(p => !p),
@@ -124,7 +131,8 @@ export function App() {
   return (
     <div className="app">
       <Header rail={rail} status={status} live={live} theme={theme} onTheme={cycle} onNewChat={onNewChat} newChatDisabled={busy} lanes={lanes}
-        onSearch={() => setPalette(true)} nextUp={<NextUpCapsule cal={cal.mine} now={now} onOpen={openEvent} />} />
+        onSearch={() => setPalette(true)} nextUp={<NextUpCapsule cal={cal.mine} now={now} onOpen={openEvent} />} extra={vc.headerExtra} />
+      {vc.panel}
       <div className={`body r-${route}${showCanvas ? ' with-canvas' : ''}`} style={showCanvas ? { ['--panel-w' as any]: `${canvasW}px` } : undefined}>
         <NavRail route={route} go={go} busy={live} />
         <main className="main" id="main">
@@ -135,7 +143,8 @@ export function App() {
           <div className="route-chat" hidden={route !== 'chat'}>
             <ChatView turns={turns} ctx={ctx} manager={manager} firstName={me?.name.split(' ')[0] ?? ''} canAsk={canAsk} live={live}
               ask={ask} stop={stop} seed={seed} onSeedUsed={() => setSeed(null)} skills={skills} accounts={accounts}
-              queued={queued} onQueue={setQueued} onCancelQueue={() => setQueued(null)} onOpenChat={openChat} />
+              queued={queued} onQueue={setQueued} onCancelQueue={() => setQueued(null)} onOpenChat={openChat}
+              voiceSlot={vc.orb} voiceAbove={vc.above} />
           </div>
           {route === 'book' && <BookView rail={rail} ctx={ctx} />}
           {route === 'reports' && <ReportsView onOpen={setCanvas} current={canvas?.source} />}

@@ -1,7 +1,7 @@
 // Composer v2 (spec §5.2): "/" opens the skill menu, "@" mentions an account, Enter sends,
 // Shift+Enter adds a line, Esc stops a run. While a run is going, Enter queues the prompt; it is
 // sent when the run ends. Follow-up chips from the last answer sit above it (Perplexity's "related").
-import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import type { AccountInfo, SkillInfo } from '../../server/repo';
 import { IconArrow } from '../app/Icons';
 
@@ -33,10 +33,12 @@ export function tokenAt(text: string, caret: number): Menu {
   return { kind: m[2] as '/' | '@', query: m[3], start };
 }
 
-export function Composer({ manager, skills, accounts, live, canAsk, ask, stop, queued, onQueue, onCancelQueue, followUps, seed, onSeedUsed, compact, inputId }: {
+export function Composer({ manager, skills, accounts, live, canAsk, ask, stop, queued, onQueue, onCancelQueue, followUps, seed, onSeedUsed, compact, inputId, voiceSlot, above }: {
   manager: boolean; skills: SkillInfo[]; accounts: AccountInfo[]; live: boolean; canAsk: boolean;
   ask: (t: string) => void; stop: () => void; queued?: string | null; onQueue?: (t: string) => void; onCancelQueue?: () => void;
   followUps?: FollowUp[]; seed?: string | null; onSeedUsed?: () => void; compact?: boolean; inputId: string;
+  /** Voice (spec: Sales-Mama-Voice-design-spec.md): the orb in the row, captions and read-back above it. */
+  voiceSlot?: ReactNode; above?: ReactNode;
 }) {
   const storeKey = `mama.draft.${inputId}`;
   const [draft, setDraft] = useState(() => { try { return sessionStorage.getItem(storeKey) ?? ''; } catch { return ''; } });
@@ -110,6 +112,7 @@ export function Composer({ manager, skills, accounts, live, canAsk, ask, stop, q
 
   return (
     <div className={`dock${compact ? ' compact' : ''}`}>
+      {above}
       {!compact && (followUps?.length || queued) ? (
         <div className="followups" aria-label="Suggested next steps">
           {queued && (
@@ -145,6 +148,7 @@ export function Composer({ manager, skills, accounts, live, canAsk, ask, stop, q
             onChange={e => { setDraft(e.target.value); setCaret(e.target.selectionStart ?? e.target.value.length); setDismissed(null); }}
             onKeyDown={onKey} onKeyUp={track} onClick={track} onBlur={() => window.setTimeout(() => setDismissed(menu?.start ?? null), 120)}
             aria-autocomplete="list" aria-expanded={!!menu && options.length > 0} />
+          {voiceSlot}
           {live && !draft.trim()
             ? <button type="button" className="go stop" aria-label="Stop the run (Esc)" onClick={stop}>
                 <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" rx="2" fill="currentColor" /></svg>
@@ -153,7 +157,7 @@ export function Composer({ manager, skills, accounts, live, canAsk, ask, stop, q
         </div>
       </form>
       </div>
-      {!compact && <p className="dock-hint"><kbd>/</kbd> skills · <kbd>@</kbd> accounts · <kbd>Enter</kbd> send · <kbd>Shift</kbd>+<kbd>Enter</kbd> new line · <kbd>⌘K</kbd> search{live ? <> · <kbd>Esc</kbd> stop</> : null}</p>}
+      {!compact && <p className="dock-hint"><kbd>/</kbd> skills · <kbd>@</kbd> accounts · <kbd>Enter</kbd> send · <kbd>Shift</kbd>+<kbd>Enter</kbd> new line · <kbd>⌘K</kbd> search{voiceSlot ? <> · hold <kbd>⌥</kbd>+<kbd>Space</kbd> talk</> : null}{live ? <> · <kbd>Esc</kbd> stop</> : null}</p>}
     </div>
   );
 }

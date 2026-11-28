@@ -1,5 +1,5 @@
 // Chat: the thread scrolls on its own; the composer is docked under it, never over it (spec §4–5).
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { AccountInfo, SkillInfo } from '../../server/repo';
 import type { ChatTurn } from '../useBridge';
 import { useStickToBottom } from '../useStickToBottom';
@@ -10,11 +10,11 @@ import { loadChats, removeChat, type SavedChat } from '../chat/history';
 import type { CardCtx } from '../components/Cards';
 import { IconDown } from './Icons';
 
-export function ChatView({ turns, ctx, manager, firstName, canAsk, live, ask, stop, seed, onSeedUsed, skills, accounts, queued, onQueue, onCancelQueue, onOpenChat }: {
+export function ChatView({ turns, ctx, manager, firstName, canAsk, live, ask, stop, seed, onSeedUsed, skills, accounts, queued, onQueue, onCancelQueue, onOpenChat, voiceSlot, voiceAbove }: {
   turns: ChatTurn[]; ctx: CardCtx; manager: boolean; firstName: string; canAsk: boolean; live: boolean;
   ask: (t: string) => void; stop: () => void; seed: string | null; onSeedUsed: () => void;
   skills: SkillInfo[]; accounts: AccountInfo[]; queued: string | null; onQueue: (t: string) => void; onCancelQueue: () => void;
-  onOpenChat: (c: SavedChat) => void;
+  onOpenChat: (c: SavedChat) => void; voiceSlot?: ReactNode; voiceAbove?: ReactNode;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,8 @@ export function ChatView({ turns, ctx, manager, firstName, canAsk, live, ask, st
           </button>
         )}
         <Composer inputId="composer" manager={manager} skills={skills} accounts={accounts} live={live} canAsk={canAsk} ask={ask} stop={stop}
-          queued={queued} onQueue={onQueue} onCancelQueue={onCancelQueue} followUps={followUps} seed={seed} onSeedUsed={onSeedUsed} />
+          queued={queued} onQueue={onQueue} onCancelQueue={onCancelQueue} followUps={followUps} seed={seed} onSeedUsed={onSeedUsed}
+          voiceSlot={voiceSlot} above={voiceAbove} />
       </div>
     </section>
   );

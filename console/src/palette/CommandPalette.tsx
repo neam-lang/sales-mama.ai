@@ -87,6 +87,20 @@ export const SHORTCUTS: [string, string][] = [
   ['?', 'This sheet'],
 ];
 
+/** Voice navigation (Sales-Mama-Voice-design-spec.md §16): hold ⌥Space, or go hands-free, and say: */
+const VOICE_SAY: [string, string][] = [
+  ['Brief me on Kestrel Physio', 'anything you would type'],
+  ['Previous answer · next answer', 'move through the chat and hear it'],
+  ['Read it · read that again', 'hear the answer in focus, or the last one'],
+  ['Open source two · open in canvas', 'open what the answer cites or shows'],
+  ['Scroll up · go to the latest', 'move the chat'],
+  ['Open the calendar · next week · week view', 'go to a view, move through time'],
+  ['Open my last chat · new chat · search', 'switch conversations'],
+  ['The second one', 'run suggestion 2'],
+  ['Close · stop · mute', 'close a panel, stop speaking, stop reading answers'],
+  ['What can I say?', 'hear this list'],
+];
+
 export function ShortcutSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
     if (!open) return;
@@ -100,6 +114,8 @@ export function ShortcutSheet({ open, onClose }: { open: boolean; onClose: () =>
       <div className="sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts" onMouseDown={e => e.stopPropagation()}>
         <h2>Keyboard shortcuts</h2>
         <dl>{SHORTCUTS.map(([k, v]) => <div key={k}><dt>{k.split(' · ').map(x => <kbd key={x}>{x}</kbd>)}</dt><dd>{v}</dd></div>)}</dl>
+        <h2>Say it</h2>
+        <dl className="say">{VOICE_SAY.map(([k, v]) => <div key={k}><dt>“{k}”</dt><dd>{v}</dd></div>)}</dl>
         <button type="button" className="btn" onClick={onClose}>Close</button>
       </div>
     </div>

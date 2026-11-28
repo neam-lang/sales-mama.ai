@@ -27,3 +27,6 @@ export const IconMail = (p: { size?: number }) => <I {...p}><rect x="3" y="5" wi
 export const IconCheck = (p: { size?: number }) => <I {...p}><path d="m5 12.5 4.5 4.5L19 7.5" /></I>;
 export const IconInfo = (p: { size?: number }) => <I {...p}><circle cx="12" cy="12" r="9" /><path d="M12 11v5.5M12 7.5v.01" /></I>;
 export const IconSpark = (p: { size?: number }) => <I {...p}><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.5 2.5M15.2 15.2l2.5 2.5M6.3 17.7l2.5-2.5M15.2 8.8l2.5-2.5" /></I>;
+export const IconSpeaker = (p: { size?: number }) => <I {...p}><path d="M4 9.5h3.5L12 5v14l-4.5-4.5H4z" /><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" /></I>;
+export const IconSpeakerOff = (p: { size?: number }) => <I {...p}><path d="M4 9.5h3.5L12 5v14l-4.5-4.5H4z" /><path d="m16 9.5 5 5M21 9.5l-5 5" /></I>;
+export const IconSliders = (p: { size?: number }) => <I {...p}><path d="M5 4v6M5 14v6M12 4v3M12 11v9M19 4v9M19 17v3" /><path d="M3 10h4M10 7h4M17 17h4" /></I>;
