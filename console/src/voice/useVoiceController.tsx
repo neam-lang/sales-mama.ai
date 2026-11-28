@@ -150,6 +150,7 @@ export function useVoiceController(d: Deps) {
           return;
         }
         const prompt = withMentions(text, mentions);
+        dep.current.go('chat');                              // a spoken question brings the chat into view
         if (dep.current.canAsk) dep.current.ask(prompt, true);
         else { livePending.current = prompt; voiceRef.current?.say(LIVE_QUEUED, 'notice'); }
         return;
