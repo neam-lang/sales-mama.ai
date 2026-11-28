@@ -202,8 +202,11 @@ export function useVoice(handlers: VoiceHandlers) {
     else void listen('conversation');
   }, [cancelListen, listen]);
 
+  const said = useRef(new Map<string, number>());
   const say = useCallback((text: string, kind: 'answer' | 'ack' | 'notice' = 'answer', id?: string, agent?: string) => {
     if (!text.trim() || available === false) return;
+    // The same answer is spoken once, even if it is asked for twice.
+    if (id) { const t = said.current.get(id); if (t && Date.now() - t < 10_000) return; said.current.set(id, Date.now()); }
     if (kind === 'answer') last.current = { text, agent };
     send({ type: 'speak', id: id ?? `s-${Date.now().toString(36)}`, text, agent, kind });
   }, [available, send]);

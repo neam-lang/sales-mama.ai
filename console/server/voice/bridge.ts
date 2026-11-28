@@ -100,7 +100,9 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
   let liveSince = 0;
   let liveTimer: NodeJS.Timeout | undefined;
   let relay: string | null = null;                     // what GPT was told to say next (grounding check)
-  let speaking: { id: string; provider: Provider; cancel?: () => void } | null = null;
+  // `ctx` is unique per speech, so late audio from a cancelled speech can never mix into a new one with the same id.
+  let speaking: { id: string; ctx: string; provider: Provider; cancel?: () => void } | null = null;
+  let seq = 0;
   let streamed: { id: string; s: SpeechStream; text: string } | null = null;
   const json = (m: VoiceServerMsg) => { if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(m)); };
   const bin = (b: Buffer) => { if (ws.readyState === ws.OPEN && b.length) ws.send(b, { binary: true }); };
@@ -135,10 +137,10 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
   const stopSpeaking = (interrupted: boolean) => {
     if (live) live.stopSpeaking();
     if (!speaking) return;
-    const { id, provider, cancel } = speaking;
+    const { id, ctx, provider, cancel } = speaking;
     speaking = null;
     streamed = null;
-    if (cancel) cancel(); else ttsFor(provider)?.cancel(id);
+    if (cancel) cancel(); else ttsFor(provider)?.cancel(ctx);
     json({ type: 'speech_end', id, interrupted });
   };
 
@@ -150,9 +152,10 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
     // Defence in depth: the browser already made the text speakable; do it again here.
     const text = FIXED.has(rawText) ? rawText : speakable(rawText, kind === 'answer' ? 120 : 40).text;
     if (!text) return;
-    speaking = { id, provider };
+    const ctx = `${id}~${++seq}`;
+    speaking = { id, ctx, provider };
     json({ type: 'speech_begin', id, text, agent });
-    const mine = () => speaking?.id === id;
+    const mine = () => speaking?.ctx === ctx;
     const finish = (interrupted: boolean) => { if (mine()) { speaking = null; json({ type: 'speech_end', id, interrupted }); } };
     const playAll = (pcm: Buffer) => { for (let i = 0; i < pcm.length; i += SPEAKER_RATE) bin(pcm.subarray(i, i + SPEAKER_RATE)); };
 
@@ -175,7 +178,7 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
       } catch (err) { finish(true); json({ type: 'voice_error', message: (err as Error).message }); }
       return;
     }
-    await tts.speak(id, text, opts, {
+    await tts.speak(ctx, text, opts, {
       audio: b => { if (mine()) bin(b); },
       words: words => { if (mine()) json({ type: 'words', id, words }); },
       end: (ok, error) => { finish(!ok); if (error) json({ type: 'voice_error', message: error }); },
@@ -190,19 +193,20 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
       const tts = ttsFor(provider);
       if (!tts) { json({ type: 'voice_error', ...noKey(provider) }); return; }
       stopSpeaking(true);
+      const ctx = `${id}~${++seq}`;
       const opts = { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang };
       const h = {
-        audio: (b: Buffer) => { if (speaking?.id === id) bin(b); },
-        words: (w: { w: string; start: number; end: number }[]) => { if (speaking?.id === id) json({ type: 'words', id, words: w }); },
+        audio: (b: Buffer) => { if (speaking?.ctx === ctx) bin(b); },
+        words: (w: { w: string; start: number; end: number }[]) => { if (speaking?.ctx === ctx) json({ type: 'words', id, words: w }); },
         end: (ok: boolean, error?: string) => {
-          if (speaking?.id === id) { speaking = null; streamed = null; json({ type: 'speech_end', id, interrupted: !ok }); }
+          if (speaking?.ctx === ctx) { speaking = null; streamed = null; json({ type: 'speech_end', id, interrupted: !ok }); }
           if (error) json({ type: 'voice_error', message: error });
         },
       };
       let s: SpeechStream, cancel: (() => void) | undefined;
-      if (tts.stream) s = tts.stream(id, opts, h);
-      else { const q = sentenceQueue(tts, id, opts, h); s = q; cancel = q.cancel; }
-      speaking = { id, provider, cancel };
+      if (tts.stream) s = tts.stream(ctx, opts, h);
+      else { const q = sentenceQueue(tts, ctx, opts, h); s = q; cancel = q.cancel; }
+      speaking = { id, ctx, provider, cancel };
       streamed = { id, s, text: '' };
       json({ type: 'speech_begin', id, text: '', agent });
     }

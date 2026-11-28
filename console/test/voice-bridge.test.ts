@@ -112,9 +112,23 @@ describe('voice bridge (mock Inworld)', () => {
     const words = c.msgs.filter(m => m.type === 'words').flatMap((m: any) => m.words);
     expect(words.map((w: any) => w.w)).toEqual(['You', 'have', 'three.']);
     expect(words[2].start).toBeCloseTo(0.11, 2);                       // 0.1 s flush base + 0.01
-    const create = seen.tts.find(m => m.contextId === 't1' && m.create);
+    const create = seen.tts.find(m => String(m.contextId).startsWith('t1~') && m.create);
     expect(create.create).toMatchObject({ modelId: 'inworld-tts-2', timestampType: 'WORD', audioConfig: { audioEncoding: 'PCM', sampleRateHertz: 24000 } });
     expect((c.msgs.find(m => m.type === 'speech_end') as any).interrupted).toBe(false);
+    c.ws.close();
+  });
+
+  it('the same answer asked for twice never mixes: each speech has its own Inworld context', async () => {
+    const c = client(); await c.open;
+    c.send({ type: 'speak', id: 'dup', text: 'You have three meetings.' });
+    c.send({ type: 'speak', id: 'dup', text: 'You have three meetings.' });
+    await c.until(() => c.msgs.filter(m => m.type === 'speech_end').length >= 2);
+    const ctxs = [...new Set(seen.tts.filter(m => m.create && String(m.contextId).startsWith('dup')).map(m => m.contextId))];
+    expect(ctxs.length).toBeGreaterThanOrEqual(1);                         // the first may be cancelled before it starts
+    expect(ctxs.every(x => /^dup~\d+$/.test(x))).toBe(true);
+    const lastBegin = c.msgs.map(m => m.type).lastIndexOf('speech_begin');
+    const words = c.msgs.slice(lastBegin).filter(m => m.type === 'words').flatMap((m: any) => m.words.map((w: any) => w.w));
+    expect(words).toEqual(['You', 'have', 'three.']);
     c.ws.close();
   });
 
@@ -126,7 +140,7 @@ describe('voice bridge (mock Inworld)', () => {
     await c.until(() => c.msgs.some(m => m.type === 'speech_end'));
     expect((c.msgs.find(m => m.type === 'speech_end') as any).interrupted).toBe(true);
     await new Promise(r => setTimeout(r, 50));
-    expect(seen.tts.some(m => m.contextId === 't2' && m.cancelContext)).toBe(true);
+    expect(seen.tts.some(m => String(m.contextId).startsWith('t2~') && m.cancelContext)).toBe(true);
     c.ws.close();
   });
 
@@ -165,7 +179,7 @@ describe('voice bridge (mock Inworld)', () => {
     c.send({ type: 'say_stream', id: 'live1', text: 'You have **3** meetings.' });
     c.send({ type: 'say_stream', id: 'live1', text: '', final: true });
     await c.until(() => c.msgs.some(m => m.type === 'speech_end' && (m as any).id === 'live1'));
-    const msgs = seen.tts.filter(m => m.contextId === 'live1');
+    const msgs = seen.tts.filter(m => String(m.contextId).startsWith('live1~'));
     expect(msgs.filter(m => m.create)).toHaveLength(1);
     expect(msgs.filter(m => m.sendText).map(m => m.sendText.text)).toEqual(['Let me check your book. ', 'You have 3 meetings. ']);
     expect(msgs.some(m => m.closeContext)).toBe(true);
