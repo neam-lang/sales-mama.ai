@@ -88,7 +88,7 @@ async function status(): Promise<Record<Provider, ProviderStatus>> {
 }
 
 function cachePath(provider: Provider, text: string, s: VoiceSettings) {
-  const h = createHash('sha256').update(`${provider}|${s.voices[provider]}|${s.rate}|${s.lang}|${text}`).digest('hex').slice(0, 24);
+  const h = createHash('sha256').update(`${provider}|${s.voices[provider]}|${s.rate}|${s.lang}|${s.style}|${text}`).digest('hex').slice(0, 24);
   return join(CACHE(), `${h}.pcm`);
 }
 
@@ -122,7 +122,7 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
         const file = cachePath(provider, text, settings);
         if (existsSync(file)) continue;
         try {
-          const pcm = await synthesise(tts, text, { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang, fast: true });
+          const pcm = await synthesise(tts, text, { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang, fast: !settings.style, style: settings.style });
           mkdirSync(CACHE(), { recursive: true, mode: 0o700 });
           writeFileSync(file, pcm, { mode: 0o600 });
         } catch { break; }                                // no key, rate limit: try again next session
@@ -169,7 +169,8 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
       json({ type: 'voice_error', message: 'Voice limit reached for today.', fix: 'Answers stay on screen. Raise MAMA_VOICE_DAILY_CHARS to allow more.' });
       return;
     }
-    const opts = { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang, fast: fixed };
+    // With an accent or style set, fixed phrases use TTS-2 too (Flash ignores steering), so every line sounds the same.
+    const opts = { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang, fast: fixed && !settings.style, style: settings.style };
     if (fixed) {
       try {
         const pcm = await synthesise(tts, text, opts);
@@ -196,7 +197,7 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
       if (!tts) { json({ type: 'voice_error', ...noKey(provider) }); return; }
       stopSpeaking(true);
       const ctx = `${id}~${++seq}`;
-      const opts = { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang };
+      const opts = { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang, style: settings.style };
       const h = {
         audio: (b: Buffer) => { if (speaking?.ctx === ctx) bin(b); },
         words: (w: { w: string; start: number; end: number }[]) => { if (speaking?.ctx === ctx) json({ type: 'words', id, words: w }); },

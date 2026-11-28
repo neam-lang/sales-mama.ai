@@ -72,5 +72,6 @@ export function cleanSettings(base: VoiceSettings, s: any): VoiceSettings {
     rate: typeof s?.rate === 'number' && Number.isFinite(s.rate) ? Math.min(1.3, Math.max(0.8, s.rate)) : base.rate,
     lang: typeof s?.lang === 'string' && /^(auto|[a-z]{2}(-[A-Z]{2})?)$/.test(s.lang) ? s.lang : base.lang,
     strict: typeof s?.strict === 'boolean' ? s.strict : base.strict,
+    style: typeof s?.style === 'string' ? s.style.replace(/[\[\]<>]/g, '').trim().slice(0, 160) : base.style,
   };
 }

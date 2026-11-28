@@ -38,7 +38,7 @@ export class OpenAiTts implements TtsEngine {
         body: JSON.stringify({
           model: OPENAI_MODELS.tts, voice: o.voiceId, input: text, response_format: 'pcm',
           // gpt-4o-mini-tts takes delivery instructions instead of a speed number.
-          instructions: `Warm, clear and brisk, like a helpful colleague.${o.rate > 1.05 ? ' Speak a little faster than usual.' : o.rate < 0.95 ? ' Speak a little slower than usual.' : ''}`,
+          instructions: `Warm, clear and brisk, like a helpful colleague.${o.style ? ` ${o.style[0].toUpperCase()}${o.style.slice(1)}.` : ''}${o.rate > 1.05 ? ' Speak a little faster than usual.' : o.rate < 0.95 ? ' Speak a little slower than usual.' : ''}`,
         }),
       });
       if (!r.ok || !r.body) { this.done(id, h, false, await explain(r)); return; }

@@ -27,13 +27,23 @@ export interface VoiceSettings {
   lang: string;
   /** Realtime only: GPT may only relay Sales Mama's answers (no free talk). */
   strict: boolean;
+  /** Delivery or accent in plain English (Inworld TTS-2 steering, OpenAI instructions). Empty = the voice as it is. */
+  style: string;
 }
+
+export const STYLE_PRESETS: [string, string][] = [
+  ['', 'As recorded'],
+  ['speak with a light American English accent', 'Light American'],
+  ['speak with a clear, friendly General American English accent', 'American'],
+  ['speak with a light British English accent', 'Light British'],
+  ['speak warmly and clearly at a brisk pace', 'Warm and brisk'],
+];
 
 /** Male voices by default (2026-11-28). Inworld voices were checked by pitch (median F0 < 160 Hz). */
 export const DEFAULT_SETTINGS: VoiceSettings = {
   engine: 'cascade', stt: 'inworld', tts: 'inworld',
   voices: { inworld: 'Junhao', openai: 'onyx', elevenlabs: 'JBFqnCBsd6RMkjVDRZzb', realtime: 'cedar' },
-  rate: 1, lang: 'en', strict: true,
+  rate: 1, lang: 'en', strict: true, style: '',
 };
 
 export interface VoiceOption { id: string; name: string; langs?: string[]; gender?: 'male' | 'female' | ''; note?: string }

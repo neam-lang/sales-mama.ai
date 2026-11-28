@@ -102,8 +102,14 @@ export class Tts implements TtsEngine {
       ws = sock;
       for (const m of pending.splice(0)) sock.send(JSON.stringify(m));
     }, e => this.finish(id, false, (e as Error).message));
+    // Steering (TTS-2 only): the instruction stays in force for the whole context, so it is sent once, first.
+    let steer = o.style && !(o.fast && !o.modelId) ? `[${o.style}] ` : '';
     return {
-      push: (text: string) => { for (let i = 0; i < text.length; i += 1800) send({ sendText: { text: text.slice(i, i + 1800) } }); },
+      push: (raw: string) => {
+        const text = steer + raw;
+        steer = '';
+        for (let i = 0; i < text.length; i += 1800) send({ sendText: { text: text.slice(i, i + 1800) } });
+      },
       end: () => send({ closeContext: {} }),
     };
   }

@@ -202,6 +202,20 @@ describe('voice bridge (mock Inworld)', () => {
     c.ws.close();
   });
 
+  it('accent: one steering instruction at the start of each answer; fixed phrases use TTS-2 so they match', async () => {
+    const c = client(); await c.open;
+    c.send({ type: 'settings', settings: { style: 'speak with a light American English accent [x]' } });
+    c.send({ type: 'speak', id: 'acc', text: 'You have three meetings.' });
+    await c.until(() => c.msgs.some(m => m.type === 'speech_end' && (m as any).id === 'acc'));
+    const sent = seen.tts.filter(m => String(m.contextId).startsWith('acc~') && m.sendText).map(m => m.sendText.text);
+    expect(sent).toEqual(['[speak with a light American English accent x] You have three meetings.']);   // brackets in the setting are stripped
+    c.send({ type: 'speak', id: 'ack2', text: 'On it.', kind: 'ack' });
+    await c.until(() => c.msgs.some(m => m.type === 'speech_end' && (m as any).id === 'ack2'));
+    const create = seen.tts.filter(m => m.create).pop();
+    expect(create.create.modelId).toBe('inworld-tts-2');
+    c.ws.close();
+  });
+
   it('stops at the daily character cap and says so', async () => {
     const c = client(); await c.open;
     c.send({ type: 'speak', id: 'big', text: 'word '.repeat(100).trim() + '.' });
@@ -212,7 +226,7 @@ describe('voice bridge (mock Inworld)', () => {
 
   it('writes no audio to disk except fixed phrases', () => {
     const files = readdirSync(cache);
-    expect(files.length).toBe(1);                                      // the one cached acknowledgement
-    expect(files[0]).toMatch(/^[0-9a-f]{24}\.pcm$/);
+    expect(files.length).toBe(2);                                      // two cached acknowledgements (plain, and with an accent)
+    expect(files.every(f => /^[0-9a-f]{24}\.pcm$/.test(f))).toBe(true);  // fixed phrases only, never an answer
   });
 });

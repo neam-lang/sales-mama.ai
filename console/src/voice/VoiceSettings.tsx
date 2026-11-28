@@ -1,7 +1,7 @@
 // Voice settings (spec §15.4): who listens, who speaks, which voice, and GPT live.
 // Providers without a key are shown with the file to put it in; keys are never typed here.
 import { useEffect, useRef } from 'react';
-import { PROVIDER_NAME, PROVIDERS, type Provider, type VoiceOption } from '../../shared/voice';
+import { PROVIDER_NAME, PROVIDERS, STYLE_PRESETS, type Provider, type VoiceOption } from '../../shared/voice';
 import type { Voice } from './useVoice';
 
 const LANGS: [string, string][] = [['en', 'English'], ['auto', 'Detect'], ['ms', 'Malay'], ['zh', 'Mandarin'], ['ta', 'Tamil'], ['hi', 'Hindi']];
@@ -76,6 +76,12 @@ export function VoiceSettingsPanel({ voice, onClose }: { voice: Voice; onClose: 
       <VoicePicker label={`${PROVIDER_NAME[s.tts]} voice`} options={prov?.[s.tts]?.voices ?? []} value={s.voices[s.tts]}
         onChange={id => voice.setSettings({ voices: { ...s.voices, [s.tts]: id } })} />
 
+      <label>Accent and delivery{s.tts === 'elevenlabs' ? ' (not used by ElevenLabs)' : ''}
+        <select value={s.style} onChange={e => voice.setSettings({ style: e.target.value })}>
+          {!STYLE_PRESETS.some(([v]) => v === s.style) && <option value={s.style}>{s.style}</option>}
+          {STYLE_PRESETS.map(([v, n]) => <option key={n} value={v}>{n}</option>)}
+        </select>
+      </label>
       <label>Speed {s.rate.toFixed(2)}×
         <input type="range" min={0.8} max={1.3} step={0.05} value={s.rate} onChange={e => voice.setSettings({ rate: Number(e.target.value) })} />
       </label>

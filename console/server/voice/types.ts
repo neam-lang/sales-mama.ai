@@ -2,7 +2,7 @@
 // bridge, the protocol and the browser never change when a provider does.
 import type { VoiceMode, Word } from '../../shared/voice';
 
-export interface SpeakOpts { voiceId: string; modelId?: string; rate: number; lang?: string; fast?: boolean }
+export interface SpeakOpts { voiceId: string; modelId?: string; rate: number; lang?: string; fast?: boolean; style?: string }
 export interface SpeakHandlers { audio(pcm24k: Buffer): void; words(w: Word[]): void; end(ok: boolean, error?: string): void }
 
 /** Text that arrives a sentence at a time (live mode): push as it streams, end when the answer is done. */
