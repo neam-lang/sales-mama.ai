@@ -42,7 +42,7 @@ describe('engine args (ADR-0006)', () => {
     const args = buildArgs('brief me', undefined, true);
     const i = args.indexOf('--append-system-prompt');
     expect(args[i + 1]).toMatch(/^MAMA_CARDS=on\nMAMA_VOICE=on\. /);
-    expect(args[i + 1]).toMatch(/under 25 words/);
+    expect(args[i + 1]).toMatch(/under 20 words/);
     expect(args.filter(a => a.startsWith('--')).sort()).toEqual(buildArgs('brief me').filter(a => a.startsWith('--')).sort());
     for (const f of FORBIDDEN_FLAGS) expect(args).not.toContain(f);
   });

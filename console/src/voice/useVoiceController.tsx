@@ -28,7 +28,7 @@ interface Deps {
 }
 
 /** Live mode speaks a short summary only: about 5 to 10 seconds (spec §18). The rest stays on screen. */
-const LIVE_MAX_WORDS = 25;
+const LIVE_MAX_WORDS = 22;
 
 export function useVoiceController(d: Deps) {
   const dep = useRef(d);
