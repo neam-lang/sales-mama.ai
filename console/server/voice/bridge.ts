@@ -13,7 +13,7 @@ import type { WebSocket } from 'ws';
 import { speakable } from '../../shared/speakable';
 import { vocabulary } from '../../shared/mentions';
 import {
-  ACKS, APPROVAL_REPLY, LIVE_BYE, LIVE_GREETING, LIVE_MORE, MALE_VOICES, PROVIDERS, SPEAKER_RATE, ungroundedNumbers,
+  ACKS, APPROVAL_REPLY, LIVE_BYE, LIVE_GREETING, LIVE_MORE, LIVE_QUEUED, MALE_VOICES, PROVIDERS, SPEAKER_RATE, ungroundedNumbers,
   type Provider, type ProviderStatus, type VoiceClientMsg, type VoiceOption, type VoiceServerMsg, type VoiceSettings,
 } from '../../shared/voice';
 import { BatchStt } from './batch';
@@ -28,7 +28,7 @@ const CACHE = () => process.env.MAMA_VOICE_CACHE ?? join(homedir(), '.cache', 's
 /** Cost guards (spec §9): characters synthesised and Realtime minutes per day, for this console. */
 const DAILY_CHARS = () => Number(process.env.MAMA_VOICE_DAILY_CHARS ?? 20_000);
 const DAILY_LIVE_MIN = () => Number(process.env.MAMA_VOICE_REALTIME_MINUTES ?? 30);
-const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY, LIVE_GREETING, LIVE_BYE, LIVE_MORE]);
+const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY, LIVE_GREETING, LIVE_BYE, LIVE_MORE, LIVE_QUEUED]);
 
 const today = () => new Date().toISOString().slice(0, 10);
 let usage = { day: '', chars: 0, liveMs: 0 };

@@ -23,7 +23,7 @@ export interface Rail {
 }
 
 export type ClientMsg =
-  | { type: 'prompt'; text: string; sessionId?: string }
+  | { type: 'prompt'; text: string; sessionId?: string; voice?: boolean }   // voice: spoken in a live conversation (short answer first)
   | { type: 'stop' };
 
 export type ServerMsg =

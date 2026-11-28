@@ -7,10 +7,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AccountInfo } from '../../server/repo';
 import { findMentions, SURE, withMentions, type Mention } from '../../shared/mentions';
-import { spokenAnswer, streamChunk } from '../../shared/speakable';
+import { answerText, leadOf, speakable, spokenAnswer } from '../../shared/speakable';
 import { describeTool, type ToolItem } from '../../shared/stream';
 import {
-  ackFor, APPROVAL_REPLY, isApproval, LIVE_BYE, LIVE_GREETING, LIVE_MORE, parseCommand, toolCommand, VOICE_HELP,
+  ackFor, APPROVAL_REPLY, isApproval, LIVE_BYE, LIVE_GREETING, LIVE_QUEUED, parseCommand, toolCommand, VOICE_HELP,
   type Route, type VoiceCommand, type VoiceMode,
 } from '../../shared/voice';
 import { calendarKey, clearFocus, closeTop, focusTurn, openCanvas, openSource, scrollChat } from './navigate';
@@ -23,12 +23,12 @@ import { VoiceSettingsPanel } from './VoiceSettings';
 
 interface Deps {
   turns: ChatTurn[]; accounts: AccountInfo[]; canAsk: boolean; live: boolean; followUps: FollowUp[]; route: Route;
-  ask: (t: string) => void; stop: () => void; go: (r: Route) => void; newChat: () => void; queue: (t: string) => void;
+  ask: (t: string, voice?: boolean) => void; stop: () => void; go: (r: Route) => void; newChat: () => void; queue: (t: string) => void;
   edit: (t: string) => void; openRecent: () => boolean; openPalette: () => void; showHelp: () => void;
 }
 
-/** Live mode speaks at most this many words of one answer, then "The rest is on screen." */
-const LIVE_MAX_WORDS = 140;
+/** Live mode speaks a short summary only: about 5 to 10 seconds (spec §18). The rest stays on screen. */
+const LIVE_MAX_WORDS = 25;
 
 export function useVoiceController(d: Deps) {
   const dep = useRef(d);
@@ -40,7 +40,8 @@ export function useVoiceController(d: Deps) {
   const callFor = useRef(new Map<string, string>());
   const seen = useRef(new Set<string>());
   const spoken = useRef(new Set<string>());
-  const streams = useRef(new Map<string, { from: number; words: number; capped: boolean; done: boolean }>());
+  const liveTurns = useRef(new Set<string>());
+  const livePending = useRef<string | null>(null);      // spoken while a run is going: sent (as voice) when it ends
   const focus = useRef<number | null>(null);               // the answer in focus for voice navigation (null = latest)
 
   /** Read answer i aloud, with where it is ("Answer 2 of 5"). */
@@ -144,7 +145,9 @@ export function useVoiceController(d: Deps) {
           showReadback(text, mode);
           return;
         }
-        send(withMentions(text, mentions));
+        const prompt = withMentions(text, mentions);
+        if (dep.current.canAsk) dep.current.ask(prompt, true);
+        else { livePending.current = prompt; voiceRef.current?.say(LIVE_QUEUED, 'notice'); }
         return;
       }
       showReadback(text, mode);
@@ -185,26 +188,15 @@ export function useVoiceController(d: Deps) {
         focus.current = null;
         clearFocus();
         if (pendingCall.current) { callFor.current.set(t.id, pendingCall.current); pendingCall.current = null; }
-        else if (cascadeLive) { streams.current.set(t.id, { from: 0, words: 0, capped: false, done: false }); voice.say(ackFor(t.prompt), 'ack'); }
+        else if (cascadeLive) { liveTurns.current.add(t.id); voice.say(ackFor(t.prompt), 'ack'); }
         else if (voice.speakAnswers && !voice.live) voice.say(ackFor(t.prompt), 'ack');
       }
-      const st = streams.current.get(t.id);
-      if (st && !st.done) {
-        const final = !t.running;
-        const { say, next } = streamChunk(t.text, st.from, final);
-        st.from = next;
-        let text = say;
-        if (text && !st.capped) {
-          const n = text.split(/\s+/).length;
-          if (st.words + n > LIVE_MAX_WORDS) { st.capped = true; text = `${text.split(/\s+/).slice(0, Math.max(0, LIVE_MAX_WORDS - st.words)).join(' ')}. ${LIVE_MORE}`; }
-          st.words += n;
-        } else if (st.capped) text = '';
-        if (final) {
-          st.done = true;
-          spoken.current.add(t.id);
-          const extra = t.error ? `${t.error.message} ${t.error.fix ?? ''}` : t.turn.denied.length ? `${t.turn.denied.length === 1 ? 'One step needs' : `${t.turn.denied.length} steps need`} your approval in Claude Code.` : '';
-          voice.sayStream(t.id, `${text} ${extra}`.trim(), true, 'mama');
-        } else if (text) voice.sayStream(t.id, text, false, 'mama');
+      if (liveTurns.current.has(t.id) && !t.running && !spoken.current.has(t.id)) {
+        // Live: one short summary when the answer is ready.
+        spoken.current.add(t.id);
+        const short = t.error ? speakable(t.error.message, LIVE_MAX_WORDS).text : speakable(leadOf(answerText(t.turn.items)), LIVE_MAX_WORDS).text;
+        const note = !t.error && t.turn.denied.length ? ' Some steps need your approval in Claude Code.' : '';
+        voice.say(`${short || 'Done. It is on screen.'}${note}`, 'answer', t.id, 'mama');
         continue;
       }
       if (!t.running && seen.current.has(t.id) && !spoken.current.has(t.id)) {
@@ -216,6 +208,11 @@ export function useVoiceController(d: Deps) {
       }
     }
   }, [d.turns, voice, cascadeLive]);
+
+  // A request spoken during a run goes out (still as voice) as soon as the run ends.
+  useEffect(() => {
+    if (d.canAsk && livePending.current) { const p = livePending.current; livePending.current = null; d.ask(p, true); }
+  }, [d.canAsk, d]);
 
   // Keys: hold ⌥Space to talk, ⌥⇧Space for live mode, ⌘. to repeat, Esc stops the voice first.
   useEffect(() => {

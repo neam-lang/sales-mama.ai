@@ -143,6 +143,7 @@ export function ackFor(prompt: string): string {
 export const LIVE_GREETING = 'Sales Mama here. I am listening.';
 export const LIVE_BYE = 'Okay. Talk soon.';
 export const LIVE_MORE = 'The rest is on screen.';
+export const LIVE_QUEUED = 'Got it, that is next.';
 
 /** Principle 12: the voice never holds the pen. A bare spoken approval is answered, not sent. */
 export const APPROVAL_REPLY = 'Sending needs your click in Claude Code. I can prepare the preview.';

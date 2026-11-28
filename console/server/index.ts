@@ -114,7 +114,7 @@ wss.on('connection', ws => {
         broadcast({ type: 'turn_end', turnId, code, stderr: stderr.slice(-2000), error });
         sendRail(); // the Stop hook has synced and rebuilt books by now
       },
-    });
+    }, msg.voice === true);
     active = { run, turnId };
   });
 });

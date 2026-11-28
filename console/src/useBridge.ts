@@ -137,9 +137,9 @@ export function useBridge() {
 
   const send = useCallback((m: ClientMsg) => ws.current?.readyState === WebSocket.OPEN && ws.current.send(JSON.stringify(m)), []);
 
-  const ask = useCallback((text: string) => {
+  const ask = useCallback((text: string, voice = false) => {
     if (!text.trim()) return;
-    send({ type: 'prompt', text: text.trim(), sessionId });
+    send({ type: 'prompt', text: text.trim(), sessionId, ...(voice ? { voice: true } : {}) });
   }, [send, sessionId]);
 
   const stop = useCallback(() => send({ type: 'stop' }), [send]);
