@@ -83,7 +83,8 @@ export type VoiceClientMsg =
   | { type: 'speak'; id: string; text: string; agent?: string; kind?: 'answer' | 'ack' | 'notice' }
   | { type: 'speak_stop' }                                     // barge-in or Esc
   | { type: 'settings'; settings: Partial<VoiceSettings> }
-  | { type: 'tool_result'; callId: string; text: string };    // realtime: Sales Mama's spoken answer for GPT to say
+  | { type: 'tool_result'; callId: string; text: string }     // realtime: Sales Mama's spoken answer for GPT to say
+  | { type: 'say_stream'; id: string; text: string; final?: boolean; agent?: string };  // live mode: speak as the answer streams
 
 export interface Word { w: string; start: number; end: number }
 
@@ -137,6 +138,11 @@ export function ackFor(prompt: string): string {
   if (/\b(my day|today)\b/.test(p)) return ACKS['mama-day'];
   return ACKS.default;
 }
+
+/** Live conversation (tap the orb): fixed lines, cached like acknowledgements. */
+export const LIVE_GREETING = 'Sales Mama here. I am listening.';
+export const LIVE_BYE = 'Okay. Talk soon.';
+export const LIVE_MORE = 'The rest is on screen.';
 
 /** Principle 12: the voice never holds the pen. A bare spoken approval is answered, not sent. */
 export const APPROVAL_REPLY = 'Sending needs your click in Claude Code. I can prepare the preview.';

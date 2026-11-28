@@ -1,13 +1,18 @@
-// Voice in the console (spec §4–5, §15): one place that turns speech into prompts and answers into
+// Voice in the console (spec §4–5, §15–18): one place that turns speech into prompts and answers into
 // speech, so App.tsx only places the pieces.
-// - A spoken request goes through the read-back, then `ask` (the same path as typed text).
-// - Spoken commands use the keyboard map's verbs; a bare "send it" / "approve" is answered, never sent.
-// - When a turn ends, its lead line is spoken (or, in GPT live, handed back to GPT to say).
+// - Tap the orb: a LIVE conversation (spec §18). What you say goes straight to Sales Mama (no read-back,
+//   unless an account name is unsure), and the answer is spoken as it streams, sentence by sentence.
+// - Hold the orb (or ⌥Space): push-to-talk with the read-back chip.
+// - Spoken commands navigate the console; a bare "send it" / "approve" is answered, never sent.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AccountInfo } from '../../server/repo';
 import { findMentions, SURE, withMentions, type Mention } from '../../shared/mentions';
-import { spokenAnswer } from '../../shared/speakable';
-import { ackFor, APPROVAL_REPLY, isApproval, parseCommand, toolCommand, VOICE_HELP, type Route, type VoiceCommand, type VoiceMode } from '../../shared/voice';
+import { spokenAnswer, streamChunk } from '../../shared/speakable';
+import { describeTool, type ToolItem } from '../../shared/stream';
+import {
+  ackFor, APPROVAL_REPLY, isApproval, LIVE_BYE, LIVE_GREETING, LIVE_MORE, parseCommand, toolCommand, VOICE_HELP,
+  type Route, type VoiceCommand, type VoiceMode,
+} from '../../shared/voice';
 import { calendarKey, clearFocus, closeTop, focusTurn, openCanvas, openSource, scrollChat } from './navigate';
 import type { ChatTurn } from '../useBridge';
 import type { FollowUp } from '../chat/Composer';
@@ -22,15 +27,20 @@ interface Deps {
   edit: (t: string) => void; openRecent: () => boolean; openPalette: () => void; showHelp: () => void;
 }
 
+/** Live mode speaks at most this many words of one answer, then "The rest is on screen." */
+const LIVE_MAX_WORDS = 140;
+
 export function useVoiceController(d: Deps) {
   const dep = useRef(d);
   dep.current = d;
   const [readback, setReadback] = useState<(ReadBackState & { callId?: string }) | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [lastHeard, setLastHeard] = useState('');
   const pendingCall = useRef<string | null>(null);        // realtime: the next turn answers this tool call
   const callFor = useRef(new Map<string, string>());
   const seen = useRef(new Set<string>());
   const spoken = useRef(new Set<string>());
+  const streams = useRef(new Map<string, { from: number; words: number; capped: boolean; done: boolean }>());
   const focus = useRef<number | null>(null);               // the answer in focus for voice navigation (null = latest)
 
   /** Read answer i aloud, with where it is ("Answer 2 of 5"). */
@@ -52,7 +62,7 @@ export function useVoiceController(d: Deps) {
       case 'stop': v?.stopSpeaking(); if (x.live) x.stop(); break;
       case 'new_chat': focus.current = null; x.newChat(); break;
       case 'repeat': v?.repeat(); break;
-      case 'end_conversation': v?.cancelListen(); break;
+      case 'end_conversation': endLive(); break;
       case 'help': x.showHelp(); say(VOICE_HELP); break;
       case 'speak_answers': v?.setSpeakAnswers(c.on); if (c.on) say('Okay, I will read answers aloud.'); break;
       case 'go':
@@ -107,7 +117,6 @@ export function useVoiceController(d: Deps) {
   /** Send now, or queue behind the running turn (Composer v2 behaviour). */
   const send = useCallback((prompt: string, callId?: string) => {
     const x = dep.current;
-    x.go('chat');
     if (callId) pendingCall.current = callId;
     if (x.canAsk) x.ask(prompt); else x.queue(prompt);
   }, []);
@@ -121,9 +130,23 @@ export function useVoiceController(d: Deps) {
 
   const voice = useVoice({
     onFinal: (text, mode) => {
+      setLastHeard(text);
       const cmd = parseCommand(text);
       if (cmd) { runCommand(cmd); return; }
       if (isApproval(text)) { voiceRef.current?.say(APPROVAL_REPLY, 'notice'); return; }
+      if (mode === 'conversation') {
+        // Live: straight to Sales Mama. Only an unsure account name stops to ask.
+        const mentions = findMentions(text, dep.current.accounts);
+        const unsure = mentions.filter(m => m.conf < SURE);
+        if (unsure.length) {
+          const opts = [unsure[0], ...unsure[0].alternatives].map(c => ('name' in c ? c.name : '') || c.id).slice(0, 3);
+          voiceRef.current?.say(`Which account did you mean: ${opts.join(', or ')}? Pick it on screen.`, 'notice');
+          showReadback(text, mode);
+          return;
+        }
+        send(withMentions(text, mentions));
+        return;
+      }
       showReadback(text, mode);
     },
     onToolPrompt: (callId, prompt) => {
@@ -137,7 +160,24 @@ export function useVoiceController(d: Deps) {
   const voiceRef = useRef(voice);
   voiceRef.current = voice;
 
-  // Speak when a turn starts (a cached acknowledgement) and when it ends (the lead line).
+  /** Live conversation: on with a greeting, off with a goodbye. GPT live is the same gesture with the realtime engine. */
+  const liveOn = voice.mode === 'conversation';
+  const cascadeLive = liveOn && voice.settings.engine === 'cascade';
+  const startLive = useCallback(async () => {
+    const v = voiceRef.current;
+    await v.listen('conversation');
+    if (v.settings.engine === 'cascade') v.say(LIVE_GREETING, 'notice');
+  }, []);
+  function endLive() {
+    const v = voiceRef.current;
+    if (v.mode !== 'conversation') return;
+    v.cancelListen();
+    v.say(LIVE_BYE, 'notice');
+  }
+  const toggleLive = useCallback(() => { if (voiceRef.current.mode === 'conversation') endLive(); else void startLive(); }, [startLive]);
+
+  // Turns: an acknowledgement when one starts; in live mode the answer is spoken while it streams;
+  // otherwise (speaker on) its lead line is spoken when it ends; in GPT live it goes back to GPT.
   useEffect(() => {
     for (const t of d.turns) {
       if (t.running && !seen.current.has(t.id)) {
@@ -145,7 +185,27 @@ export function useVoiceController(d: Deps) {
         focus.current = null;
         clearFocus();
         if (pendingCall.current) { callFor.current.set(t.id, pendingCall.current); pendingCall.current = null; }
+        else if (cascadeLive) { streams.current.set(t.id, { from: 0, words: 0, capped: false, done: false }); voice.say(ackFor(t.prompt), 'ack'); }
         else if (voice.speakAnswers && !voice.live) voice.say(ackFor(t.prompt), 'ack');
+      }
+      const st = streams.current.get(t.id);
+      if (st && !st.done) {
+        const final = !t.running;
+        const { say, next } = streamChunk(t.text, st.from, final);
+        st.from = next;
+        let text = say;
+        if (text && !st.capped) {
+          const n = text.split(/\s+/).length;
+          if (st.words + n > LIVE_MAX_WORDS) { st.capped = true; text = `${text.split(/\s+/).slice(0, Math.max(0, LIVE_MAX_WORDS - st.words)).join(' ')}. ${LIVE_MORE}`; }
+          st.words += n;
+        } else if (st.capped) text = '';
+        if (final) {
+          st.done = true;
+          spoken.current.add(t.id);
+          const extra = t.error ? `${t.error.message} ${t.error.fix ?? ''}` : t.turn.denied.length ? `${t.turn.denied.length === 1 ? 'One step needs' : `${t.turn.denied.length} steps need`} your approval in Claude Code.` : '';
+          voice.sayStream(t.id, `${text} ${extra}`.trim(), true, 'mama');
+        } else if (text) voice.sayStream(t.id, text, false, 'mama');
+        continue;
       }
       if (!t.running && seen.current.has(t.id) && !spoken.current.has(t.id)) {
         spoken.current.add(t.id);
@@ -155,9 +215,9 @@ export function useVoiceController(d: Deps) {
         else if (voice.speakAnswers && s.text) voice.say(s.text, 'answer', t.id, 'mama');
       }
     }
-  }, [d.turns, voice]);
+  }, [d.turns, voice, cascadeLive]);
 
-  // Keys: hold ⌥Space to talk, ⌥⇧Space for hands-free, ⌘. to repeat, Esc stops the voice first.
+  // Keys: hold ⌥Space to talk, ⌥⇧Space for live mode, ⌘. to repeat, Esc stops the voice first.
   useEffect(() => {
     let holding = false;
     const down = (e: KeyboardEvent) => {
@@ -165,7 +225,7 @@ export function useVoiceController(d: Deps) {
       if (e.code === 'Space' && e.altKey) {
         e.preventDefault();
         if (e.repeat) return;
-        if (e.shiftKey) { v.toggleConversation(); return; }
+        if (e.shiftKey) { toggleLive(); return; }
         holding = true;
         void v.listen('push');
         return;
@@ -179,10 +239,10 @@ export function useVoiceController(d: Deps) {
     window.addEventListener('keydown', down, true);
     window.addEventListener('keyup', up, true);
     return () => { window.removeEventListener('keydown', down, true); window.removeEventListener('keyup', up, true); };
-  }, []);
+  }, [toggleLive]);
 
   const onSendRb = useCallback((prompt: string) => {
-    setReadback(rb => { if (rb) send(prompt, rb.callId); return null; });
+    setReadback(rb => { if (rb) { dep.current.go('chat'); send(prompt, rb.callId); } return null; });
   }, [send]);
   const onEditRb = useCallback((prompt: string) => {
     setReadback(rb => { if (rb?.callId) voiceRef.current.toolResult(rb.callId, 'Okay, edit it on screen.'); return null; });
@@ -200,17 +260,20 @@ export function useVoiceController(d: Deps) {
     });
   }, []);
 
-  const orbState: OrbState = voice.error ? 'error' : readback ? 'confirming' : voice.mic !== 'idle' ? voice.mic
-    : voice.speaking ? 'speaking' : d.live ? 'thinking' : voice.available === false ? 'error' : 'idle';
+  const orbState: OrbState = voice.error ? 'error' : readback ? 'confirming' : voice.speaking ? 'speaking'
+    : d.live ? 'thinking' : voice.mic !== 'idle' ? voice.mic : voice.available === false ? 'error' : 'idle';
 
+  const orbEl = (
+    <Orb state={orbState} level={voice.level} conversation={liveOn}
+      onHold={() => { if (!liveOn) void voice.listen('push'); }} onRelease={() => void voice.release()}
+      onTap={toggleLive} onStop={voice.stopSpeaking} />
+  );
   const orb: ReactNode = (
     <>
-      <Orb state={orbState} level={voice.level} conversation={voice.mode === 'conversation'}
-        onHold={() => void voice.listen('push')} onRelease={() => void voice.release()} onTap={() => (voice.mic === 'idle' ? void voice.listen('tap') : voice.cancelListen())}
-        onStop={voice.stopSpeaking} />
-      <button type="button" className="convo-btn" aria-pressed={voice.mode === 'conversation'} onClick={voice.toggleConversation}
-        title={voice.settings.engine === 'realtime' ? 'Hands-free with GPT live (⌥⇧Space)' : 'Hands-free conversation (⌥⇧Space)'}>
-        {voice.settings.engine === 'realtime' ? 'GPT LIVE' : 'HANDS-FREE'}
+      {orbEl}
+      <button type="button" className="convo-btn" aria-pressed={liveOn} onClick={toggleLive}
+        title={liveOn ? 'End the live conversation (⌥⇧Space)' : 'Start a live conversation (⌥⇧Space). Hold the mic to say one thing.'}>
+        {liveOn ? 'END LIVE' : voice.settings.engine === 'realtime' ? 'GPT LIVE' : 'GO LIVE'}
       </button>
     </>
   );
@@ -219,25 +282,38 @@ export function useVoiceController(d: Deps) {
     <>
       {voice.error && <div className="voice-toast" role="alert">{voice.error}</div>}
       {readback && <ReadBack rb={readback} onSend={onSendRb} onEdit={onEditRb} onCancel={onCancelRb} onPick={onPick} />}
-      {!readback && voice.mic !== 'idle' && (voice.partial || voice.heard
+      {!liveOn && !readback && voice.mic !== 'idle' && (voice.partial || voice.heard
         ? <Captions text={voice.partial || voice.heard} words={[]} clock={voice.clock} listening />
         : <Captions text="Listening… try “brief me on an account”, “previous answer” or “what can I say?”" words={[]} clock={voice.clock} listening />)}
-      {!readback && voice.caption && voice.caption.text && <Captions text={voice.caption.text} words={voice.caption.words} clock={voice.clock} agent={voice.caption.agent} />}
+      {!liveOn && !readback && voice.caption && voice.caption.text && <Captions text={voice.caption.text} words={voice.caption.words} clock={voice.clock} agent={voice.caption.agent} />}
     </>
   );
 
+  // The live panel (every page): what you said, what Mama is saying, what she is doing.
+  const running = d.turns.find(t => t.running);
+  const tool = running ? [...running.turn.items].reverse().find((i): i is ToolItem => i.kind === 'tool' && i.status === 'running') : undefined;
+  const doing = running ? (tool ? describeTool(tool.name, tool.input) : running.turn.lanes.some(l => l.status === 'running') ? 'Agents working…' : 'Thinking…') : '';
+  const status = voice.speaking ? 'Mama is speaking. Talk to interrupt.' : running ? `Working: ${doing}` : voice.mic === 'hearing' ? 'Hearing you…' : 'Listening. Just talk.';
+  const livePanel: ReactNode = liveOn ? (
+    <section className="live-panel" aria-label="Live conversation with Sales Mama">
+      <div className="lp-head">
+        {orbEl}
+        <div className="lp-status"><b>{voice.live ? 'GPT LIVE' : 'LIVE'}</b><span className={running && !voice.speaking ? 'shimmer' : undefined}>{status}</span></div>
+        <button type="button" className="rb-btn" onClick={endLive}>End</button>
+      </div>
+      {(voice.partial || lastHeard || voice.heard) && <p className="lp-you"><span>You</span>{voice.partial || voice.heard || lastHeard}</p>}
+      {voice.caption?.text && <Captions text={voice.caption.text} words={voice.caption.words} clock={voice.clock} agent="mama" />}
+      {voice.error && <p className="lp-err">{voice.error}</p>}
+      {readback && d.route !== 'chat' && <p className="lp-err">Pick the account in the chat.</p>}
+    </section>
+  ) : null;
+
   const headerExtra: ReactNode = (
     <>
-      {d.route !== 'chat' && (
-        <span className="hdr-orb">
-          <Orb state={orbState} level={voice.level} conversation={voice.mode === 'conversation'}
-            onHold={() => void voice.listen('push')} onRelease={() => void voice.release()} onTap={() => (voice.mic === 'idle' ? void voice.listen('tap') : voice.cancelListen())}
-            onStop={voice.stopSpeaking} />
-        </span>
-      )}
-      {voice.mode === 'conversation' && (
-        <button type="button" className="mic-on" onClick={voice.cancelListen} title="End hands-free mode">
-          <i aria-hidden="true" />{voice.live ? 'GPT LIVE' : 'MIC ON'}
+      {d.route !== 'chat' && !liveOn && <span className="hdr-orb">{orbEl}</span>}
+      {liveOn && (
+        <button type="button" className="mic-on" onClick={endLive} title="End the live conversation">
+          <i aria-hidden="true" />{voice.live ? 'GPT LIVE' : 'LIVE'}
         </button>
       )}
       <button type="button" className={`icon-btn${voice.speakAnswers ? ' speak-on' : ''}`} onClick={() => voice.setSpeakAnswers(!voice.speakAnswers)}
@@ -250,7 +326,8 @@ export function useVoiceController(d: Deps) {
     </>
   );
 
-  const panel = useMemo(() => (settingsOpen ? <VoiceSettingsPanel voice={voice} onClose={() => setSettingsOpen(false)} /> : null), [settingsOpen, voice]);
+  const settings = useMemo(() => (settingsOpen ? <VoiceSettingsPanel voice={voice} onClose={() => setSettingsOpen(false)} /> : null), [settingsOpen, voice]);
+  const panel: ReactNode = <>{settings}{livePanel}</>;
 
   return { voice, orb, above, headerExtra, panel };
 }

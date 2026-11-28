@@ -104,3 +104,33 @@ export function spokenAnswer(turn: Turn, error?: { message: string; fix?: string
   const extra = `${denied === 1 ? 'One step needs' : `${denied} steps need`} your approval in Claude Code.`;
   return { ...lead, text: `${lead.text} ${extra}`.trim(), words: lead.words + extra.split(' ').length };
 }
+
+/**
+ * Live mode (spec §18): the next complete, speakable part of an answer that is still streaming.
+ * `from` is how much of `text` was already consumed. Card and surface fences are skipped once
+ * closed (and waited for while open); only complete sentences or lines are spoken until `final`.
+ */
+export function streamChunk(text: string, from: number, final: boolean): { say: string; next: number } {
+  let i = from, out = '';
+  while (i < text.length) {
+    const fence = text.indexOf('```', i);
+    const stop = fence === -1 ? text.length : fence;
+    const seg = text.slice(i, stop);
+    // Up to the last sentence end or line break in this segment (all of it if the fence or the end follows).
+    let cut = seg.length;
+    if (fence === -1 && !final) {
+      const m = [...seg.matchAll(/[.!?](?=\s)|\n/g)].pop();
+      cut = m ? m.index! + 1 : 0;
+    }
+    out += seg.slice(0, cut);
+    i += cut;
+    if (cut < seg.length || fence === -1) break;          // waiting for more text
+    const close = text.indexOf('```', fence + 3);
+    if (close === -1) break;                               // a card is still streaming: wait for it
+    i = close + 3;
+    out += '\n';
+  }
+  // A line without end punctuation (a list item, a heading) ends a sentence when spoken.
+  const lined = out.split('\n').map(l => l.trim()).filter(Boolean).map(l => (/[.!?:;,]$/.test(l) || /^\|/.test(l) ? l : `${l}.`)).join('\n');
+  return { say: speakable(lined, 400).text, next: i };
+}

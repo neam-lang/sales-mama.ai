@@ -5,8 +5,13 @@ import type { VoiceMode, Word } from '../../shared/voice';
 export interface SpeakOpts { voiceId: string; modelId?: string; rate: number; lang?: string; fast?: boolean }
 export interface SpeakHandlers { audio(pcm24k: Buffer): void; words(w: Word[]): void; end(ok: boolean, error?: string): void }
 
+/** Text that arrives a sentence at a time (live mode): push as it streams, end when the answer is done. */
+export interface SpeechStream { push(text: string): void; end(): void }
+
 export interface TtsEngine {
   speak(id: string, text: string, o: SpeakOpts, h: SpeakHandlers): Promise<void>;
+  /** Optional native streaming; providers without it get sentenceQueue() (stream.ts). */
+  stream?(id: string, o: SpeakOpts, h: SpeakHandlers): SpeechStream;
   cancel(id: string): void;
   close(): void;
 }

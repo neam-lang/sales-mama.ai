@@ -13,7 +13,7 @@ import type { WebSocket } from 'ws';
 import { speakable } from '../../shared/speakable';
 import { vocabulary } from '../../shared/mentions';
 import {
-  ACKS, APPROVAL_REPLY, MALE_VOICES, PROVIDERS, SPEAKER_RATE, ungroundedNumbers,
+  ACKS, APPROVAL_REPLY, LIVE_BYE, LIVE_GREETING, LIVE_MORE, MALE_VOICES, PROVIDERS, SPEAKER_RATE, ungroundedNumbers,
   type Provider, type ProviderStatus, type VoiceClientMsg, type VoiceOption, type VoiceServerMsg, type VoiceSettings,
 } from '../../shared/voice';
 import { BatchStt } from './batch';
@@ -21,13 +21,14 @@ import { cleanSettings, keyFile, localDefaults, noKey, readKey } from './config'
 import { ElevenTts, elevenTranscribe, listElevenVoices } from './elevenlabs';
 import { listVoices, SttSession, synthesise, Tts } from './inworld';
 import { OpenAiTts, openAiTranscribe, Realtime } from './openai';
-import type { SttFactory, SttStream, TtsEngine } from './types';
+import { sentenceQueue } from './stream';
+import type { SpeechStream, SttFactory, SttStream, TtsEngine } from './types';
 
 const CACHE = () => process.env.MAMA_VOICE_CACHE ?? join(homedir(), '.cache', 'sales-mama', 'voice');
 /** Cost guards (spec §9): characters synthesised and Realtime minutes per day, for this console. */
 const DAILY_CHARS = () => Number(process.env.MAMA_VOICE_DAILY_CHARS ?? 20_000);
 const DAILY_LIVE_MIN = () => Number(process.env.MAMA_VOICE_REALTIME_MINUTES ?? 30);
-const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY]);
+const FIXED = new Set([...Object.values(ACKS), APPROVAL_REPLY, LIVE_GREETING, LIVE_BYE, LIVE_MORE]);
 
 const today = () => new Date().toISOString().slice(0, 10);
 let usage = { day: '', chars: 0, liveMs: 0 };
@@ -99,7 +100,8 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
   let liveSince = 0;
   let liveTimer: NodeJS.Timeout | undefined;
   let relay: string | null = null;                     // what GPT was told to say next (grounding check)
-  let speaking: { id: string; provider: Provider } | null = null;
+  let speaking: { id: string; provider: Provider; cancel?: () => void } | null = null;
+  let streamed: { id: string; s: SpeechStream; text: string } | null = null;
   const json = (m: VoiceServerMsg) => { if (ws.readyState === ws.OPEN) ws.send(JSON.stringify(m)); };
   const bin = (b: Buffer) => { if (ws.readyState === ws.OPEN && b.length) ws.send(b, { binary: true }); };
 
@@ -111,9 +113,10 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
   const stopSpeaking = (interrupted: boolean) => {
     if (live) live.stopSpeaking();
     if (!speaking) return;
-    const { id, provider } = speaking;
+    const { id, provider, cancel } = speaking;
     speaking = null;
-    ttsFor(provider)?.cancel(id);
+    streamed = null;
+    if (cancel) cancel(); else ttsFor(provider)?.cancel(id);
     json({ type: 'speech_end', id, interrupted });
   };
 
@@ -155,6 +158,45 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
       words: words => { if (mine()) json({ type: 'words', id, words }); },
       end: (ok, error) => { finish(!ok); if (error) json({ type: 'voice_error', message: error }); },
     });
+  }
+
+  /** Live mode: speak an answer while it streams. The first chunk for a new id interrupts what is playing. */
+  function sayStream(id: string, text: string, final: boolean, agent?: string) {
+    if (!streamed || streamed.id !== id) {
+      if (!text.trim() && final) return;
+      const provider = settings.tts;
+      const tts = ttsFor(provider);
+      if (!tts) { json({ type: 'voice_error', ...noKey(provider) }); return; }
+      stopSpeaking(true);
+      const opts = { voiceId: settings.voices[provider], rate: settings.rate, lang: settings.lang };
+      const h = {
+        audio: (b: Buffer) => { if (speaking?.id === id) bin(b); },
+        words: (w: { w: string; start: number; end: number }[]) => { if (speaking?.id === id) json({ type: 'words', id, words: w }); },
+        end: (ok: boolean, error?: string) => {
+          if (speaking?.id === id) { speaking = null; streamed = null; json({ type: 'speech_end', id, interrupted: !ok }); }
+          if (error) json({ type: 'voice_error', message: error });
+        },
+      };
+      let s: SpeechStream, cancel: (() => void) | undefined;
+      if (tts.stream) s = tts.stream(id, opts, h);
+      else { const q = sentenceQueue(tts, id, opts, h); s = q; cancel = q.cancel; }
+      speaking = { id, provider, cancel };
+      streamed = { id, s, text: '' };
+      json({ type: 'speech_begin', id, text: '', agent });
+    }
+    const st = streamed!;
+    const clean = FIXED.has(text) ? text : speakable(text, 400).text;
+    if (clean) {
+      if (!charge(clean.length)) {
+        json({ type: 'voice_error', message: 'Voice limit reached for today.', fix: 'Answers stay on screen. Raise MAMA_VOICE_DAILY_CHARS to allow more.' });
+        st.s.end();
+        return;
+      }
+      st.text = `${st.text} ${clean}`.trim();
+      st.s.push(clean + ' ');
+      json({ type: 'speech_text', id, text: st.text });
+    }
+    if (final) st.s.end();
   }
 
   function closeLive() {
@@ -232,6 +274,11 @@ export function voiceSession(ws: WebSocket, deps: BridgeDeps) {
         }
         break;
       case 'speak_stop': stopSpeaking(true); break;
+      case 'say_stream':
+        if (typeof msg.id === 'string' && typeof msg.text === 'string' && msg.text.length <= 4000) {
+          sayStream(msg.id.slice(0, 80), msg.text, msg.final === true, typeof msg.agent === 'string' ? msg.agent : undefined);
+        }
+        break;
       case 'tool_result':
         if (live && typeof msg.callId === 'string' && typeof msg.text === 'string') {
           const text = FIXED.has(msg.text) ? msg.text : speakable(msg.text, 120).text || 'Done. The details are on screen.';

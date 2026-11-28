@@ -111,3 +111,17 @@
 .hdr-orb .orb { width: 40px; height: 40px; }
 .hdr-orb .orb .disc { width: 32px; height: 32px; }
 .hdr-orb .orb .disc svg { width: 16px; height: 16px; }
+
+/* ---- Live conversation panel (spec §18): every page, under the header ---------------------- */
+.live-panel { position: fixed; top: calc(var(--header-h) + 14px); left: 50%; transform: translateX(-50%); z-index: 25;
+  width: min(760px, calc(100vw - 24px)); padding: 12px 14px; border-radius: var(--r-card); background: var(--surface);
+  border: 1.5px solid var(--mama); box-shadow: var(--shadow-2); display: grid; gap: 8px; animation: cap-in var(--t-base) var(--ease-out); }
+.live-panel .lp-head { display: flex; align-items: center; gap: 12px; }
+.live-panel .lp-status { flex: 1 1 auto; min-width: 0; display: flex; align-items: baseline; gap: 10px; font-size: 14px; color: var(--muted); }
+.live-panel .lp-status b { font: 700 11px var(--mono); letter-spacing: .08em; color: var(--ink); background: var(--lime); padding: 2px 8px; border-radius: var(--r-pill); }
+.live-panel .lp-status span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.live-panel .lp-you { margin: 0; font-size: 14px; color: var(--muted); display: flex; gap: 10px; }
+.live-panel .lp-you span { font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .05em; color: var(--ink); flex: 0 0 auto; padding-top: 2px; }
+.live-panel .captions { margin: 0; max-width: none; border: 0; padding: 0; background: transparent; animation: none; }
+.live-panel .lp-err { margin: 0; font-size: 13px; color: var(--risk); }
+@media (prefers-reduced-motion: reduce) { .live-panel { animation: none; } }

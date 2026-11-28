@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { answerText, leadOf, speakable, spokenAnswer, spokenTime } from '../shared/speakable';
+import { answerText, leadOf, speakable, spokenAnswer, spokenTime, streamChunk } from '../shared/speakable';
 import { ackFor, APPROVAL_REPLY, isApproval, parseCommand, toolCommand, TOOL_COMMANDS, wordAt } from '../shared/voice';
 import { findMentions, jaroWinkler, normalise, SURE, vocabulary, withMentions } from '../shared/mentions';
 import { TurnBuilder, parseLines } from '../shared/stream';
@@ -53,6 +53,30 @@ describe('speakable: never speaks paths, URLs, code, tables or emoji', () => {
     expect(spokenTime(0, 0)).toBe('12 am');
     expect(spokenTime(12, 5)).toBe('12:05 pm');
     expect(spokenTime(23, 0)).toBe('11 pm');
+  });
+});
+
+describe('live mode: speaking an answer while it streams', () => {
+  it('speaks only complete sentences until the answer is final', () => {
+    const a = streamChunk('Let me check your book. Reading the acc', 0, false);
+    expect(a.say).toBe('Let me check your book.');
+    const b = streamChunk('Let me check your book. Reading the accounts now.\n', a.next, false);
+    expect(b.say).toBe('Reading the accounts now.');
+    expect(streamChunk('Let me check your book. Reading the accounts now.\nYou have 3', b.next, true).say).toBe('You have 3.');
+  });
+  it('waits for a card to finish, never speaks it, then carries on', () => {
+    const t1 = 'Here is your day.\n\n```mama-card\n{"type":"PlanCard"';
+    const a = streamChunk(t1, 0, false);
+    expect(a.say).toBe('Here is your day.');
+    expect(streamChunk(t1, a.next, false).say).toBe('');
+    const t2 = t1 + '}\n```\n\nTwo follow-ups are due.\n';
+    const b = streamChunk(t2, a.next, false);
+    expect(b.say).toBe('Two follow-ups are due.');
+    expect(b.say).not.toMatch(/PlanCard/);
+  });
+  it('turns list items and headings into separate sentences, and drops paths', () => {
+    expect(streamChunk('## Needs you\n- Send first email to Kestrel\n- Check wiki/books/praveen.md\n', 0, false).say)
+      .toBe('Needs you. Send first email to Kestrel. Check.');
   });
 });
 

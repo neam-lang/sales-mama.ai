@@ -155,6 +155,20 @@ describe('voice bridge (mock Inworld)', () => {
     c.ws.close();
   });
 
+  it('live mode: one Inworld context for a streamed answer, text pushed as it arrives', async () => {
+    const c = client(); await c.open;
+    c.send({ type: 'say_stream', id: 'live1', text: 'Let me check your book.', agent: 'mama' });
+    c.send({ type: 'say_stream', id: 'live1', text: 'You have **3** meetings.' });
+    c.send({ type: 'say_stream', id: 'live1', text: '', final: true });
+    await c.until(() => c.msgs.some(m => m.type === 'speech_end' && (m as any).id === 'live1'));
+    const msgs = seen.tts.filter(m => m.contextId === 'live1');
+    expect(msgs.filter(m => m.create)).toHaveLength(1);
+    expect(msgs.filter(m => m.sendText).map(m => m.sendText.text)).toEqual(['Let me check your book. ', 'You have 3 meetings. ']);
+    expect(msgs.some(m => m.closeContext)).toBe(true);
+    expect((c.msgs.filter(m => m.type === 'speech_text').pop() as any).text).toBe('Let me check your book. You have 3 meetings.');
+    c.ws.close();
+  });
+
   it('stops at the daily character cap and says so', async () => {
     const c = client(); await c.open;
     c.send({ type: 'speak', id: 'big', text: 'word '.repeat(100).trim() + '.' });

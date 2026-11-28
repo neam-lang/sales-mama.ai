@@ -83,16 +83,29 @@ export class Tts implements TtsEngine {
   }
 
   async speak(id: string, text: string, o: SpeakOpts, h: SpeakHandlers): Promise<void> {
+    const st = this.stream(id, o, h);
+    st.push(text);
+    st.end();
+  }
+
+  /** One context per answer; text is pushed as it streams and Inworld finds the sentence boundaries. */
+  stream(id: string, o: SpeakOpts, h: SpeakHandlers) {
     this.ctxs.set(id, { h, samples: 0, flushBase: 0, ended: false });
-    let ws: WebSocket;
-    try { ws = await this.connect(); } catch (e) { this.finish(id, false, (e as Error).message); return; }
-    if (!this.ctxs.has(id)) return;                    // cancelled while connecting
-    const send = (msg: object) => ws.send(JSON.stringify({ contextId: id, ...msg }));
+    const pending: object[] = [];
+    let ws: WebSocket | null = null;
+    const send = (msg: object) => { const m = { contextId: id, ...msg }; if (ws) ws.send(JSON.stringify(m)); else pending.push(m); };
     send({ create: { voiceId: o.voiceId, modelId: o.modelId ?? (o.fast ? MODELS.ack : MODELS.answer), ...(o.lang && o.lang !== 'auto' ? { language: o.lang } : {}),
       audioConfig: { audioEncoding: 'PCM', sampleRateHertz: SPEAKER_RATE, speakingRate: o.rate }, timestampType: 'WORD',
       autoMode: true, autoModeStrategy: 'SENTENCE_BOUNDARY' } });
-    for (let i = 0; i < text.length; i += 1800) send({ sendText: { text: text.slice(i, i + 1800) } });
-    send({ closeContext: {} });
+    this.connect().then(sock => {
+      if (!this.ctxs.has(id)) return;                  // cancelled while connecting
+      ws = sock;
+      for (const m of pending.splice(0)) sock.send(JSON.stringify(m));
+    }, e => this.finish(id, false, (e as Error).message));
+    return {
+      push: (text: string) => { for (let i = 0; i < text.length; i += 1800) send({ sendText: { text: text.slice(i, i + 1800) } }); },
+      end: () => send({ closeContext: {} }),
+    };
   }
 
   /** Stop now: the server aborts synthesis and stops billing for the rest. */

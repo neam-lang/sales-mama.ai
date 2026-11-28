@@ -57,6 +57,7 @@ export function useVoice(handlers: VoiceHandlers) {
   const speechId = useRef<string | null>(null);
   const speechStartedAt = useRef(0);
   const last = useRef<{ text: string; agent?: string } | null>(null);
+  const streamId = useRef<string | null>(null);
   const idle = useRef<ReturnType<typeof setTimeout>>();
   const errTimer = useRef<ReturnType<typeof setTimeout>>();
 
@@ -207,6 +208,14 @@ export function useVoice(handlers: VoiceHandlers) {
     send({ type: 'speak', id: id ?? `s-${Date.now().toString(36)}`, text, agent, kind });
   }, [available, send]);
 
+  /** Live mode: speak an answer while it streams (one id per answer; `final` closes it). */
+  const sayStream = useCallback((id: string, text: string, final: boolean, agent?: string) => {
+    if (available === false) return;
+    if (text) last.current = { text: last.current && streamId.current === id ? `${last.current.text} ${text}` : text, agent };
+    streamId.current = id;
+    send({ type: 'say_stream', id, text, final, agent });
+  }, [available, send]);
+
   /** Realtime: hand Sales Mama's answer back to GPT to speak. */
   const toolResult = useCallback((callId: string, text: string) => {
     last.current = { text };
@@ -239,7 +248,7 @@ export function useVoice(handlers: VoiceHandlers) {
   return {
     available, problem, providers, error, mic, mode, partial, heard, caption, speaking, live,
     speakAnswers: prefs.speakAnswers, settings, defaults,
-    listen, release, cancelListen, toggleConversation, say, toolResult, repeat, stopSpeaking, setSpeakAnswers, setSettings, resetSettings, level, clock,
+    listen, release, cancelListen, toggleConversation, say, sayStream, toolResult, repeat, stopSpeaking, setSpeakAnswers, setSettings, resetSettings, level, clock,
   };
 }
 
